@@ -38,7 +38,7 @@ layout "standard"
   end
   
   def geocode
-    spawn do
+#    spawn do
     @houses = House.find(:all)
     @houses.each do |house| 
       puts @houses.index(house)
@@ -49,7 +49,7 @@ layout "standard"
       else  
         house.destroy
       end
-    end
+#    end
   end
     render :text => "geocoding now"
   end

@@ -2,8 +2,7 @@ class House < ActiveRecord::Base
   has_and_belongs_to_many :users,
     :foreign_key             => 'house_id', 
     :association_foreign_key => 'user_id', 
-    :join_table              => :userhouses,
-    :order=>"created_at ASC"
+    :join_table              => :userhouses
    
   attr_accessor :saved
   attr_accessor :has_images
@@ -34,7 +33,9 @@ class House < ActiveRecord::Base
     #tag the user's saved houses
     puts "looping"
     houses.each{|house| house.saved = true if user.saved_houses.include?(house)
-       house.has_images = true if house.images_href.match(/images.craigslist.org/)}
+
+   house.has_images = true if house.images_href
+}
     houses
   end
 

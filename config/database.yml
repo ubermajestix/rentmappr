@@ -5,3 +5,4 @@ development:
   username: root
   password:
   host: localhost
+production: development
