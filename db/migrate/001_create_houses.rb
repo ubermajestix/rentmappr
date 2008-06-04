@@ -7,7 +7,7 @@ class CreateHouses < ActiveRecord::Migration
       t.column :lat, :float
       t.column :lng, :float
       t.column :price, :int
-      t.column :images_href, :string
+      t.column :images_href, :text
       t.timestamps
     end
   end

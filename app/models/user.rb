@@ -79,7 +79,7 @@ class User < ActiveRecord::Base
   def saved_houses
     # get join object for user with records not marked as trash
     house_ids = Userhouses.find(:all , :conditions => ["user_id = ? and trash is null",self.id]).collect{|h| h.house_id}
-    houses = House.find(house_ids)
+    houses = House.find(house_ids) 
   end
   
   protected

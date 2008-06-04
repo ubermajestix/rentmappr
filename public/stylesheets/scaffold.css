@@ -31,7 +31,34 @@ input.small_input{
 	font-weight: bold;
 	font-size:11px;
 	}
+	
+	input.large_input{
+		padding: 5px;
+		color:#222;
+		font-weight: bold;
+		font-size:17px;
+		
+		}
+		
+		textarea.small_input{
+			padding: 3px;
+			color:#222;
+			font-weight: bold;
+			font-size:11px;
+			font-family: verdana, arial, helvetica, sans-serif;
+		  font-size:   13px;
+		  line-height: 18px;
+			}
 
+				textarea.large_input{
+					padding: 5px;
+					color:#222;
+					font-weight: bold;
+					font-size:17px;
+					font-family: verdana, arial, helvetica, sans-serif;
+				  font-size:   13px;
+				  line-height: 18px;
+					}
 .fieldWithErrors {
   padding: 2px;
   background-color: red;
