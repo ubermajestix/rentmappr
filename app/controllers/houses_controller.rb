@@ -37,22 +37,12 @@ layout "standard"
       render :template => "houses/index"
   end
   
-  def geocode
-#    spawn do
-    @houses = House.find(:all)
-    @houses.each do |house| 
-      puts @houses.index(house)
-      puts loc = house.address ? geocodr(house.address) : GeoLoc.new
-      puts "***"*20
-      if loc.success
-        house.update_attributes(:lat => loc.lat , :lng => loc.lng) 
-      else  
-        house.destroy
-      end
-#    end
-  end
-    render :text => "geocoding now"
-  end
+def remove_all_saved
+  current_user.houses.each{|c| current_user.houses.delete(c) }
+  current_user.save
+  Userhouses.destroy_all
+  redirect_to :action => "index"
+end
   
   #FIXME ajax call to save it / trash it 
   
@@ -94,5 +84,23 @@ layout "standard"
     
   end
   
+  def bug_report
+    render :template => "houses/bug_report", :layout=>"basic"
+  end
   
+  def file_bug
+    @title = params[:title]
+    @body = params[:body]
+    
+   @post = " <ticket>
+      <assigned-user-id type=\"integer\">22192</assigned-user-id>
+      <body>#{@body}</body>
+      <milestone-id type=\"integer\"></milestone-id>
+      <state>new</state>
+      <title>#{@title}</title>
+    </ticket>"
+    doc = open("http://ubermajestix.lighthouseapp.com/projects/#{project_id}/#{@post.to_xml}")
+    puts doc
+    render :text => "ticket made"
+  end
 end
