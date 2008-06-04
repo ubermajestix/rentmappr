@@ -1,0 +1,11 @@
+<%= render :partial => 'layouts/action_bar' %>
+<div id="bug" style="margin:20px; background: #fff; width:600px;">
+	<h3>File a bug report.</h3>
+	<% form_remote_tag :url=>{ :action=>:file_bug }, :update=>"update" do%>
+	<label>title</label><br/>
+	<%= text_field_tag :title, @title, :class=>"large_input", :size=>50 %><br/>
+	<label>bug report</label><br/>
+	<%= text_area_tag :body, @body, :class=>"large_input", :cols=>54, :rows=>15 %><br/>
+	<%= submit_tag "submit bug"%>
+	<% end%>
+</div>
