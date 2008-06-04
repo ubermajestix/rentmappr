@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title><%=controller.controller_name.titleize%>: <%= controller.action_name %></title>
+  <%= stylesheet_link_tag 'scaffold' %>
+  <%= javascript_include_tag :defaults %>
+ <%if online? %>
+ 
+
+ <%if request.host=~/localhost/%>
+ <script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTJQa0g3IQ9GZqIMmInSLzwtGDKaBSJdHlrIYiFi9WNEHgJJlj6ZPq6Mw" 
+  type="text/javascript"></script>
+  
+
+
+	 <%end%>
+ <script type="text/javascript">
+var markers = [];
+        // helper function to create markers
+	function createMarker(point,html,icon) {
+	
+
+	    var marker = new GMarker(point,icon);
+	    GEvent.addListener(marker, "click", function() {
+	     marker.openInfoWindowHtml(html);
+	     });
+   
+	return marker;
+	
+	}
+        
+
+ 
+	//FIXME: massive memory leaks - use the onunload:GMap.unload ? 
+	//FIXME: draw bounds to find properties - limits db/cache scope
+
+var map;
+ function initialize() {
+	map = new GMap($("map"));
+	var start = new GPoint(<%=@start.lng %>,<%=@start.lat %>);
+	    map.addControl(new GSmallMapControl());
+	    map.addControl(new GMapTypeControl());
+	  map.centerAndZoom(start, 4);
+	      <% if @houses %>
+	       <% for place in @houses %>
+		<% if place.lat and place.lng %>
+	          	 var point = new GPoint(<%=place.lng%>,<%=place.lat%>);
+	          	var icon = <%= place.saved ? "saved_house_icon(#{place.has_images})" : "new_house_icon(#{place.has_images})" %> ;
+
+
+
+	      var marker = createMarker(point, "<%=escape_javascript(render :partial=>'houses/map_text',:locals=>{:place => place}) %>",icon);
+	           map.addOverlay(marker);
+			markers[<%= place.id %>] = marker; 
+	    <% end %>
+	  <% end %>
+	<% end %>
+	}
+	function saved_house_icon(has_images){
+		var icon = new GIcon();
+		if (has_images){	icon.image =  '/images/my_house_pic.png';	}
+		else {icon.image =  '/images/my_house.png';}
+	         
+	         icon.shadow =  '/images/house_shadow.png';
+	         icon.iconSize = new GSize(20,20);
+	   icon.iconAnchor = new GPoint(10, 20);
+	   icon.infoWindowAnchor = new GPoint(12, 8);
+	return icon;
+	}
+	var sv;
+	var current_yaw = 180 ;
+	var current_pitch = 0 ;
+	var timer;
+	function openStreetView(lat, lng){
+		$('image_pane').hide();
+		$('close_sv').show();
+	 	$('sv').show();
+		sv = new GStreetviewPanorama($('sv'));
+		sv.setLocationAndPOV(new GLatLng(lat, lng));
+	}
+	
+	
+	function new_house_icon(has_images){
+		var icon = new GIcon();
+		if (has_images){icon.image =  '/images/new_house_pic.png';}
+		else{icon.image =  '/images/new_house.png';}
+	         
+	         icon.shadow =  '/images/house_shadow.png';
+	         icon.iconSize = new GSize(20,20);
+	   icon.iconAnchor = new GPoint(10, 20);
+	   icon.infoWindowAnchor = new GPoint(12, 8);
+	return icon;
+	}
+	
+	function open_window(id){
+		GEvent.trigger(markers[id], "click"); 
+	}
+	
+	function remove_marker(id){
+		map.closeInfoWindow();
+		map.removeOverlay(markers[id]);
+	}
+	
+	
+	
+	function make_marker_blue(id, lat, lng, text){
+		remove_marker(id);
+		var icon = saved_house_icon();
+		var new_marker = createMarker(new GPoint(lng, lat), text, icon);
+		map.addOverlay(new_marker);
+	}
+	
+	function make_marker_red(id, lat, lng, text){
+		remove_marker(id);
+		var icon = new_house_icon();
+		var new_marker = createMarker(new GPoint(lng, lat), text, icon);
+		map.addOverlay(new_marker);
+	}
+</script>
+ <% end %>
+</head>
+<body onload="initialize()" unload="GUnload();">
+
+
+<%= render :partial => 'layouts/action_bar' %>
+<span style="font-size:14.5px;color:green;background:#90ee90"><%=flash[:notice] %></span>
+
+
+
+
+<%= yield  %>
+
+
+</body>
+</html>

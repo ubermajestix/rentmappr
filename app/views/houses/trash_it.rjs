@@ -1,0 +1,3 @@
+
+page.replace_html :home_list, :partial=>"houses/home_list", :collection => @houses
+page.replace_html :short_list, :partial=>"houses/short_list", :locals=>{:home=>@house}

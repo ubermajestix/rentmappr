@@ -1,0 +1,3 @@
+<div class="user_bar">logged in as: <%= current_user.login %> | <%= link_to "logout", logout_path %> <%unless current_user.not_tyler? %>
+| <%= link_to "manage users", "/users/show" %>
+<% end %></div><br/>

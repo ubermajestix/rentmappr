@@ -1,0 +1,11 @@
+<%if  current_user.houses.length > 0 %>
+<%for home in current_user.saved_houses %>
+		<%= image_tag home.has_images ? '/images/my_house_pic.png' : '/images/my_house.png', :size=>"20x20", :title=>"recenter map on this house", :style=>"cursor:pointer", :onclick=>"open_window(#{home.id})" %>
+		<%= link_to_remote image_tag("/images/remove.png", :size=>"20x20"),:url=>{ :action => "remove_it", :id=>home.id }, :html=>{:title=>"remove from list", :class=>"remote_link"} %>
+	    <%= link_to home.title, home.href, :target=>"new" %> <br/>
+		
+<%end%>
+<% else %>
+nothing on the list yet. <br/> 
+to add a house, click one on the map, then click "save it." 
+<% end %>

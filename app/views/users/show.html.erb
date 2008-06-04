@@ -1,0 +1,4 @@
+<div style="background: #fff;"><h3>manage users:</h3>
+<%for user in @users %>
+	<%= user.login %> <%= link_to "destroy", "/users/#{user.id}", :method=>"delete" %> <br/>
+<%end%></div>

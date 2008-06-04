@@ -1,0 +1,30 @@
+<div style="line-height:25px;"> 
+	<%if place %>
+
+	<div style='width:200px;'>
+		<%= link_to place.title, place.href, :target=>:new %>
+	</div>
+	<br/>
+	<%if place.saved %>
+	<%= link_to_remote 	image_tag("/images/remove.png", :size=>"20x20") + " remove it", 
+						:url=>{:action=>:remove_it, :id=>place.id}, 
+						:html=>{ :title=>"remove from my short list", :class=>"remote_link"} %>
+
+	<%= link_to_remote 	image_tag("/images/trash.png", :size=>"20x20") + " trash it", 
+						:url=>{:action=>:trash_it, :id=>place.id},
+			:html =>		{	:onclick=>"remove_marker(#{place.id})", :title=>"don\'t show me this house again", :class=>"remote_link" }%>
+	<% else %>
+	<%= link_to_remote 	image_tag("/images/save.png", :size=>"20x20") + " save it", 
+						:url=>{:action=>:save_it, :id=>place.id},
+						:html=>{:title=>"add to my short list", :class=>"remote_link"} %>
+
+	<%= link_to_remote 	image_tag("/images/trash.png", :size=>"20x20") + " trash it", 
+						:url=>{:action=>:trash_it, :id=>place.id},
+			:html =>		{	:onclick=>"remove_marker(#{place.id})", :title=>"don\'t show me this house again", :class=>"remote_link" }%>
+	<% end %> <br/>
+	<% if place.has_images %>
+		<%= link_to_remote image_tag("/images/images.png", :size=>"20x20") + " images", :url=>{:action=>:show_images, :id=>place.id}, :update=>"image_pane", :html=>{:title=>"show images of house", :class=>"remote_link"} %>
+	<% end %>
+	<%= link_to image_tag("/images/streetview.png", :size=>"20x20") + " street view", "#",:onclick=>"openStreetView(#{place.lat}, #{place.lng});", :title=>"streetview panorama", :class=>"remote_link"  %>
+<% end %>
+</div>
