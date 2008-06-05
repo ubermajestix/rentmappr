@@ -116,7 +116,7 @@ var map;
 </script>
  <% end %>
 </head>
-<body onload="initialize()" unload="GUnload();">
+<body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0})" unload="GUnload();">
 
 
 <%= render :partial => 'layouts/action_bar' %>

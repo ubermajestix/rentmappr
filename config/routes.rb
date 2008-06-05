@@ -5,6 +5,7 @@ ActionController::Routing::Routes.draw do |map|
   map.login '/login', :controller => 'sessions', :action => 'new'
   map.logout '/logout', :controller => 'sessions', :action => 'destroy'
   map.bug_report '/bug_report', :controller=>"houses", :action=>"bug_report"
+  map.file_bug_report '/file_bug_report', :controller=>"houses", :action=>"file_bug"
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:

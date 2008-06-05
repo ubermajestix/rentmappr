@@ -92,16 +92,19 @@ end
   def file_bug
     @title = params[:title]
     @body = params[:body]
-    
-   @post = " <ticket>
-      <assigned-user-id type=\"integer\">22192</assigned-user-id>
-      <body>#{@body}</body>
-      <milestone-id type=\"integer\"></milestone-id>
-      <state>new</state>
-      <title>#{@title}</title>
-    </ticket>"
-   # doc = open("http://ubermajestix.lighthouseapp.com/projects/#{project_id}/#{@post.to_xml}")
-    #puts doc
-    render :text=> @post.to_xml
+    Lighthouse.account = 'ubermajestix'
+   Lighthouse.token = "4971a7da4778b8746c9fc63c9ac962fb9cf86259"
+
+   @type = params[:type] == 'bug' ? 'bug' : 'feature request'
+
+ # unless @body.empty? ||  @title.empty?  
+    ticket = Lighthouse::Ticket.new(:project_id => 12220)
+     ticket.title = @title
+     ticket.body = @body
+     ticket.tags << 'user reported' << @type
+     ticket.save
+  #end
+ flash[:notice] = "Successfully created ticket"
+    redirect_to bug_report_path
   end
 end

@@ -31,7 +31,7 @@ a.logo:hover{background:#6F3; padding-top:50px;}
 
 span.flash{
 	float:left;
-	background:#6F3;
+	background:#9F6;
 	color:#390;
 	border: solid 1px #390;
 	line-height:15px;
@@ -86,7 +86,17 @@ input.small_input{
 		  line-height: 18px;
 		border: solid 1px #999;
 			}
-
+					select.large_input{
+						width:200px;
+						padding: 5px;
+						color:#222;
+						font-weight: bold;
+						font-size:17px;
+						font-family: verdana, arial, helvetica, sans-serif;
+					  font-size:   13px;
+					  line-height: 18px;
+					border: solid 1px #999;
+						}
 				textarea.large_input{
 					padding: 5px;
 					color:#222;
