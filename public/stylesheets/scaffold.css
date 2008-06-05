@@ -10,6 +10,9 @@ body, p, ol, ul, td {
 
 }
 img { border: none;}
+
+
+
 pre {
   background-color: #eee;
   padding: 10px;
@@ -24,12 +27,44 @@ a { color: #000; }
 a:visited { color: #666; }
 a:hover { color: #fff; background-color:#000; }
 
+a.logo:hover{background:#6F3; padding-top:50px;}
+
+span.flash{
+	float:left;
+	background:#6F3;
+	color:#390;
+	border: solid 1px #390;
+	line-height:15px;
+	font-size:13px;
+	text-transform:lowercase;
+	padding-left:25px;
+	padding-right:25px;
+	padding-bottom:0px;
+	margin-left:125px;
+	margin-top:1px;
+}
+
+div.session{
+	margin:auto;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:50px;
+	background:#fff;
+	color:#222;
+	font-size:17px;
+	font-weight:bold;
+	text-transform:lowercase;
+	position:relative;
+	width:500px;
+	padding:50px;
+}
 
 input.small_input{
 	padding: 3px;
 	color:#222;
 	font-weight: bold;
 	font-size:11px;
+	border: solid 1px #999;
 	}
 	
 	input.large_input{
@@ -37,7 +72,8 @@ input.small_input{
 		color:#222;
 		font-weight: bold;
 		font-size:17px;
-		
+		border: solid 1px #999;
+	
 		}
 		
 		textarea.small_input{
@@ -48,6 +84,7 @@ input.small_input{
 			font-family: verdana, arial, helvetica, sans-serif;
 		  font-size:   13px;
 		  line-height: 18px;
+		border: solid 1px #999;
 			}
 
 				textarea.large_input{
@@ -58,6 +95,7 @@ input.small_input{
 					font-family: verdana, arial, helvetica, sans-serif;
 				  font-size:   13px;
 				  line-height: 18px;
+				border: solid 1px #999;
 					}
 .fieldWithErrors {
   padding: 2px;

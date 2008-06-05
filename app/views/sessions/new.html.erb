@@ -1,9 +1,13 @@
+
+<div class="session">
+	
+	<%= link_to (image_tag '/images/logo.png'), root_path, :class=>"logo" %>
 <% form_tag session_path do -%>
 <p><label for="login">Login</label><br/>
-<%= text_field_tag 'login' %></p>
+<%= text_field_tag 'login', nil, :class=>"large_input" %></p>
 
 <p><label for="password">Password</label><br/>
-<%= password_field_tag 'password' %></p>
+<%= password_field_tag 'password', nil, :class=>"large_input" %></p>
 
 <!-- Uncomment this if you want this functionality
 <p><label for="remember_me">Remember me:</label>
@@ -13,4 +17,6 @@
 <p><%= submit_tag 'Log in' %></p>
 <% end -%>
 <br/>
-<%= link_to "register", new_user_path %>
+<%= link_to "register", signup_path %>
+</div>
+

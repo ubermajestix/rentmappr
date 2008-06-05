@@ -34,6 +34,7 @@ layout "standard"
       #session[:houses] = @houses  
       @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
       @show_saved = true if params[:show_saved]
+      flash[:notice] = "this is some STUFF you want"
       render :template => "houses/index"
   end
   
@@ -99,8 +100,8 @@ end
       <state>new</state>
       <title>#{@title}</title>
     </ticket>"
-    doc = open("http://ubermajestix.lighthouseapp.com/projects/#{project_id}/#{@post.to_xml}")
-    puts doc
-    render :text => "ticket made"
+   # doc = open("http://ubermajestix.lighthouseapp.com/projects/#{project_id}/#{@post.to_xml}")
+    #puts doc
+    render :text=> @post.to_xml
   end
 end
