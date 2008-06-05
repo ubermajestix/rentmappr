@@ -25,9 +25,9 @@ set :deploy_to, "/home/tyler/apps/deployed/#{application}"
 
 #	Restart Passenger(mod_rails)
 namespace :passenger do
-  desc “Restart Application”
+  desc "Restart Application"
   task :restart do
-    run “touch #{current_path}/tmp/restart.txt”
+    run "touch #{current_path}/tmp/restart.txt"
   end
 end
-after :deploy, “passenger:restart”
+after :deploy, "passenger:restart"

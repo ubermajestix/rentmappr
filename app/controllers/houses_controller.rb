@@ -34,7 +34,6 @@ layout "standard"
       #session[:houses] = @houses  
       @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
       @show_saved = true if params[:show_saved]
-      flash[:notice] = "this is some STUFF you want"
       render :template => "houses/index"
   end
   
