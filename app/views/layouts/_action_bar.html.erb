@@ -3,4 +3,4 @@
 	<span id='flash' class="flash"><%=flash[:notice] %></span>
 	logged in as: <%= current_user.login %> | <%= link_to "logout", logout_path, :class=>"remote_link" %> <%unless current_user.not_tyler? %>
 | <%= link_to "manage users", "/users/show", :class=>"remote_link" %>
-<% end %> | <%= link_to "found a bug?", {:action=>:bug_report}, :class=>"remote_link" %></div><br/>
+<% end %> | <%= link_to "found a bug, want a new feature?", {:action=>:bug_report}, :class=>"remote_link" %></div><br/>

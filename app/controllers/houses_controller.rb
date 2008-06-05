@@ -97,13 +97,12 @@ end
 
    @type = params[:type] == 'bug' ? 'bug' : 'feature request'
 
- # unless @body.empty? ||  @title.empty?  
     ticket = Lighthouse::Ticket.new(:project_id => 12220)
      ticket.title = @title
      ticket.body = @body
      ticket.tags << 'user reported' << @type
      ticket.save
-  #end
+
  flash[:notice] = "Successfully created ticket"
     redirect_to bug_report_path
   end
