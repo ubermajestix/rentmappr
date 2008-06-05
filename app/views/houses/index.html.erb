@@ -1,7 +1,7 @@
 <div id="search">
 	<% form_tag search_path do%>
-	$<%= text_field_tag :min_price, @min_price, :size=>6, :class=>"small_input"%> min
-	$<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input" %> max
+min: $<%= text_field_tag :min_price, @min_price, :size=>6, :class=>"small_input"%> 
+max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input" %> 
 	<%= check_box_tag :show_saved, "1", @show_saved %> show only my short list
 	<%= submit_tag "filter"%>
 	<% end%>

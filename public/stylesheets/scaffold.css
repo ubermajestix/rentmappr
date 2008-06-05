@@ -19,6 +19,12 @@ pre {
   font-size: 11px;
 }
 
+a.action_bar
+
+a.action_bar {color: #000; text-decoration: none;  }
+a.action_bar:visited {color: #000; text-decoration: none;  }
+a.action_bar:hover { color: #fff; padding:5px; background: #000; text-decoration: none; }
+
 a.remote_link {color: #000; text-decoration: none; padding:5px; padding-top:8px; }
 a.remote_link:visited {color: #000; text-decoration: none; padding:5px;   }
 a.remote_link:hover { color: #fff; padding:5px; background: #000; text-decoration: none; padding-top:8px;}
