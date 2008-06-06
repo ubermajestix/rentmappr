@@ -26,4 +26,7 @@ layout "basic"
     flash[:notice] = "You have been logged out."
     redirect_back_or_default('/')
   end
+  
+  def mr_t    
+  end
 end
