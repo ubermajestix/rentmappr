@@ -5,37 +5,36 @@ require 'rfuzz/client'
 require 'cgi'
 require 'net/http'
 
-key = "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTJQa0g3IQ9GZqIMmInSLzwtGDKaBSJdHlrIYiFi9WNEHgJJlj6ZPq6Mw&oe=utf-8"
-address_str="1601 pearl st, boulder, co"
-#Net::HTTP.get_print 'maps.google.com', '/maps/geo?q=#{CGI.escape(address_str)}&output=xml&key=#{key}'
-res = Hpricot.XML(open("http://maps.google.com/maps/geo?q=#{CGI.escape(address_str)}&output=xml&key=#{key}"))
-puts res
-puts
-puts
-cl = RFuzz::HttpClient.new("maps.google.com", 80, :query=>"q=#{CGI.escape(address_str)}&output=xml&key=#{key}")
-#cl = RFuzz::HttpClient.new("maps.google.com", 80)
-puts cl
-#res =  cl.get("/maps/geo?q=#{CGI.escape(address_str)}&output=xml&key=#{key}").http_body
-res = cl.get("/maps")
-puts 
-puts res
-puts res.class
-doc = Hpricot.XML(res)
-puts
-puts doc
-puts doc.class
+#scrape links
+links = Queue.new
+scraper_threads = []
+pages = []
+page = 0
+date = Time.now
+days = 20
+puts "find pages back to: #{Time.now - days*86400}"
+while date > Time.now - days*86400 
+  cl_page = "/apa/index#{page}00.html"
+  # scraper_threads << Thread.new("/apa/index#{page}00.html") {|cl_page|
+    puts "scraping #{cl_page}"
+    cl = RFuzz::HttpClient.new("sfbay.craigslist.org", 80)
+    doc = Hpricot(cl.get(cl_page).http_body)
+    t_links = []
+  doc.search("a") do |item|
+    t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/^\/apa\/([0-9])/)
+  end
+  doc.search("h4") do |page_date|
+    puts page_date
+    date_array = ParseDate.parsedate(page_date.inner_html.to_s)
+    puts date = Time.local(Time.now.year, date_array[1], date_array[2])
+  end
+  links << t_links
+ # puts "found: #{t_links.length} links"
+  # puts "queue length: #{links.length}"
+  # }
+   page+=1
+end
 
-
-# ---------- THIS WORKS ---------------
-# #cl page
-# pages = [ 707280718, 707121866]
-# pages.each do |page|
-#   puts page
-#   doc = Hpricot(open("http://boulder.craigslist.org/apa/#{page}.html"))
-#   doc.search("table") do |table|
-#     puts table
-#     puts "found it" if table.to_s.match(/images.craigslist.org/)
-# 
-#   end
-# end
+# scraper_threads.each{|t| t.join}
+puts links.length
 

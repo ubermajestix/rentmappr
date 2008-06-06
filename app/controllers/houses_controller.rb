@@ -99,7 +99,7 @@ end
     ticket = Lighthouse::Ticket.new(:project_id => 12220)
      ticket.title = @title
      ticket.body = @body
-     ticket.tags << 'user reported' << @type
+     ticket.tags << 'user reported' << @type << current_user.email
      ticket.save
 
  flash[:notice] = "Successfully created ticket"

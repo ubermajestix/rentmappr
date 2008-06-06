@@ -15,6 +15,7 @@ set :runner                 , "root"
 default_run_options[:shell] = false
 default_run_options[:pty]   = true
 set :ssh_options, { :forward_agent => true }
+set :chmod755, "app config db lib public vendor script script/* public/disp*"
 
 # Deployment servers
 role :app, "ubermajestix.com"

@@ -98,25 +98,24 @@ end
 
 # geocode()
 # exit
+
 #scrape links
 links = Queue.new
 scraper_threads = []
 pages = []
-
-10.times do |page|
-  pages << "/apa/index#{page}00.html"
-end
-
-
- 
-for page in pages
-  scraper_threads << Thread.new(page) {|cl_page|
+date = Time.now
+while date > Time.now-7.days do |page|
+  scraper_threads << Thread.new("/apa/index#{page}00.html") {|cl_page|
     print "scraping #{page}"
     cl = RFuzz::HttpClient.new("boulder.craigslist.org", 80)
     doc = Hpricot(cl.get(cl_page).http_body)
     t_links = []
   doc.search("a") do |item|
     t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/^\/apa\/([0-9])/)
+  end
+  doc.search("h4") do |page_date|
+    date_array = parsedate(page_date.to_s)
+    date = Time.local(Time.now.year, date_array[1], date_array[2])
   end
   links << t_links
   puts "found: #{t_links.length} links"
@@ -125,7 +124,7 @@ for page in pages
 end
 
 scraper_threads.each{|t| t.join}
-
+puts links.length
 
 #process_threads = []
 #links.length.times do
@@ -209,11 +208,7 @@ end
 
   addresses = []
 
- ActiveRecord::Base.establish_connection(:adapter=>"mysql", 
-                                         :host     => "localhost",
-                                         :username => "root",
-                                         :password => "",
-                                         :database => "bldrcl")
+
 #FIXME temporary!!!!!!!     
 House.destroy_all
  
