@@ -18,9 +18,9 @@ set :ssh_options, { :forward_agent => true }
 set :chmod755, "app config db lib public vendor script script/* public/disp*"
 
 # Deployment servers
-role :app, "ubermajestix.com"
-role :web, "ubermajestix.com"
-role :db,  "ubermajestix.com", :primary => true
+role :app, "rentmappr.com"
+role :web, "rentmappr.com"
+role :db,  "rentmappr.com", :primary => true
 set :deploy_to, "/home/tyler/apps/deployed/#{application}"
 
 
