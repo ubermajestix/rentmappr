@@ -14,13 +14,13 @@ Rails::Initializer.run do |config|
   
   config.action_controller.session = {
     :session_key => '_bldr_cl_session',
-    :expires    =>  2.days, 
+    :expires    =>  2*86400, 
     :secret      => 'a31d361ea2fa93b75a194e021b730e0a57c2be96e1fd9376dbf60a7c21847118189d146052487cab980e9a66ed2c17dc5a95bb01f47c9b43782eebbf58d377b0'
   }
-  # require 'memcache'
-  #   config.action_controller.session_store = :mem_cache_store
-  #   CACHE = MemCache.new 'localhost:11211', :namespace => 'rentmappr'
-  #   
+  require 'memcache'
+    config.action_controller.session_store = :mem_cache_store
+    CACHE = MemCache.new 'localhost:11211', :namespace => 'rentmappr'
+    
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.

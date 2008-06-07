@@ -5,7 +5,7 @@ set :repository,  "git@github.com:ubermajestix/rentmappr.git"
 set :scm, "git"
 set :branch, "origin/master"
 # set :repository_cache, "git_cache"
-# set :deploy_via, :remote_cache
+ set :deploy_via, :remote_cache
 
 
 # Sudoer settings      
