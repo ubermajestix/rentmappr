@@ -11,6 +11,16 @@ RAILS_GEM_VERSION = '2.0.2' unless defined? RAILS_GEM_VERSION
 require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
+  
+  config.action_controller.session = {
+    :session_key => '_bldr_cl_session',
+    :expires    =>  2.days, 
+    :secret      => 'a31d361ea2fa93b75a194e021b730e0a57c2be96e1fd9376dbf60a7c21847118189d146052487cab980e9a66ed2c17dc5a95bb01f47c9b43782eebbf58d377b0'
+  }
+  # require 'memcache'
+  #   config.action_controller.session_store = :mem_cache_store
+  #   CACHE = MemCache.new 'localhost:11211', :namespace => 'rentmappr'
+  #   
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.
@@ -36,13 +46,8 @@ Rails::Initializer.run do |config|
   # If you change this key, all old sessions will become invalid!
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
-  config.action_controller.session = {
-    :session_key => '_bldr_cl_session',
-    :secret      => 'a31d361ea2fa93b75a194e021b730e0a57c2be96e1fd9376dbf60a7c21847118189d146052487cab980e9a66ed2c17dc5a95bb01f47c9b43782eebbf58d377b0'
-  }
-   require 'memcache'
-   config.action_controller.session_store = :mem_cache_store 
-    CACHE = MemCache.new 'localhost:11211', :namespace => 'dashboard'
+   
+
 
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
@@ -59,7 +64,9 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
-end# These defaults are used in GeoKit::Mappable.distance_to and in acts_as_mappable
+end
+
+# These defaults are used in GeoKit::Mappable.distance_to and in acts_as_mappable
 GeoKit::default_units = :miles
 GeoKit::default_formula = :sphere
 
