@@ -21,9 +21,9 @@ pre {
 
 a.action_bar
 
-a.action_bar {color: #000; text-decoration: none;  }
-a.action_bar:visited {color: #000; text-decoration: none;  }
-a.action_bar:hover { color: #fff; padding:5px; background: #000; text-decoration: none; }
+a.action_bar {color: #000; padding-left:8px; padding-right:8px; text-decoration: none;  }
+a.action_bar:visited {color: #000; padding-left:8px; padding-right:8px; text-decoration: none;  }
+a.action_bar:hover { color: #fff; padding-left:8px; padding-right:8px; background: #000; text-decoration: none; }
 
 a.remote_link {color: #000; text-decoration: none; padding:5px; padding-top:8px; }
 a.remote_link:visited {color: #000; text-decoration: none; padding:5px;   }
@@ -34,6 +34,10 @@ a:visited { color: #666; }
 a:hover { color: #fff; background-color:#000; }
 
 a.logo:hover{background:#6F3; padding-top:50px;}
+
+div.search{
+	margin-left:10px;
+}
 
 span.flash{
 	float:left;

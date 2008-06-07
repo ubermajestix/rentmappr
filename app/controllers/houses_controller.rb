@@ -13,12 +13,12 @@ layout "standard"
         max_price = session[:max_price] = params[:max_price]
         min_price = session[:min_price] = params[:min_price]
       
-        unless max_price.nil?
+        unless max_price.empty?
           cond_string << "price <= ?"
           cond_vars << max_price
         end
       
-        unless min_price.nil?
+        unless min_price.empty?
           cond_string << "price >= ?"
           cond_vars << min_price
         end 
