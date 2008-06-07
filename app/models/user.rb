@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
     :foreign_key             => 'user_id', 
     :association_foreign_key => 'house_id', 
     :join_table              => :userhouses
+    
+    belongs_to :map_area
   
   validates_presence_of     :login, :email
   validates_presence_of     :password,                   :if => :password_required?
@@ -79,7 +81,7 @@ class User < ActiveRecord::Base
   def saved_houses
     # get join object for user with records not marked as trash
     house_ids = Userhouses.find(:all , :conditions => ["user_id = ? and trash is null",self.id]).collect{|h| h.house_id}
-    houses = House.find(house_ids) 
+    houses = xHouse.find(house_ids) 
   end
   
   protected

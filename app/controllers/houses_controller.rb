@@ -1,6 +1,6 @@
 class HousesController < ApplicationController
 
-before_filter :login_required, :except=>"geocode"
+before_filter :login_required, :only=>%w{save_it remove_it trash_it show_images remove_all_saved}
 layout "standard"  
   #TODO have user draw area on map in which they would like to search...awesome
   def index
@@ -29,10 +29,14 @@ layout "standard"
       conds = []
       conds << cond_string.join(" and ")
       cond_vars.each { |var| conds << var  }
-
+      if logged_in?
       @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])
+    else
+      @houses = House.find(:all, :conditions => conds)
+    end
       #session[:houses] = @houses  
       @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
+      @zoom=4
       @show_saved = true if params[:show_saved]
       render :template => "houses/index"
   end

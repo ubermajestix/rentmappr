@@ -38,7 +38,7 @@ var map;
 	var start = new GPoint(<%=@start.lng %>,<%=@start.lat %>);
 	    map.addControl(new GSmallMapControl());
 	    map.addControl(new GMapTypeControl());
-	  map.centerAndZoom(start, 4);
+	  map.centerAndZoom(start, <%= @zoom %>);
 	      <% if @houses %>
 	       <% for place in @houses %>
 		<% if place.lat and place.lng %>

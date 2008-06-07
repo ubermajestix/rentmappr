@@ -33,6 +33,10 @@ module AuthenticatedSystem
     def authorized?
       logged_in?
     end
+    
+    def tyler?
+     logged_in? ? current_user.login == "tyler" : false
+    end
 
     # Filter method to enforce a login requirement.
     #
@@ -51,7 +55,11 @@ module AuthenticatedSystem
     def login_required
       authorized? || access_denied
     end
-
+    
+    def admin_only
+      tyler? || access_denied
+    end
+    
     # Redirect as appropriate when an access request fails.
     #
     # The default action is to redirect to the login screen.

@@ -1,6 +1,6 @@
 
 *{margin:0pt;}
-body { background-color: #f6f6f6; color: #333; }
+body { background-color: #ddd; color: #333; }
 
 body, p, ol, ul, td {
   font-family: verdana, arial, helvetica, sans-serif;
@@ -36,7 +36,13 @@ a:hover { color: #fff; background-color:#000; }
 a.logo:hover{background:#6F3; padding-top:50px;}
 
 div.search{
-	margin-left:10px;
+	background: #fff;
+	padding-left:10px;
+	padding-top:5px;
+	width:490px;
+	margin-right:-5px;
+	margin-top:-10px;
+	padding-bottom:5px;
 }
 
 span.flash{

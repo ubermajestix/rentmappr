@@ -9,6 +9,7 @@ class CreateUsers < ActiveRecord::Migration
       t.column :updated_at,                :datetime
       t.column :remember_token,            :string
       t.column :remember_token_expires_at, :datetime
+      t.integer :map_area_id
       
       
     end

@@ -3,7 +3,7 @@ class House < ActiveRecord::Base
     :foreign_key             => 'house_id', 
     :association_foreign_key => 'user_id', 
     :join_table              => :userhouses
-   
+    belongs_to :map_area
   attr_accessor :saved
   attr_accessor :has_images
   validates_uniqueness_of :href

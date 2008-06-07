@@ -1,6 +1,17 @@
 <div class="user_bar">
 	<span style="float:left;"><%= link_to image_tag( '/images/logo.png', :size=>"120x20"), root_path, :class=>"logo" %></span>
+	
 	<span id='flash' class="flash"><%=flash[:notice] %></span>
-	logged in as: <%= current_user.login %> | <%= link_to "logout", logout_path, :class=>"action_bar" %> <%unless current_user.not_tyler? %>
+	<%if logged_in? %>
+	logged in as: <%= current_user.login %> | <%= link_to "logout", logout_path, :class=>"action_bar" %> 
+	<%unless current_user.not_tyler? %>
 | <%= link_to "manage users", "/users/show", :class=>"action_bar" %>
+	<% end %>
+	<% else %>
+	<%= link_to "log in", login_path, :title=>"sign in!", :class=>"action_bar" %> | 
+<span id="register_link">	<%= link_to "register", signup_path, :title=>"save houses you like, trash ones you don\'t", :class=>"action_bar" %>
+</span><div id="register_arrow" style="position:absolute; right:75px; top:20px; z-index:100; display:none;">
+	<%= image_tag '/images/up_arrow.png' %>
+</div>
+
 <% end %> | <%= link_to image_tag("/images/bug.png", :size=>"20x20",:style=>"margin-bottom:-6px;"), {:action=>:bug_report}, :class=>"action_bar" , :title=>"report a bug or request a feature"%></div><br/>
