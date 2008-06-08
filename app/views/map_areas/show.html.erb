@@ -1,3 +1,13 @@
+<div id="session">
+<%= @map_area.name %><br/>
+<%= @map_area.craigslist %><br/>
+<%= @houses %> homes in <%= @map_area.name %>
+<div id="map" style="width:300px; height: 300px;">
+	
+</div>
+<br/>
+<%= link_to "scrape now", scrape_path, :id=>@map_area.id%><br/><br/>
+	<%= link_to 'Edit', edit_map_area_path(@map_area) %> |
+	<%= link_to 'Back', map_areas_path %>	
+</div>
 
-<%= link_to 'Edit', edit_map_area_path(@map_area) %> |
-<%= link_to 'Back', map_areas_path %>

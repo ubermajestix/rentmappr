@@ -62,7 +62,7 @@ var markers = [];
 					icon.iconSize = new GSize(20,20);
 					icon.iconAnchor = new GPoint(10, 20);
 					icon.infoWindowAnchor = new GPoint(12, 8);
-					var marker=createMarker(point,"<%= area.name %>\n\n" ,icon);
+					var marker=createMarker(point,"<%= escape_javascript(link_to area.name, :action=>:show, :id=>area.id) %>\n\n" ,icon);
 					map.addOverlay(marker);
 				<% end %>
 			<% end %>

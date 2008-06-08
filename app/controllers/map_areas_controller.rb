@@ -17,18 +17,29 @@ before_filter :admin_only
     @map_area = MapArea.find(params[:id])
     @start = @map_area
     @zoom= 4
+    @houses = House.count(:conditions => ["map_area_id = ?",params[:id]])
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @map_area }
     end
   end
 
+  def scrape
+    @map_area = MapArea.find(params[:id])
+    spawn do
+   puts "=="*45
+
+     puts `ruby #{FileUtils.pwd}/lib/scrape.rb #{@map_area.id}`
+    end
+    puts "=="*45
+    redirect_to :action => "show", :id=>params[:id]
+  end
   # GET /map_areas/new
   # GET /map_areas/new.xml
   def new
     @map_area = MapArea.new
     @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
-    @zoom= 11
+    @zoom= 14
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @map_area }
@@ -46,7 +57,7 @@ before_filter :admin_only
   # POST /map_areas.xml
   def create
     @map_area = MapArea.new(params[:map_area])
-
+    @map_area.craigslist = params[:craigslist] + ".craigslist.org"
     respond_to do |format|
       if @map_area.save
         flash[:notice] = 'MapArea was successfully created.'

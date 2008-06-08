@@ -146,12 +146,14 @@ def scrape_links(site)#returns queue
   15.times do |page|
   # while date > Time.now-7.days do |page|
     scraper_threads << Thread.new("/apa/index#{page}00.html", site) {|cl_page, cl_site|
-      puts "scraping #{page} on #{cl_site}"
+      puts "scraping #{page} on #{cl_site}#{cl_page}"
       cl = RFuzz::HttpClient.new(cl_site, 80)
       doc = Hpricot(cl.get(cl_page).http_body)
       t_links = []
     doc.search("a") do |item|
-      t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/^\/apa\/([0-9])/)
+      puts item
+      t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
+      
     end
     # doc.search("h4") do |page_date|
     #   date_array = parsedate(page_date.to_s)
@@ -222,8 +224,7 @@ end#of parse_cl_page
 
 def pull_down_page(links, map_area)#pass queue
   addresses = []
-#FIXME temporary!!!!!!!     
-House.destroy_all
+
  
  parser_threads = []
  links.length.times do |batch_num|
@@ -242,18 +243,17 @@ House.destroy_all
  end 
  parser_threads.each { |t| t.join }
 end#of pull down page 
+puts ARGV[0]
+puts ARGV[1]
+@map_area = MapArea.find(ARGV[0])
 
-@map_areas = MapArea.find(:all)
-
-@map_areas.each { |e| puts e.name + " | " + e.craigslist }
-for map_area in @map_areas
-  puts "scraping #{map_area.craigslist}" 
-  queue = scrape_links(map_area.craigslist)
-  pull_down_page(queue, map_area)
+  puts "scraping #{@map_area.craigslist}" 
+  queue = scrape_links(@map_area.craigslist)
+  pull_down_page(queue, @map_area)
   puts House.count
   sleep 2
   geocode()
-end
+
 
 
 
