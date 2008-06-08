@@ -5,6 +5,7 @@ require 'hpricot'
 require 'activerecord'
 require 'rfuzz/client'
 require 'net/http'
+require 'logger'
 
 ActiveRecord::Base.establish_connection(
                                         :adapter=>"mysql", 
@@ -143,7 +144,7 @@ def scrape_links(site)#returns queue
   pages = []
   date = Time.now
   puts "hitting #{site}"
-  15.times do |page|
+  10.times do |page|
   # while date > Time.now-7.days do |page|
     scraper_threads << Thread.new("/apa/index#{page}00.html", site) {|cl_page, cl_site|
       puts "scraping #{page} on #{cl_site}#{cl_page}"
