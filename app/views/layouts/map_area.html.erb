@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>rentmappr - locate a house to rent listed on craigslist.com</title>
+  <%= stylesheet_link_tag 'scaffold' %>
+  <%= javascript_include_tag :defaults %>
+ <%if online? %>
+ <% @key =request.host =~ /rentmappr/ ? "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTFe1RIeuOf__AvzqPPVl3e_BFy2xR4LYWw1t-nh0FUMH7k3OkjcJU9ww" : "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTkn2cjlmPPsTmxGpadsO7XL1l5cxQRHnXCjbHxd4a9uQicYTUQkTi-8w" %>
+
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= @key %>"
+      type="text/javascript"></script>
+ <script type="text/javascript">
+var markers = [];
+        // helper function to create markers
+	function createMarker(point,html,icon) {
+	
+
+	    var marker = new GMarker(point,icon);
+	    GEvent.addListener(marker, "click", function() {
+	     marker.openInfoWindowHtml(html);
+	     });
+   
+	return marker;
+	
+	}
+		//FIXME: draw bounds to find properties - limits db/cache scope
+
+	var map;
+	 function initialize() {
+		map = new GMap($("map"));
+			var start = new GPoint(<%=@start.lng %>,<%=@start.lat %>);
+		    map.addControl(new GSmallMapControl());
+		    map.addControl(new GMapTypeControl());
+		  	map.centerAndZoom(start, <%= @zoom %>);
+		<% if controller.action_name == "new" %>
+			GEvent.addListener(map,"click", function(overlay,point) {   
+			sp = point.toString();	
+			sp = sp.gsub(/\(/, "");
+			sp = sp.gsub(/\)/, "");
+			sp = sp.split(",");
+			$("map_area_lat").value = ""+sp[0]+"";
+			$("map_area_lng").value = ""+sp[1]+"";
+			if (markers[0]){remove_marker(0);}
+			var icon = new GIcon();
+        	icon.image =  '/images/crosshair.png';
+         	icon.iconSize = new GSize(15,15);					
+			icon.iconAnchor = new GPoint(7, 8);
+			icon.infoWindowAnchor = new GPoint(15, 0);
+			var marker=createMarker(point,"lat lng:"+point ,icon);
+			markers[0]=marker;
+			map.addOverlay(marker);});
+		<% end %>	
+			<% if @map_areas %>
+				<% for area in @map_areas %>
+					var point = new GPoint(<%=area.lng%>,<%=area.lat%>);
+		          	var icon = new GIcon();
+					icon.image =  '/images/my_house.png';
+					icon.shadow =  '/images/house_shadow.png';
+					icon.iconSize = new GSize(20,20);
+					icon.iconAnchor = new GPoint(10, 20);
+					icon.infoWindowAnchor = new GPoint(12, 8);
+					var marker=createMarker(point,"<%= area.name %>\n\n" ,icon);
+					map.addOverlay(marker);
+				<% end %>
+			<% end %>
+			
+	}
+		function remove_marker(id){
+			map.closeInfoWindow();
+			map.removeOverlay(markers[id]);
+		}
+		
+
+		
+		
+</script>
+ <% end %>
+</head>
+<body onload="initialize();" unload="GUnload();">
+	<%= render :partial => 'layouts/action_bar' %>
+	<%= yield  %>
+</body>
+</html>
+		

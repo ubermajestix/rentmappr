@@ -1,0 +1,12 @@
+<h1>Editing map_area</h1>
+
+<%= error_messages_for :map_area %>
+
+<% form_for(@map_area) do |f| %>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @map_area %> |
+<%= link_to 'Back', map_areas_path %>

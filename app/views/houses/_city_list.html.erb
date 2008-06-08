@@ -1,0 +1,14 @@
+
+<%if map_areas.length > 0 %>
+
+	<% for area in map_areas %>
+		<% if area.lat && area.lng %>
+			<img src="/images/my_house.png" 
+			onclick="open_window(<%= area.id %>)" width="20" height="20", title="recenter map on this house" style="cursor:pointer" />
+			<%= area.name %> | <%= link_to area.craigslist, area.craigslist, :target=>"new" %> | <%= link_to "pick this city", :action => "pick_area", :id=>area.id %><br/>
+		<% end %>
+	<% end %>
+
+<% else %>
+ We don't have any cities.
+<% end %>

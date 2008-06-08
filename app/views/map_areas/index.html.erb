@@ -1,0 +1,19 @@
+<%= @map_areas.length %> areas collected <br/>
+<%= link_to "add new area", new_map_areas_path  %>
+<div id="map" style="width:700px; height:500px;">
+	
+</div>
+<table border="0" cellspacing="5" cellpadding="5" style="background:#fff">
+	<tr><th>name</th><th> craigslist </th><th> expire records (days) </th></tr>
+
+	<%for area in @map_areas %>
+<tr> 
+	<td> <%= area.name %> </td>
+	<td> <%= area.craigslist %>  </td>
+	<td>  <%= area.expires_in %> </td>
+	 </tr>
+	<%end%>
+
+</table>
+
+

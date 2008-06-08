@@ -37,7 +37,7 @@
 
 	<% end %> <br/>
 	<% if place.has_images %>
-		<%= link_to_remote image_tag("/images/images.png", :size=>"20x20") + " images", :url=>{:action=>:show_images, :id=>place.id}, :update=>"image_pane", :html=>{:title=>"show images of house", :class=>"remote_link"} %>
+		<%= link_to_remote image_tag("/images/images.png", :size=>"20x20") + " images", :url=>{:action=>:show_images, :id=>place.id}, :update=>"image_pane", :html=>{:title=>"show images of house", :class=>"remote_link", :onclick=>"$('sv').hide();$('image_pane').show();$('close_sv').hide();"} %>
 	<% end %>
 	<%= link_to image_tag("/images/streetview.png", :size=>"20x20") + " street view", "#",:onclick=>"openStreetView(#{place.lat}, #{place.lng});", :title=>"streetview panorama", :class=>"remote_link"  %>
 <% end %>

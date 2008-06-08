@@ -6,8 +6,9 @@ class House < ActiveRecord::Base
     belongs_to :map_area
   attr_accessor :saved
   attr_accessor :has_images
-  validates_uniqueness_of :href
-  validates_presence_of :title, :href, :price, :address
+ # validates_uniqueness_of :href
+#  validates_presence_of :title, :href, :price, :address
+ # validates_length_of :address, :minimum=>10
   
   def self.find_for_user( opts = {})
 
@@ -24,18 +25,17 @@ class House < ActiveRecord::Base
     if opts[:saved]
       #search for houses (above) and only return ones matching user
       houses.reject!{|house| not user.saved_houses.include?(house)}
-    else
+    elsif user
      #get rid of 'trashed' houses from the list
      puts "trashing"
       trashed = Userhouses.find_trashed_house_ids(:user_id=>user.id)
       houses.reject!{|h| trashed.include?(h.id)}
+     houses.each{|house|  house.saved = true if user.saved_houses.include?(house)}
+      
     end
     #tag the user's saved houses
-    puts "looping"
-    houses.each{|house| house.saved = true if user.saved_houses.include?(house)
-
-   house.has_images = true if house.images_href
-}
+    
+houses.each{|house|  house.has_images = true if house.images_href}
     houses
   end
 

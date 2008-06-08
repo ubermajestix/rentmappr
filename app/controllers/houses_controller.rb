@@ -4,11 +4,10 @@ before_filter :login_required, :only=>%w{save_it remove_it trash_it show_images 
 layout "standard"  
   #TODO have user draw area on map in which they would like to search...awesome
   def index
-    #TODO add price search
-
+     if session[:map_area_id]
       cond_string = []
       cond_vars = []
-      
+   
       if params[:search]
         max_price = session[:max_price] = params[:max_price]
         min_price = session[:min_price] = params[:min_price]
@@ -25,20 +24,39 @@ layout "standard"
          @min_price = min_price
          @max_price = max_price
       end
-      
+      cond_string << "map_area_id = ?"
+      cond_vars << session[:map_area_id]
+     
       conds = []
       conds << cond_string.join(" and ")
       cond_vars.each { |var| conds << var  }
       if logged_in?
-      @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])
-    else
-      @houses = House.find(:all, :conditions => conds)
-    end
+        @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])
+      else
+        @houses = House.find(:all, :conditions => conds)
+      end
       #session[:houses] = @houses  
-      @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
-      @zoom=4
+       @map_area = MapArea.find(session[:map_area_id])
+      @start = GeoLoc.new(:lat=>@map_area.lat, :lng=> @map_area.lng)
+      @zoom=6
       @show_saved = true if params[:show_saved]
       render :template => "houses/index"
+    else
+      redirect_to :action => "choose_area"
+    end
+  end
+  
+  def choose_area
+    @map_areas = MapArea.find(:all)
+    @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
+    @zoom=13
+    render :template => "houses/choose_area", :layout=>"choose_area"
+  end  
+  
+  def pick_area
+    session[:map_area_id] = params[:id]
+    current_user.update_attribute(:map_area_id, params[:id]) if logged_in?
+    redirect_to :action => "index"
   end
   
 def remove_all_saved

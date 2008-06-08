@@ -1,0 +1,18 @@
+<div class="search">
+<h3>Choose a city to search within:</h3>
+</div>
+
+<div id="map" class="clear_border" style="width: 500px; height:400px;" ></div>
+
+
+<div id="homes_list_title" style="position:absolute; top:25px; left:525px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:50px; background:#fff; padding:5px">
+<h3><%= @map_areas.length %> cities</h3>
+	</div>
+<div id="home_list" style="position: absolute; top:65px; left:525px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:382px; background:#fff; padding:5px">
+	
+<%= render :partial => 'houses/city_list', :locals=>{:map_areas=>@map_areas} %>
+
+</div>
+<%= render :partial => 'houses/banner_ads' %>
+
+
