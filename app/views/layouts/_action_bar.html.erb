@@ -5,7 +5,7 @@
 	<%if logged_in? %>
 	logged in as: <%= current_user.login %> | <%= link_to "logout", logout_path, :class=>"action_bar" %> 
 	<%unless current_user.not_tyler? %>
-| <%= link_to "manage users", "/users/show", :class=>"action_bar" %>
+| <%= link_to "manage users", "/users/show", :class=>"action_bar" %> | <%= link_to "manage cities", map_areas_path %>
 	<% end %>
 	<% else %>
 	<%= link_to "log in", login_path, :title=>"sign in!", :class=>"action_bar" %> | 
