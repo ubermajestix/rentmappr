@@ -7,8 +7,8 @@ class CreateHouses < ActiveRecord::Migration
       t.column :lat, :float
       t.column :lng, :float
       t.column :price, :int
-      t.column :images_href, :text
-        t.integer :map_area_id
+      t.text :images_href
+      t.integer :map_area_id
       t.timestamps
     end
   end

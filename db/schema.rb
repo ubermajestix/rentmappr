@@ -18,10 +18,10 @@ ActiveRecord::Schema.define(:version => 4) do
     t.float    "lat"
     t.float    "lng"
     t.integer  "price"
-    t.string   "images_href"
+    t.text     "images_href"
+    t.integer  "map_area_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "map_area_id"
   end
 
   create_table "map_areas", :force => true do |t|

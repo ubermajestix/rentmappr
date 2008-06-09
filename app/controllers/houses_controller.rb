@@ -1,6 +1,6 @@
 class HousesController < ApplicationController
 
-before_filter :login_required, :only=>%w{save_it remove_it trash_it show_images remove_all_saved}
+before_filter :login_required, :only=>%w{save_it remove_it trash_it remove_all_saved}
 layout "standard"  
   #TODO have user draw area on map in which they would like to search...awesome
   def index
@@ -26,7 +26,9 @@ layout "standard"
       end
       cond_string << "map_area_id = ?"
       cond_vars << session[:map_area_id]
-     
+      
+      cond_string << "lat is not null and lng is not null"
+      
       conds = []
       conds << cond_string.join(" and ")
       cond_vars.each { |var| conds << var  }
@@ -34,6 +36,7 @@ layout "standard"
         @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])
       else
         @houses = House.find(:all, :conditions => conds)
+        @houses.each { |h| h.has_images=true if h.images_href }
       end
       #session[:houses] = @houses  
        @map_area = MapArea.find(session[:map_area_id])
@@ -121,7 +124,7 @@ end
     ticket = Lighthouse::Ticket.new(:project_id => 12220)
      ticket.title = @title
      ticket.body = @body
-     ticket.tags << 'user reported' << @type << current_user.email
+     ticket.tags << 'user reported' << @type << logged_in? ? current_user.email : (params[:email].empty? ? nil : params[:email]) 
      ticket.save
 
  flash[:notice] = "Successfully created ticket"

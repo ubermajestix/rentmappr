@@ -8,21 +8,22 @@ require 'net/http'
 require 'logger'
 
 ActiveRecord::Base.establish_connection(
-                                        :adapter=>"mysql", 
+                                        :adapter  => "mysql", 
                                         :host     => "localhost",
-                                           :username => "root",
-                                           :password => "",
-                                           :database => "bldrcl")
+                                        :username => "root",
+                                        :password => "",
+                                        :database => "bldrcl")
 
 @start_run = Time.now
 
 class House < ActiveRecord::Base
-  validates_uniqueness_of :href
+  validates_uniqueness_of :href, :address
   validates_presence_of :title, :href, :address
  # validates_length_of :address, :minimum=>10
 end
 
 class MapArea < ActiveRecord::Base
+  has_many :houses
 end
 
 class GeoLoc
@@ -152,7 +153,6 @@ def scrape_links(site)#returns queue
       doc = Hpricot(cl.get(cl_page).http_body)
       t_links = []
     doc.search("a") do |item|
-      puts item
       t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
       
     end
@@ -190,7 +190,8 @@ def parse_cl_page(link, map_area)
      puts house.price = house.title.match(/([\$])([0-9]{3,})/).to_s.gsub("$", "") if house.title && house.title.match(/([\$])([0-9]{3,})/)
      #find price in title $number 
    end
-
+   #get email address
+   #get date added
    
      hdoc.search("table") do |table|
       images = []
@@ -245,15 +246,16 @@ def pull_down_page(links, map_area)#pass queue
  parser_threads.each { |t| t.join }
 end#of pull down page 
 puts ARGV[0]
-puts ARGV[1]
 @map_area = MapArea.find(ARGV[0])
-
+@houses = @map_area.houses
+puts @houses.length
+#@houses.each { |house| house.destroy }
   puts "scraping #{@map_area.craigslist}" 
-  queue = scrape_links(@map_area.craigslist)
-  pull_down_page(queue, @map_area)
-  puts House.count
-  sleep 2
-  geocode()
+   queue = scrape_links(@map_area.craigslist)
+   pull_down_page(queue, @map_area)
+   puts House.count
+# sleep 2
+# geocode()
 
 
 
