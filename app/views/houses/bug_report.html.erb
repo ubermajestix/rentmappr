@@ -8,8 +8,11 @@
 	<%= text_field_tag :title, @title, :class=>"large_input", :size=>50 %><br/>
 	<label>comments:</label><br/>
 	<%= text_area_tag :body, @body, :class=>"large_input", :cols=>54, :rows=>15 %><br/>
-	your email address:<span class="little"> (so we can't send you a note when we've fixed your bug or added your feature) </span><br/>
-	<%= text_field_tag :email, @email, :class=>"large_input", :size=>50 %><br/>
+	<%if logged_in? %>
+		your email address:<span class="little"> (so we can send you a note when we've fixed your bug or added your feature) </span><br/>
+		<%= text_field_tag :email, @email, :class=>"large_input", :size=>50 %><br/>
+	<% end %>
+
 
 	<%= submit_tag "submit"%>
 	<% end%>
