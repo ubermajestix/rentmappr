@@ -121,11 +121,11 @@ end
    Lighthouse.token = "4971a7da4778b8746c9fc63c9ac962fb9cf86259"
 
    @type = params[:type] == 'bug' ? 'bug' : 'feature request'
-
+   user = logged_in? ? current_user.email : (params[:email].empty? ? "unknown" : params[:email]) )
     ticket = Lighthouse::Ticket.new(:project_id => 12220)
      ticket.title = @title
      ticket.body = @body
-     ticket.tags << 'user reported' << @type << logged_in? ? current_user.email : (params[:email].empty? ? nil : params[:email]) 
+     ticket.tags << 'user reported' << @type << user
      ticket.save
 
  flash[:notice] = "Successfully created ticket"
