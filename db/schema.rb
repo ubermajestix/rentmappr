@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 4) do
+ActiveRecord::Schema.define(:version => 5) do
 
   create_table "houses", :force => true do |t|
     t.string   "title"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(:version => 4) do
     t.integer  "map_area_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "geocoded"
   end
 
   create_table "map_areas", :force => true do |t|
@@ -33,6 +34,30 @@ ActiveRecord::Schema.define(:version => 4) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "mole_features", :force => true do |t|
+    t.string   "name"
+    t.string   "context"
+    t.string   "app_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "mole_features", ["name", "context", "app_name"], :name => "feature_idx"
+
+  create_table "mole_logs", :force => true do |t|
+    t.integer  "mole_feature_id"
+    t.integer  "user_id"
+    t.string   "params",          :limit => 1024
+    t.string   "ip_address"
+    t.string   "browser_type"
+    t.string   "host_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "mole_logs", ["mole_feature_id", "created_at"], :name => "log_date_idx", :unique => true
+  add_index "mole_logs", ["mole_feature_id", "user_id"], :name => "log_feature_idx"
 
   create_table "userhouses", :force => true do |t|
     t.integer  "user_id"

@@ -166,10 +166,13 @@ for map_area in @map_areas
     puts "scraping #{map_area.craigslist}" 
      queue = scrape_links(map_area.craigslist)
      pull_down_page(queue, map_area)
-     puts House.count
+     puts map_area.houses.length
      puts "took: #{Time.now - house_start}"
      puts "=="*45
-     sleep 5
+     puts "=="*45
+     puts "=="*45
+     puts "=="*45
+     puts "=="*45
 end
 
 
