@@ -17,6 +17,9 @@ ActiveRecord::Base.establish_connection(:adapter  => "mysql",
 class House < ActiveRecord::Base
 end
 
+class MapArea < ActiveRecord::Base
+end
+
 class GeoLoc
   attr_accessor :lat
   attr_accessor :lng
