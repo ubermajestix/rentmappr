@@ -9,7 +9,7 @@ include GeoKit::Geocoders
   require 'open-uri'
   require 'hpricot'
   include Georb
- Mole.load_mole_configuration
+# Mole.load_mole_configuration
 
   def rescue_action_in_public(exception)
     case exception.class.to_s
