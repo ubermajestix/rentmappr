@@ -33,99 +33,6 @@ class GeoLoc
 end
 
 
-# TODO add city specific lookup - get from command line
-
-def geocode
-  
-  @houses = House.find(:all)
-  #split into 10 batches
-  #put batches onto queue
-  #spawn threads - consume queue
-
-  geo_threads = []
-  10.times do |batch_num| 
-    length = @houses.length/10    
-    batch = @houses[batch_num*length..(batch_num + 1)*length]
-    puts "=="*45
-      geo_threads << Thread.new(batch, batch_num){|t_houses, num|
-       puts "in thread: #{num}"
-        begin
-        for house in t_houses
-                puts "on house #{house.id}"
-                puts "geocode it:  #{house.address}"
-                loc = house.address ? geocodr(house.address) : GeoLoc.new()
-                if loc.success
-                  puts "saving house"
-                  puts loc
-                  house.update_attributes(:lat=>loc.lat, :lng=>loc.lng)
-                else
-                  puts "destroying house"
-                  house.destroy
-                  puts House.count
-                end
-                  # #try call again without the "at+some+street"
-                  #               #address upto at
-                  #               #find +city+state+us
-                  #               # a1 = "3655+Clover+Creek+Ln.+at+Airport+SW+Longmont+CO+US"
-                  #               # a2 = "3025+Broadway+at+Dellwood+Boulder+CO+US"
-                  #               puts "."*20
-                  #           if house.address.include?("+at") && house.address.match(/([0-9])([\+])([A-Za-z])/)
-                  #               a1 = house.address
-                  #               puts a1
-                  #               address = a1[0...a1=~(/\+at/)]
-                  #               puts address
-                  #               city_state_country = a1[a1=~(/\+at/)...a1.length].split("+")
-                  #               puts city_state_country
-                  #               city_state_country = city_state_country[city_state_country.length-3...city_state_country.length] if city_state_country.length > 3
-                  #               city_state_country = city_state_country.join("+")
-                  #               house.address = address + "+"+city_state_country
-                  #             else
-                  #               house.address = nil
-                  #             end
-                  #               puts "regeocodeing: #{house.address}"
-                  #               loc = house.address ? geocodr(house.address) : GeoLoc.new()
-                  #                 if loc.success
-                  #                   puts "saving house"
-                  #                   puts loc
-                  #                   house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address)
-                  #                 else
-                  #                   puts "destroying house"
-                  #                   house.destroy
-                  #                 end
-                  #  end
-              end
-         rescue Exception => e
-                   puts e
-                  end
-        }
-    end
-    geo_threads.each { |e| e.join }
-end
-
-def geocodr(address_str)
-
-  puts "getting xml: #{address_str}"
-   @start = GeoLoc.new
-   begin
-    res = Hpricot.XML(open("http://maps.google.com/maps/geo?q=#{CGI.escape(address_str)}&output=xml&key=ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTJQa0g3IQ9GZqIMmInSLzwtGDKaBSJdHlrIYiFi9WNEHgJJlj6ZPq6Mw&oe=utf-8"))
-    status = ""  
-    res.search("code"){|d| status = d.inner_html}
-    if status == "200"
-      puts "parsing xml"
-     coords = []
-     res.search("coordinates"){|l| coords = l.inner_html.split(",")} 
-     @start.lat = coords[1]
-     @start.lng = coords[0]
-     @start.success = true
-    end
-  rescue Exception => e
-    puts e    
-  rescue Timeout::Error => e
-    puts e
-  end
-    @start
-  
-end
 
 def flagged(title)
   title.include?("flagged")
@@ -149,8 +56,9 @@ def scrape_links(site)#returns queue
   # while date > Time.now-7.days do |page|
     scraper_threads << Thread.new("/apa/index#{page}00.html", site) {|cl_page, cl_site|
       puts "scraping #{page} on #{cl_site}#{cl_page}"
-      cl = RFuzz::HttpClient.new(cl_site, 80)
-      doc = Hpricot(cl.get(cl_page).http_body)
+    #  cl = RFuzz::HttpClient.new(cl_site, 80)
+     # doc = Hpricot(cl.get(cl_page).http_body)
+      doc = Hpricot(open("http://#{cl_site}#{cl_page}"))
       t_links = []
     doc.search("a") do |item|
       t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
@@ -193,22 +101,23 @@ def parse_cl_page(link, map_area)
    #get email address
    #get date added
    
-     hdoc.search("table") do |table|
-      images = []
-       if table.to_s.match(/images.craigslist.org/)
-         puts "finding images............"
-         table.search("img") do |img|
-          puts img
-          images << img
-          
-         end
-      house.images_href = images.join("\n")
-      puts house.images_href
-     end
-     puts "map_area: #{map_area.id} | #{map_area.name}"
-   house.map_area_id = map_area.id
+
    if house.valid?
-     puts "!!!yes!!"
+       hdoc.search("table") do |table|
+        images = []
+         if table.to_s.match(/images.craigslist.org/)
+           puts "finding images............"
+           table.search("img") do |img|
+             puts img
+             images << img          
+           end
+           house.images_href = images.join("\n")
+           puts house.images_href
+         end
+        end
+       puts "map_area: #{map_area.id} | #{map_area.name}"
+     house.map_area_id = map_area.id
+   house.geocoded = 'n'
    puts house
    house.save
    puts "**"*45
@@ -218,7 +127,8 @@ def parse_cl_page(link, map_area)
       puts "XX"*45
  end
    
- end
+
+ 
  rescue Timeout::Error => e
    puts e
  end
@@ -245,19 +155,35 @@ def pull_down_page(links, map_area)#pass queue
  end 
  parser_threads.each { |t| t.join }
 end#of pull down page 
-puts ARGV[0]
-@map_area = MapArea.find(ARGV[0])
-@houses = @map_area.houses
-puts @houses.length
-#@houses.each { |house| house.destroy }
-  puts "scraping #{@map_area.craigslist}" 
-   queue = scrape_links(@map_area.craigslist)
-   pull_down_page(queue, @map_area)
-   puts House.count
-# sleep 2
-# geocode()
+
+@map_areas = MapArea.find(:all)
+puts "scraping for #{@map_areas.length} cities"
+for map_area in @map_areas 
+  house_start = Time.now
+  @houses = map_area.houses
+  puts "#{@houses.length} in #{map_area.name}"
+  #@houses.each { |house| house.destroy }
+    puts "scraping #{map_area.craigslist}" 
+     queue = scrape_links(map_area.craigslist)
+     pull_down_page(queue, map_area)
+     puts House.count
+     puts "took: #{Time.now - house_start}"
+     puts "=="*45
+     sleep 5
+end
 
 
 
 
+
+@houses = House.find(:all)
+s = f = n = 0
+@houses.each { |house| 
+n +=1  if house.geocoded == 'n' 
+s +=1  if house.geocoded == 's' 
+f +=1  if house.geocoded == 'f'  }
+puts "failed: #{f}"
+puts "success: #{s}"
+puts "not yet: #{n}"
+puts
 puts "took: #{Time.now - @start_run}"

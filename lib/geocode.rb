@@ -6,6 +6,8 @@ require 'activerecord'
 require 'rfuzz/client'
 require 'net/http'
 require 'logger'
+
+@start_run = Time.now
 ActiveRecord::Base.establish_connection(:adapter  => "mysql", 
                                         :host     => "localhost",
                                         :username => "root",
@@ -24,9 +26,10 @@ end
 
 # TODO add city specific lookup - get from command line
 
-def geocode
+def geocode(houses)
   
-  @houses = House.find(:all, :conditions => ["map_area_id = ?", ARGV[0] ])
+  @houses = houses
+  puts "geocoding: #{@houses.length}"
   #split into 10 batches
   #put batches onto queue
   #spawn threads - consume queue
@@ -41,20 +44,21 @@ def geocode
      #  begin
         for house in @houses #t_houses
         loc = house.address ? geocodr(house.address) : GeoLoc.new()
+        puts "   #{@houses.index(house)}/#{@houses.length}".rjust(10) if @houses.index(house)%5==0
         if loc.success
-          puts "."
-          house.update_attributes(:lat=>loc.lat, :lng=>loc.lng)
+          print "."
+          house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :geocoded=>"s")
          # sleep 1
         else
-          puts "X"
+          print "X"
           #retry geocoding with at+some+street stripped out
           house.address = retry_address(house.address)
           loc = house.address ? geocodr(house.address) : GeoLoc.new()
            if loc.success
               print "+"
-              house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address)
+              house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address, :geocoded=>"s")
            else
-             #can't geocode house after two attempts...destroy?
+             house.update_attribute(:geocoded, "f")
            end                              
         end #loc.succes 1st time
       end
@@ -103,4 +107,23 @@ end
     end
     address
   end
-geocode()
+@map_areas = MapArea.find(:all)
+  for map_area in @map_areas 
+    @houses = House.find(:all, :conditions => ["map_area_id = ? and geocoded = ?", map_area.id, 'n' ])
+    
+    @houses.length < 15000/@map_areas.length ? geocode(@houses)  :puts "too many results to geocode today"
+
+  end  
+  
+
+@houses = House.find(:all)
+s = f = n = 0
+@houses.each { |house| 
+n +=1  if house.geocoded == 'n' 
+s +=1  if house.geocoded == 's' 
+f +=1  if house.geocoded == 'f'  }
+puts "failed: #{f}"
+puts "success: #{s}"
+puts "not yet: #{n}"
+puts
+puts "took: #{Time.now - @start_run}"

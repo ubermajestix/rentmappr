@@ -43,6 +43,7 @@ layout "standard"
       @start = GeoLoc.new(:lat=>@map_area.lat, :lng=> @map_area.lng)
       @zoom=6
       @show_saved = true if params[:show_saved]
+      @house_count = @houses.length
       render :template => "houses/index"
     else
       redirect_to :action => "choose_area"
@@ -51,8 +52,8 @@ layout "standard"
   
   def choose_area
     @map_areas = MapArea.find(:all)
-    @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
-    @zoom=13
+    @start = GeoLoc.new(:lat=>40.58058466412761, :lng=>  -95.9765625)
+    @zoom=14
     render :template => "houses/choose_area", :layout=>"choose_area"
   end  
   

@@ -43,7 +43,7 @@ var map;
 		<% if place.lat and place.lng %>
 	      var point = new GPoint(<%=place.lng%>,<%=place.lat%>);
 	      var icon = <%= place.saved ? "saved_house_icon(#{place.has_images})" : "new_house_icon(#{place.has_images})" %> ;
-	      var marker = createMarker(point, "<%=escape_javascript(render :partial=>'houses/map_text',:locals=>{:place => place}) %>",icon);
+	      var marker = createMarker(point, "<%=escape_javascript(render :partial=>'houses/map_text', :locals=>{:place => place}) %>",icon);
 	           map.addOverlay(marker);
 			markers[<%= place.id %>] = marker; 
 	    <% end %>
