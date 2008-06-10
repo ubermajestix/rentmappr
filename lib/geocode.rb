@@ -111,7 +111,7 @@ end
   for map_area in @map_areas 
     @houses = House.find(:all, :conditions => ["map_area_id = ? and geocoded = ?", map_area.id, 'n' ])
     
-    @houses.length < 15000/@map_areas.length ? geocode(@houses)  :puts "too many results to geocode today"
+    @houses.length < 15000/@map_areas.length ? geocode(@houses)  : puts "too many results to geocode today"
 
   end  
   
