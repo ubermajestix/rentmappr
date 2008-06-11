@@ -15,11 +15,11 @@
  <script type="text/javascript">
 var markers = [];
         // helper function to create markers
-	function createMarker(point,html,icon) {
+	function createMarker(point,html,icon, id) {
 	    var marker = new GMarker(point,icon);
 	    GEvent.addListener(marker, "click", function() {
-		//call remote function here to render partial in bubble
-	     marker.openInfoWindowHtml(html);
+	      new Ajax.Request("/houses/load_info_window/"+id, {asynchronous:true, evalScripts:true});
+	      marker.openInfoWindowHtml(html);
 	     });
    
 	return marker;
@@ -43,7 +43,8 @@ var map;
 		<% if place.lat and place.lng %>
 	      var point = new GPoint(<%=place.lng%>,<%=place.lat%>);
 	      var icon = <%= place.saved ? "saved_house_icon(#{place.has_images})" : "new_house_icon(#{place.has_images})" %> ;
-	      var marker = createMarker(point, "<%=escape_javascript(render :partial=>'houses/map_text', :locals=>{:place => place}) %>",icon);
+	      var html = "<div id='info_window_<%= place.id %>' class='info_window'></div>"
+	  	  var marker = createMarker(point, html ,icon, <%= place.id %>);
 	           map.addOverlay(marker);
 			markers[<%= place.id %>] = marker; 
 	    <% end %>

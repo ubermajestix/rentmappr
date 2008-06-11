@@ -54,8 +54,8 @@ layout "standard"
   def choose_area
     @map_areas = MapArea.find(:all)
     @houses = House.count(:conditions => ["created_at >= ?",midnight])
-    @start = GeoLoc.new(:lat=>40.58058466412761, :lng=>  -95.9765625)
-    @zoom=11
+    @start = GeoLoc.new(:lat=>40.08058466412761, :lng=>  -95.9765625)
+    @zoom=13
     render :template => "houses/choose_area", :layout=>"choose_area"
   end  
   

@@ -123,7 +123,7 @@ input.small_input{
 				  line-height: 18px;
 				border: solid 1px #999;
 					}
-
+div.info_window{height:125px; background:#fff;}
 .test{background:#fff; border: thin solid 1px;}
 
 .fieldWithErrors {
