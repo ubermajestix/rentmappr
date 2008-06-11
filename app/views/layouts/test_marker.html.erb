@@ -48,7 +48,7 @@ var map;
 	      var point = new GPoint(<%=place.lng%>,<%=place.lat%>);
 	      var icon = saved_house_icon(false);
 //	var html = "<%=escape_javascript(render :partial=>'houses/map_text', :locals=>{:place => place}) %>"
-	var html = "<div id='info_window_<%= place.id %>'>boom</div>"
+	var html = "<div id='info_window_<%= place.id %>' class='info_window'></div>"
 
 	      var marker = createMarker(point, html ,icon, <%= place.id %>);
 	marker.myOwnPropertyId = "marker_<%= place.id %>"; 

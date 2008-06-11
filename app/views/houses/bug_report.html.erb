@@ -12,6 +12,10 @@
 		your email address:<span class="little"> (so we can send you a note when we've fixed your bug or added your feature) </span><br/>
 		<%= text_field_tag :email, @email, :class=>"large_input", :size=>50 %><br/>
 	<% end %>
+	<p><label for="planet">what planet do you live on?</label><br/>
+	<%= text_field_tag :planet, nil, :class=>"large_input" %></p>
+	<div style="font-size:10.5px; position:absolute; margin-top:-35px; left:200px;">hint:  <%= image_tag '/images/earth.png', :size=>"50x50", :title=>"erf" %></div><br/>
+	
 
 
 	<%= submit_tag "submit"%>
