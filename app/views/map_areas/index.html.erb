@@ -1,7 +1,10 @@
 <%= @map_areas.length %> areas collected <br/>
 <%= link_to "add new area", new_map_areas_path  %>
-<div id="stats"  style="position:absolute; background: #fff; width:500px; padding:5px margin-top:-25px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; height: 200px;">
-	<%= @stats %>
+<div id="stats"  style="position:absolute;left:700px; background: #fff; width:300px; padding:5px margin-top:-25px; white-space: nowrap;">
+	stats
+	<% for stat in @stats %>
+	<%= stat %> <br/>
+	<% end %>
 </div>
 <div id="map" style="width:700px; height:500px;">
 	

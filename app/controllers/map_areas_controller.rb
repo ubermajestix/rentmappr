@@ -5,7 +5,9 @@ before_filter :admin_only
     @map_areas = MapArea.find(:all)
     @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
     @zoom=13
-    @stats = `stats`
+   puts @stats= `ruby #{RAILS_ROOT}/lib/stats.rb`
+   @stats = @stats.split("\n")
+   puts @stats.length
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @map_areas }

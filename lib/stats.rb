@@ -24,11 +24,11 @@ s = f = n = 0
 n +=1  if house.geocoded == 'n' 
 s +=1  if house.geocoded == 's' 
 f +=1  if house.geocoded == 'f'  }
-puts Time.now
+puts Time.now.to_s 
 print "failed:"
 puts f.to_s.rjust(8)
 print "success:"
-puts s.to_s.rjust(8)
+puts s.to_s.rjust(8) 
 print "pending:"
 puts n.to_s.rjust(6)
 print "total:"

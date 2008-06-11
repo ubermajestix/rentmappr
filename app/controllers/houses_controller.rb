@@ -41,17 +41,19 @@ layout "standard"
       #session[:houses] = @houses  
        @map_area = MapArea.find(session[:map_area_id])
       @start = GeoLoc.new(:lat=>@map_area.lat, :lng=> @map_area.lng)
+      @houses_collected = House.count(:conditions => ["created_at >= ? and map_area_id = ?",midnight, @map_area.id])
       @zoom=6
       @show_saved = true if params[:show_saved]
       @house_count = @houses.length
       render :template => "houses/index"
     else
-      redirect_to :action => "choose_area"
+      redirect_to choose_city_path
     end
   end
   
   def choose_area
     @map_areas = MapArea.find(:all)
+    @houses = House.count(:conditions => ["created_at >= ?",midnight])
     @start = GeoLoc.new(:lat=>40.58058466412761, :lng=>  -95.9765625)
     @zoom=14
     render :template => "houses/choose_area", :layout=>"choose_area"

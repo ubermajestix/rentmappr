@@ -12,7 +12,7 @@ max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input"
 
 
 <div id="homes_list_title" style="position:absolute; top:25px; left:525px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:50px; background:#fff; padding:5px">
-<h3><%= @houses.length %> homes in <%= @map_area.name.titlecase %> <span class="little"><%= link_to "change city", :action=>:choose_area %></span></h3>
+<h3><%= @houses.length %> homes in <%= @map_area.name.titlecase %> <span class="little"><%= link_to "change city", :action=>:choose_area %></span> <span class="little" style="float:right"><%= @houses_collected %> houses collected so far today</span></h3>
 	</div>
 <div id="home_list" style="position: absolute; top:65px; left:525px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:382px; background:#fff; padding:5px">
 	

@@ -11,6 +11,9 @@ include GeoKit::Geocoders
   include Georb
 # Mole.load_mole_configuration
 
+def midnight
+  Time.now - Time.now.sec - Time.now.min.minutes - Time.now.hour.hours
+end
   def rescue_action_in_public(exception)
     case exception.class.to_s
       when "ActionController::RoutingError"

@@ -1,14 +1,26 @@
 
 <%if map_areas.length > 0 %>
+<table border="0" cellspacing="5" cellpadding="5">
+
 
 	<% for area in map_areas %>
+
 		<% if area.lat && area.lng %>
-			<img src="/images/my_house.png" 
-			onclick="open_window(<%= area.id %>)" width="20" height="20", title="recenter map on this house" style="cursor:pointer" />
-			<%= area.name %> | <%= link_to area.craigslist, area.craigslist, :target=>"new" %> | <%= link_to "pick this city", :action => "pick_area", :id=>area.id %><br/>
+			<tr>  
+				<td><img src="/images/my_house.png" 
+				onclick="open_window(<%= area.id %>)" width="20" height="20", title="recenter map on this house" style="cursor:pointer" />
+				<%= area.name %>  </td>
+				<td> | </td>
+				<td>  <%= link_to area.craigslist, "http://#{area.craigslist}", :target=>"new" %> </td>
+				<td> | </td>
+				<td>  <%= link_to "pick this city", :action => "pick_area", :id=>area.id %></td>
+			
+		
+			</tr>
 		<% end %>
 	<% end %>
-
+</table>
 <% else %>
- We don't have any cities.
+ We don't have any cities. <br/>
 <% end %>
+<%= link_to "request a city", bug_report_path%>
