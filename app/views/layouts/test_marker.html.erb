@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title><%= global_page_title %></title>
+  <%= stylesheet_link_tag 'scaffold' %>
+  <%= javascript_include_tag :defaults %>
+
+ <%if online? %>
+ <% @key =request.host =~ /rentmappr/ ? "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTFe1RIeuOf__AvzqPPVl3e_BFy2xR4LYWw1t-nh0FUMH7k3OkjcJU9ww" : "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTkn2cjlmPPsTmxGpadsO7XL1l5cxQRHnXCjbHxd4a9uQicYTUQkTi-8w" %>
+
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= @key %>"
+      type="text/javascript"></script>
+
+ <%= javascript_include_tag "elabel.js" %>
+ <script type="text/javascript">
+var markers = [];
+        // helper function to create markers
+	function createMarker(point,html,icon, id) {
+	    var marker = new GMarker(point,icon);
+		
+		 GEvent.addListener(marker, "click", function() {
+			//call remote function here to render partial in bubble
+		    new Ajax.Request("/houses/load_info_window/"+id, {asynchronous:true, evalScripts:true});
+			marker.openInfoWindowHtml(html);
+		     });
+		return marker;
+	
+	}
+        
+
+ 
+	//FIXME: massive memory leaks - use the onunload:GMap.unload ? 
+	//FIXME: draw bounds to find properties - limits db/cache scope
+
+var map;
+ function initialize() {
+	map = new GMap($("map"));
+	var start = new GPoint(<%=@start.lng %>,<%=@start.lat %>);
+	    map.addControl(new GSmallMapControl());
+	    map.addControl(new GMapTypeControl());
+	  map.centerAndZoom(start, <%= @zoom %>);
+	      <% if @houses %>
+	       <% for place in @houses %>
+		<% if place.lat and place.lng %>
+	      var point = new GPoint(<%=place.lng%>,<%=place.lat%>);
+	      var icon = saved_house_icon(false);
+//	var html = "<%=escape_javascript(render :partial=>'houses/map_text', :locals=>{:place => place}) %>"
+	var html = "<div id='info_window_<%= place.id %>'>boom</div>"
+
+	      var marker = createMarker(point, html ,icon, <%= place.id %>);
+	marker.myOwnPropertyId = "marker_<%= place.id %>"; 
+		//marker.bindInfoWindowHtml(html);
+// var	label = new ELabel(new GLatLng(<%= place.lat %>, <%= place.lng %>), "$<%= place.price %>", "test");
+// 	map.addOverlay(label);
+	
+//	var label = new ELabel(new GLatLng(<%= place.lat %>, <%= place.lng %>), "$<%= place.price %>", "test", new GSize(-40,0), 60 );
+//	map.addOverlay(label);
+//marker.infowindowopen;     
+	  map.addOverlay(marker);
+		    
+			markers[<%= place.id %>] = marker; 
+	    <% end %>
+	  <% end %>
+	<% end %>
+	}
+	function info_bubble(id, html){
+		var html = "<div id="+id+">boom</div>"
+		var marker = markers[id]; 
+		marker.bindInfoWindowHtml(html);
+		marker.infowindowopen;
+	}
+	
+	
+	function saved_house_icon(has_images){
+		var icon = new GIcon();
+		
+		icon.image =  '/images/test_marker.png';
+	      
+	    icon.iconSize = new GSize(15,15);
+	   icon.iconAnchor = new GPoint(7, 15);
+	   icon.infoWindowAnchor = new GPoint(15, 0);
+	return icon;
+	}
+	
+</script>
+<% end %>
+</head>
+
+<body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0})" unload="GUnload();">
+
+
+<%= render :partial => 'layouts/action_bar' %>
+
+
+
+
+
+<%= yield  %>
+
+
+</body>
+</html>

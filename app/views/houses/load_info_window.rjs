@@ -1,0 +1,1 @@
+page.replace_html "info_window_#{@house.id}", :partial=>"houses/map_text", :locals=>{:place=>@house}
