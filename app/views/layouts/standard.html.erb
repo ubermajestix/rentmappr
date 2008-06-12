@@ -17,10 +17,11 @@ var markers = [];
         // helper function to create markers
 	function createMarker(point,html,icon, id) {
 	    var marker = new GMarker(point,icon);
+	
 	    GEvent.addListener(marker, "click", function() {
 		marker.openInfoWindowHtml(html);
-	      new Ajax.Request('/houses/load_info_window?house_id='+id+'&method=get', {asynchronous:true, evalScripts:true});
-	      //ew Ajax.Updater('boo', '/houses/boom/2?method=get', {asynchronous:true, evalScripts:true})
+	      new Ajax.Request('/houses/load_info_window?house_id='+id+'', {asynchronous:true, evalScripts:true});
+
 	     });
    
 	return marker;
@@ -29,7 +30,7 @@ var markers = [];
         
 
  
-	//FIXME: massive memory leaks - use the onunload:GMap.unload ? 
+
 	//FIXME: draw bounds to find properties - limits db/cache scope
 
 var map;
@@ -44,7 +45,7 @@ var map;
 		<% if place.lat and place.lng %>
 	      var point = new GPoint(<%=place.lng%>,<%=place.lat%>);
 	      var icon = <%= place.saved ? "saved_house_icon(#{place.has_images})" : "new_house_icon(#{place.has_images})" %> ;
-	      var html = "<div id='info_window_<%= place.id %>' class='info_window'></div>"
+	      var html = "<div id='info_window_<%= place.id %>' class='info_window'>&nbsp;</div>"
 	  	  var marker = createMarker(point, html ,icon, <%= place.id %>);
 		           
 	 	  map.addOverlay(marker);
@@ -122,7 +123,7 @@ var map;
  <% end %>
 </head>
 
-<body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0});    " unload="GUnload();">
+<body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0});" unload="GUnload();">
 
 
 <%= render :partial => 'layouts/action_bar' %>

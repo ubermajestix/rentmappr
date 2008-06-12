@@ -1,1 +1,4 @@
-page.insert_html :top, "info_window_#{@house.id}", :partial=>"houses/map_text", :locals=>{:place=>@house}
+page.delay(0.7){
+   page.replace_html "info_window_#{@house.id}", :partial=>"houses/map_text", :locals=>{:place=>@house}
+   page.visual_effect :highlight, "info_window_#{@house.id}", :startcolor=>'#66Ff33' , :endcolor=>'#ffffff', :duration=>0.7
+}

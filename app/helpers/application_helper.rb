@@ -13,6 +13,7 @@ module ApplicationHelper
     
     def load_analytics?
       load = true
+      load = false if request.host.match(/localhost/)
       if logged_in?
         if current_user.tyler?
           load = false
