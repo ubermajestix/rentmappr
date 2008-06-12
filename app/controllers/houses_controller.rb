@@ -68,8 +68,9 @@ layout "standard"
   end
   
   def load_info_window
-    @house = House.find(params[:id])
+    @house = House.find(params[:house_id])
      @house.has_images = true if @house.images_href 
+
   end
   
   def pick_area

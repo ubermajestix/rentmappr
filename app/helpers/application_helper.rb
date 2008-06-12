@@ -11,6 +11,16 @@ module ApplicationHelper
       online
     end
     
+    def load_analytics?
+      load = true
+      if logged_in?
+        if current_user.tyler?
+          load = false
+        end
+      end
+      load
+    end
+    
     def global_page_title
       "rentmappr - locate a house to rent listed on craigslist.org"
     end

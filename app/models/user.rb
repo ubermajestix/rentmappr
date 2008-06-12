@@ -78,6 +78,10 @@ class User < ActiveRecord::Base
     self.email != "tyler.a.montgomery@gmail.com"
   end
   
+  def tyler?
+    self.email == "tyler.a.montgomery@gmail.com"
+  end
+  
   def saved_houses
     # get join object for user with records not marked as trash
     house_ids = Userhouses.find(:all , :conditions => ["user_id = ? and trash is null",self.id]).collect{|h| h.house_id}
