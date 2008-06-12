@@ -68,9 +68,10 @@ layout "standard"
   end
   
   def load_info_window
+     Userhouses.create(:user_id=>current_user.id, :house_id=>params[:house_id], :clicked=>true) if logged_in?
      @house = House.find(params[:house_id])
-     @house.has_images = true if @house.images_href 
-
+     @house.has_images = !@house.images_href.nil?
+       @house.saved = current_user.saved_houses.include?(@house)
   end
   
   def pick_area
@@ -91,10 +92,11 @@ end
   
   def save_it
    @house = House.find(params[:id])    
-    current_user.houses << @house unless current_user.houses.include?(@house)
+    Userhouses.create(:user_id=>current_user.id, :house_id=>params[:id], :saved=>true)
     @house.update_attribute(:saved, true)
-    current_user.save
-      @houses = session[:houses]
+    @houses = session[:houses]
+    @house.has_images = !@house.images_href.nil?
+   
     #TODO call rjs to remove marker, add it back as blue, then update short list
    # render :partial => "houses/short_list"
   end
@@ -105,6 +107,7 @@ end
     @house.update_attribute(:saved, false)
     current_user.houses.delete(@house)
     @houses = [] #session[:houses]
+     @house.has_images = !@house.images_href.nil?
     #TODO call rjs to remove marker, add it back as pink, then update short list
   end
   

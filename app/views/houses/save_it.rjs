@@ -1,3 +1,4 @@
+
 page.replace_html "short_list", :partial=>"houses/short_list", :locals=>{:home=>@house}
-text = escape_javascript(render :partial=>'houses/map_text', :locals=>{:place=>@house})
-page << "make_marker_blue(#{@house.id}, #{@house.lat}, #{@house.lng}, '#{text}')"
+page << "make_marker_blue(#{@house.id}, #{@house.has_images} )"
+

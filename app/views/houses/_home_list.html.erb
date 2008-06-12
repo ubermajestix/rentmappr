@@ -5,7 +5,7 @@
 		<% if home.lat && home.lng %>
 			<img src="/images/<%= home.saved ? (home.has_images ? 'my_house_pic.png' : 'my_house.png') : (home.has_images ? 'new_house_pic.png' : 'new_house.png') %>" 
 			onclick="open_window(<%= home.id %>)" width="20" height="20", title="recenter map on this house" style="cursor:pointer" />
-			<%= link_to home.title, home.href, :target=>"new" %> <br/>
+			<%= link_to home.title, home.href, :target=>"new", :title=>"added #{nice_time(home.created_at)}" %> <br/>
 		<% end %>
 	<% end %>
 

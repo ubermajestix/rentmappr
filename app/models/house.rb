@@ -5,10 +5,15 @@ class House < ActiveRecord::Base
     :join_table              => :userhouses
     belongs_to :map_area
   attr_accessor :saved
+  attr_accessor :clicked
   attr_accessor :has_images
  # validates_uniqueness_of :href
 #  validates_presence_of :title, :href, :price, :address
  # validates_length_of :address, :minimum=>10
+ 
+  def self.saved(user)
+    find(Userhouses.find_saved_house_ids(:user_id=>user.id))
+  end
   
   def self.find_for_user( opts = {})
 
@@ -20,17 +25,22 @@ class House < ActiveRecord::Base
     # has max only reject price > max_price
     # has both price ! (min..max)
     puts "finding houses"
-    houses = find(:all, :conditions=>opts[:conditions])
+    houses = find(:all, :conditions=>opts[:conditions], :order=>"created_at DESC")
     user = opts[:user]
     if opts[:saved]
       #search for houses (above) and only return ones matching user
       houses.reject!{|house| not user.saved_houses.include?(house)}
     elsif user
      #get rid of 'trashed' houses from the list
-     puts "trashing"
+      saved =  Userhouses.find_saved_house_ids(:user_id=>user.id)
       trashed = Userhouses.find_trashed_house_ids(:user_id=>user.id)
+      clicked = Userhouses.find_clicked_house_ids(:user_id=>user.id)
       houses.reject!{|h| trashed.include?(h.id)}
-     houses.each{|house|  house.saved = true if user.saved_houses.include?(house)}
+     houses.each do |house|
+       house.saved =  saved.include?(house.id)    
+       house.clicked =  clicked.include?(house.id)
+             
+     end
       
     end
     #tag the user's saved houses

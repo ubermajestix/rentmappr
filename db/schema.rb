@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 5) do
+ActiveRecord::Schema.define(:version => 6) do
 
   create_table "houses", :force => true do |t|
     t.string   "title"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(:version => 5) do
     t.boolean  "trash"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "clicked"
+    t.boolean  "saved"
   end
 
   create_table "users", :force => true do |t|

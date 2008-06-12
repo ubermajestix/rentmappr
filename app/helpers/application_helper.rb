@@ -11,6 +11,14 @@ module ApplicationHelper
       online
     end
     
+    def nice_time(time)
+      if time.kind_of? Time
+        "#{time_ago_in_words(time)} ago."
+      else
+        ""
+      end
+    end
+    
     def load_analytics?
       load = true
       load = false if request.host.match(/localhost/)

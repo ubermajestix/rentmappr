@@ -17,7 +17,6 @@ var markers = [];
         // helper function to create markers
 	function createMarker(point,html,icon, id) {
 	    var marker = new GMarker(point,icon);
-	
 	    GEvent.addListener(marker, "click", function() {
 		marker.openInfoWindowHtml(html);
 	      new Ajax.Request('/houses/load_info_window?house_id='+id+'', {asynchronous:true, evalScripts:true});
@@ -27,7 +26,7 @@ var markers = [];
 	return marker;
 	
 	}
-        
+ 
 
  
 
@@ -44,12 +43,11 @@ var map;
 	       <% for place in @houses %>
 		<% if place.lat and place.lng %>
 	      var point = new GPoint(<%=place.lng%>,<%=place.lat%>);
-	      var icon = <%= place.saved ? "saved_house_icon(#{place.has_images})" : "new_house_icon(#{place.has_images})" %> ;
+	      var icon = <%= place.saved ? "saved_house_icon(#{place.has_images})" : (place.clicked ? "clicked_house_icon(#{place.has_images})" : "new_house_icon(#{place.has_images})") %> ;
 	      var html = "<div id='info_window_<%= place.id %>'  class='info_window'>&nbsp;</div>"
-	  	  var marker = createMarker(point, html ,icon, <%= place.id %>);
-		           
+	  	  var marker = createMarker(point, html ,icon, <%= place.id %>);           
 	 	  map.addOverlay(marker);
-			markers[<%= place.id %>] = marker; 
+		  markers[<%= place.id %>] = marker; 
 	    <% end %>
 	  <% end %>
 	<% end %>
@@ -95,6 +93,18 @@ var map;
 	return icon;
 	}
 	
+	function clicked_house_icon(has_images){
+			var icon = new GIcon();
+			if (has_images){icon.image =  '/images/clicked_house_pic.png';}
+			else{icon.image =  '/images/clicked_house.png';}
+
+		         icon.shadow =  '/images/house_shadow.png';
+		         icon.iconSize = new GSize(20,20);
+		   icon.iconAnchor = new GPoint(10, 20);
+		   icon.infoWindowAnchor = new GPoint(12, 8);
+		return icon;
+	}
+	
 	function open_window(id){
 		GEvent.trigger(markers[id], "click"); 
 	}
@@ -106,18 +116,18 @@ var map;
 	
 	
 	
-	function make_marker_blue(id, lat, lng, text){
-		remove_marker(id);
-		var icon = saved_house_icon();
-		var new_marker = createMarker(new GPoint(lng, lat), text, icon);
-		map.addOverlay(new_marker);
+	function make_marker_blue(id, has_images){
+		map.closeInfoWindow();
+		if(has_images){markers[id].setImage('/images/my_house_pic.png');}
+		else{markers[id].setImage('/images/my_house.png');}
 	}
 	
-	function make_marker_red(id, lat, lng, text){
-		remove_marker(id);
-		var icon = new_house_icon();
-		var new_marker = createMarker(new GPoint(lng, lat), text, icon);
-		map.addOverlay(new_marker);
+	
+	function make_marker_green(id, has_images){
+
+		if(has_images){markers[id].setImage('/images/clicked_house_pic.png');}
+		else{markers[id].setImage('/images/clicked_house.png');}
+
 	}
 </script>
  <% end %>
