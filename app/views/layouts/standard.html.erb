@@ -45,7 +45,7 @@ var map;
 		<% if place.lat and place.lng %>
 	      var point = new GPoint(<%=place.lng%>,<%=place.lat%>);
 	      var icon = <%= place.saved ? "saved_house_icon(#{place.has_images})" : "new_house_icon(#{place.has_images})" %> ;
-	      var html = "<div id='info_window_<%= place.id %>' class='info_window'>&nbsp;</div>"
+	      var html = "<div id='info_window_<%= place.id %>'  class='info_window'>&nbsp;</div>"
 	  	  var marker = createMarker(point, html ,icon, <%= place.id %>);
 		           
 	 	  map.addOverlay(marker);
