@@ -18,8 +18,9 @@ var markers = [];
 	function createMarker(point,html,icon, id) {
 	    var marker = new GMarker(point,icon);
 	    GEvent.addListener(marker, "click", function() {
+		marker.openInfoWindowHtml(html);
 	      new Ajax.Request("/houses/load_info_window/"+id, {asynchronous:true, evalScripts:true});
-	      marker.openInfoWindowHtml(html);
+	      
 	     });
    
 	return marker;
@@ -45,12 +46,14 @@ var map;
 	      var icon = <%= place.saved ? "saved_house_icon(#{place.has_images})" : "new_house_icon(#{place.has_images})" %> ;
 	      var html = "<div id='info_window_<%= place.id %>' class='info_window'></div>"
 	  	  var marker = createMarker(point, html ,icon, <%= place.id %>);
-	           map.addOverlay(marker);
+		           
+	 	  map.addOverlay(marker);
 			markers[<%= place.id %>] = marker; 
 	    <% end %>
 	  <% end %>
 	<% end %>
-	}
+
+}
 	function saved_house_icon(has_images){
 		var icon = new GIcon();
 		if (has_images){	icon.image =  '/images/my_house_pic.png';	}
@@ -62,10 +65,13 @@ var map;
 	   icon.infoWindowAnchor = new GPoint(12, 8);
 	return icon;
 	}
+	
+
+	function show_marker(marker){ marker.show();}
 	var sv;
 	var current_yaw = 180 ;
 	var current_pitch = 0 ;
-	var timer;
+
 	function openStreetView(lat, lng){
 		$('image_pane').hide();
 		$('close_sv').show();
@@ -116,7 +122,7 @@ var map;
  <% end %>
 </head>
 
-<body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0})" unload="GUnload();">
+<body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0});    " unload="GUnload();">
 
 
 <%= render :partial => 'layouts/action_bar' %>
