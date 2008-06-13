@@ -34,8 +34,23 @@ layout "standard"
       cond_vars.each { |var| conds << var  }
       if logged_in?
         @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])
+        @total = House.count(:conditions => conds)
+        @houses = House.paginate( 
+          :finder        => :find_for_user,
+          :conditions    => conds, 
+          :user          => current_user,
+          :total_entries => @total,
+          :page          => params[:page], 
+          :per_page      => 250
+           )
       else
-        @houses = House.find(:all, :conditions => conds)
+         @total = House.count(:conditions => conds)
+        @houses = House.paginate(
+          :conditions => conds,
+          :total_entries => @total,
+          :page          => params[:page], 
+          :per_page      => 250
+          )
         @houses.each { |h| h.has_images=true if h.images_href }
       end
       #session[:houses] = @houses  

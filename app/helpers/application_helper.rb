@@ -1,5 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+
     def online?
        begin
         open("http://www.google.com")
@@ -33,4 +34,6 @@ module ApplicationHelper
     def global_page_title
       "rentmappr - locate a house to rent listed on craigslist.org"
     end
+    
+
 end
