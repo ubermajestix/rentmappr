@@ -46,7 +46,8 @@ layout "standard"
       else
          @total = House.count(:conditions => conds)
         @houses = House.paginate(
-          :conditions => conds,
+          :conditions    => conds,
+          :order         => "created_at DESC",
           :total_entries => @total,
           :page          => params[:page], 
           :per_page      => 250
