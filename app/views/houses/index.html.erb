@@ -36,7 +36,9 @@ max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input"
 		
 	<% else %>
 		<div id="short_list_title" style=" margin-top:0px; background: #fff; width:490px; padding:5px; height:25px; margin-bottom:-10px;">
-		<h3>the short list <span style="font-size:10.5px"> (this is where your saved houses show up)</span></h3>
+		<h3>	<div id="legend"style="margin: 3px;"><b class="little">
+					<%= image_tag '/images/my_house.png', :size=>'12x12' %> saved house | <%= image_tag '/images/clicked_house.png', :size=>'12x12' %> viewed house | 	<%= image_tag '/images/new_house.png', :size=>'12x12' %> unviewed house | <%= image_tag '/images/pic_bullet.png', :size=>'20x20' %> has image</b>
+					</div></h3>
 			</div>
 		<div id="short_list" style="position:absolute; background: #fff; width:500px; padding:5px margin-top:-25px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; height: 200px;">
 		<h1><%= link_to "sign up", signup_path, :title=>"sign up...its quick.", :class=>"remote_link" %></h1>
@@ -50,7 +52,7 @@ max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input"
 	
 </div>
 
-<div id="images_and_streetview" style="position:absolute; height:400px; width:510px;  background:#fff; padding:5px; left:525px;margin-top:<% if logged_in? %> -60px; <% else %>-35px; <% end %>">
+<div id="images_and_streetview" style="position:absolute; height:400px; width:500px;  background:#fff; padding:5px; left:525px;margin-top:<% if logged_in? %> -60px; <% else %>-35px; <% end %>">
 		<h3>images and streetview</h3>
 		<div id="image_pane"></div>
 		<div id="sv" style="width: 500px; height:400px; position:absolute; background:#000; padding:5px; display:none; ">
