@@ -71,7 +71,7 @@ layout "standard"
      Userhouses.create(:user_id=>current_user.id, :house_id=>params[:house_id], :clicked=>true) if logged_in?
      @house = House.find(params[:house_id])
      @house.has_images = !@house.images_href.nil?
-       @house.saved = current_user.saved_houses.include?(@house)
+       @house.saved = current_user.saved_houses.include?(@house) if logged_in?
   end
   
   def pick_area
