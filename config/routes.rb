@@ -12,7 +12,7 @@ ActionController::Routing::Routes.draw do |map|
   map.file_bug_report '/file_bug_report', :controller => "houses",      :action => "file_bug"
   map.scrape          '/scrape/:id',      :controller => "map_areas",   :action => "scrape"
   map.choose_city     '/choose_city',     :controller => "houses",      :action => "choose_area"
-  map.s               '/s'                :controller => "map_areas",   :action => "st"  
+  map.s               '/s',                :controller => "map_areas",   :action => "st"  
   
   # The priority is based upon order of creation: first created -> highest priority.
 
