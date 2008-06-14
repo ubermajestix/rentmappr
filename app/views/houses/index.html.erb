@@ -21,7 +21,7 @@ max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input"
 	
 	</div>
 <div id="home_list" style="position: absolute; top:70px; left:525px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:376px; background:#fff; padding:5px">
-	<% @houses = current_user.saved_houses + @houses if logged_in? %>
+	<% @houses = current_user.saved_houses + @houses if logged_in? and current_user.saved_houses %>
 <%= render :partial => 'houses/home_list', :locals=>{:houses=>@houses} %>
 
 </div>

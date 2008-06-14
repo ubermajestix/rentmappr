@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   # Virtual attribute for the unencrypted password
   attr_accessor :password
   
+  
   has_and_belongs_to_many :houses,
     :foreign_key             => 'user_id', 
     :association_foreign_key => 'house_id', 
@@ -35,6 +36,8 @@ class User < ActiveRecord::Base
    houses = House.saved(self)
    houses.each { |house| house.saved = true
      house.has_images = !house.images_href.nil?   }
+     houses.reject!{|house| house.map_area_id != self.map_area_id}
+     houses
   end
 
   # Encrypts some data with the salt.
