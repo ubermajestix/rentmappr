@@ -32,7 +32,9 @@ class User < ActiveRecord::Base
 
   def saved_houses
     #get saved houses
-    House.saved(self)
+   houses = House.saved(self)
+   houses.each { |house| house.saved = true
+     house.has_images = !house.images_href.nil?   }
   end
 
   # Encrypts some data with the salt.
