@@ -1,6 +1,6 @@
 class MapAreasController < ApplicationController
 layout "map_area"
-before_filter :admin_only
+before_filter :admin_only, :except=>:st
   def index
     @map_areas = MapArea.find(:all)
     @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
@@ -14,6 +14,11 @@ before_filter :admin_only
     end
   end
 
+
+  def st
+    @stats = `ruby #{RAILS_ROOT}/lib/stats.rb`
+    @stats = @stats.split("\n")
+  end
   # GET /map_areas/1
   # GET /map_areas/1.xml
   def show
