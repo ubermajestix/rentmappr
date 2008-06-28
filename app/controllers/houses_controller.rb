@@ -185,4 +185,10 @@ end
  end
     redirect_to bug_report_path
   end
+  
+  def rickroll
+    #redirect_to "http://google.com/"
+    redirect_to "http://smouch.net/lol/"
+  end
+  
 end

@@ -43,8 +43,9 @@ ActionController::Routing::Routes.draw do |map|
    map.root :controller => "houses"
    
    map.search  '/search', :controller=>"houses", :action=>"index", :search=>true
+ #  map.search  '/search/:min_price/:max_price', :controller=>"houses", :action=>"index", :search=>true
    map.clear_search '/', :controller=>"houses", :action=>"index", :clear=>true
-
+   map.landing '/landing', :controller=>"houses", :action=>"rickroll"
   # See how all your routes lay out with "rake routes"
 
   # Install the default routes as the lowest priority.

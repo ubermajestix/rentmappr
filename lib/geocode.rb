@@ -132,3 +132,4 @@ puts "success: #{s}"
 puts "not yet: #{n}"
 puts
 puts "took: #{Time.now - @start_run}"
+puts Time.now.strftime("%m/%d/%Y %H:%M")

@@ -2,9 +2,15 @@
 	<% form_tag search_path do%>
 min: $<%= text_field_tag :min_price, @min_price, :size=>6, :class=>"small_input"%> 
 max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input" %> 
-	<%= check_box_tag :show_saved, "1", @show_saved %> show only my short list	
-<div style="position:absolute; top:0px; right:20px">	<%= button_to "clear", clear_search_path %></div>
+		
+<div style="position:absolute; top:0px; right:50px">	<%= button_to "clear", clear_search_path %></div>
 	<div style="position:absolute; top:0px; right:0px"><%= submit_tag "filter"%></div>
+	<a id="show_more_options" class="little" onclick="new Effect.BlindDown('more_search_options',{duration:0.3});$('show_more_options').hide();$('show_less_options').show();">more search options</a>
+	<a id="show_less_options" class="little" style="display:none;" onclick="new Effect.BlindUp('more_search_options',{duration:0.3});$('show_more_options').show();$('show_less_options').hide();">less search options</a>
+	<div id="more_search_options" style="display:none;position:absolute;z-index:100;background:#fff;width:490px;height:15px;padding:5px;margin-left:-10px;">
+		<%= check_box_tag :show_saved, "1", @show_saved %> show only my short list 
+		<%= check_box_tag :show_pets, "1", @show_pets %> pets ok
+	</div>
 
 
 	<% end%>
