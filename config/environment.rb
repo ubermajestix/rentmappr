@@ -67,7 +67,7 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
 end
 
-gem 'will_paginate', '~> 2.3.2'
+gem 'will_paginate', '~> 2.2.2'
 require 'will_paginate'
 
 # These defaults are used in GeoKit::Mappable.distance_to and in acts_as_mappable

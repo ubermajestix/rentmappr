@@ -26,23 +26,16 @@ class House < ActiveRecord::Base
     # has both price ! (min..max)
     puts "finding houses"
     user = opts[:user]
-    if opts[:saved]
-      houses = find(
+     houses = find(
                     :all, 
                     :conditions=>opts[:conditions],
                     :offset => opts[:offset],
                     :limit  => opts[:limit], 
                     :order=>"created_at DESC")
-      houses.reject!{|house| house.saved!=true}
+    if opts[:saved] && user
+     
+      houses.collect!{|house| house if user.saved_houses.include?(house)}
     elsif user
-      
-    houses = find(
-                  :all, 
-                  :conditions=>opts[:conditions],
-                  :offset => opts[:offset],
-                  :limit  => opts[:limit], 
-                  :order=>"created_at DESC")
-    
     
       #search for houses (above) and only return ones matching user
       

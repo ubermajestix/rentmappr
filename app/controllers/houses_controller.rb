@@ -11,19 +11,30 @@ layout "standard"
       if params[:search]
         max_price = session[:max_price] = params[:max_price]
         min_price = session[:min_price] = params[:min_price]
-      
-        unless max_price.empty?
+      else
+        session[:min_price], session[:max_price] = nil
+      end
+      session[:min_price], session[:max_price] = nil if params[:clear]
+      puts "=="*45
+      puts "search?: #{params[:search]}"
+      puts "clear?: #{params[:clear]}"
+      puts "min session: #{session[:min_price]}"
+      puts "max session : #{session[:max_price]}"
+      puts "search min: #{params[:min_price]}"
+      puts "search max: #{params[:max_price]}"
+      puts "=="*45
+        unless session[:max_price].nil?
           cond_string << "price <= ?"
-          cond_vars << max_price
+          cond_vars << session[:max_price]
         end
       
-        unless min_price.empty?
+        unless session[:min_price].nil?
           cond_string << "price >= ?"
-          cond_vars << min_price
+          cond_vars << session[:min_price]
         end 
-         @min_price = min_price
-         @max_price = max_price
-      end
+         @min_price = session[:min_price]
+         @max_price = session[:max_price]
+    
       cond_string << "map_area_id = ?"
       cond_vars << session[:map_area_id]
       
