@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 6) do
+ActiveRecord::Schema.define(:version => 8) do
 
   create_table "houses", :force => true do |t|
     t.string   "title"
@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(:version => 6) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "geocoded"
+    t.boolean  "dog"
+    t.boolean  "cat"
   end
 
   create_table "map_areas", :force => true do |t|
@@ -79,6 +81,7 @@ ActiveRecord::Schema.define(:version => 6) do
     t.string   "remember_token"
     t.datetime "remember_token_expires_at"
     t.integer  "map_area_id"
+    t.datetime "last_visit"
   end
 
 end

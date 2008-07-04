@@ -1,4 +1,10 @@
 <div style="background: #fff;"><h3>manage users:</h3>
 <%for user in @users %>
-	<%= user.login %> <%= link_to "destroy", "/users/#{user.id}", :method=>"delete" %> <br/>
+<div style="padding:10px;margin:10px;background:#ddd; width:300px;" class="green_border">
+	<%= user.login %> <br/> 
+	<%= user.email %> <br/>
+	houses saved: <%= user.saved_houses.length %> <br/>
+	last visit: <%= user.last_visit %>
+	<%= link_to "destroy", "/users/#{user.id}", :method=>"delete" %>
+	</div>
 <%end%></div>

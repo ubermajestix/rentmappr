@@ -2,10 +2,22 @@
 	<%if place %>
 
 
-		<%= link_to place.title, place.href, :target=>:new %>
+		<%= link_to strip_tags(place.title), place.href, :target=>:new %>
 
 	<br/>
-
+	<%if place.dog || place.cat %>
+	pets:
+	<%if place.cat %>
+		<%= image_tag '/images/cat.png', :size=>"20x20" %>
+	<% end %>
+	
+	<%if place.dog %>
+		<%= image_tag '/images/dog.png', :size=>"20x20" %>
+	<% end %>
+	
+		<br/>
+	<% end %>
+	
 	<%if place.saved %>
 	<%= link_to_remote 	image_tag("/images/remove.png", :size=>"20x20") + " remove it", 
 						:url=>{:action=>:remove_it, :id=>place.id}, 

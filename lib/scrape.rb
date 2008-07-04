@@ -45,9 +45,46 @@ end
 # geocode()
 # exit
 
+  
+  def pet_threads(site, pet_type)
+     puts "going to #{site}/search/apa?#{pet_type}"
+       main_page = Hpricot(open("http://#{site}/search/apa?#{pet_type}"))
+    # puts main_page.inspect  
+      items = main_page.search("div.sh")
+      bold_items = items.first.search("b")
+      found = bold_items[1].inner_html.to_s
+      found = found[found.index("Found:")+7...found.index("Displaying")]
+     # get total results and pages
+      pages = (found.to_f/100).floor
+      urls = Queue.new
+      pet_threads = []
+      pages.times do |page|
+        pet_threads << Thread.new("/search/apa?#{pet_type}&s=#{page}00", site) {|cl_page, cl_site|
+          puts "scraping #{page} on #{cl_site}#{cl_page}"
+          doc = Hpricot(open("http://#{cl_site}#{cl_page}"))
+          #return all /apa/#{a number} formatted links
+          doc.search("a") do |link|
+            urls << "http://#{cl_site}#{link.get_attribute("href")}" if link.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
+          end
+        }
+     end
+     pet_threads.each{|t| t.join}
+     pet_urls = []
+     while !urls.empty?
+       pet_urls << urls.deq
+     end
+     pet_urls
+  end
+  
+
+  
+
+
 #scrape links
 def scrape_links(site)#returns queue
   links = Queue.new
+  @cats = pet_threads(site, "addTwo=purrr")
+  @dogs = pet_threads(site, "addThree=wooof")
   scraper_threads = []
   pages = []
   date = Time.now
@@ -83,7 +120,7 @@ def parse_cl_page(link, map_area)
    
    house = House.new
    puts house.href = "http://#{map_area.craigslist}#{link}"
-   begin
+
    hdoc = Hpricot(open("http://#{map_area.craigslist}#{link}"))
    hdoc.search("a") do |goog|
      puts glink = goog.get_attribute("href").to_s if google_link(goog.get_attribute("href").to_s)
@@ -98,9 +135,7 @@ def parse_cl_page(link, map_area)
      puts house.price = house.title.match(/([\$])([0-9]{3,})/).to_s.gsub("$", "") if house.title && house.title.match(/([\$])([0-9]{3,})/)
      #find price in title $number 
    end
-   #get email address
-   #get date added
-   
+
 
    if house.valid?
        hdoc.search("table") do |table|
@@ -115,23 +150,32 @@ def parse_cl_page(link, map_area)
            puts house.images_href
          end
         end
-       puts "map_area: #{map_area.id} | #{map_area.name}"
-     house.map_area_id = map_area.id
-   house.geocoded = 'n'
-   puts house
-   house.save
-   puts "**"*45
+    #set dog and cat columns
+    house.cat = true if @cats.include?(house.href)
+    house.dog = true if @dogs.include?(house.href)
+   if house.dog || house.cat
+     puts "*^*"*45
+     puts "cats: #{house.cat}"
+     puts "dogs: #{house.dog}"
+     puts "*^*"*45
+   end
+    #get email address and/or phone
+    #pull down email address
+    #look for phone number formatted text in description and title
+    
+    puts "map_area: #{map_area.id} | #{map_area.name}"
+    house.map_area_id = map_area.id
+    house.geocoded = 'n'
+    puts house
+    house.save
+    puts "**"*45
  else
    puts "XX"*45
    puts house.errors.full_messages 
-      puts "XX"*45
- end
-   
-
- 
- rescue Timeout::Error => e
-   puts e
- end
+   puts "XX"*45
+ end 
+rescue Timeout::Error => e
+ puts e
 end#of parse_cl_page
 
 def pull_down_page(links, map_area)#pass queue
@@ -157,6 +201,7 @@ def pull_down_page(links, map_area)#pass queue
 end#of pull down page 
 
 @map_areas = MapArea.find(:all)
+
 puts "scraping for #{@map_areas.length} cities"
 for map_area in @map_areas 
   house_start = Time.now

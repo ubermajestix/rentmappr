@@ -7,14 +7,16 @@ layout "standard"
      if session[:map_area_id]
       cond_string = []
       cond_vars = []
-   
+
       if params[:search]
         max_price = session[:max_price] = params[:max_price]
         min_price = session[:min_price] = params[:min_price]
-      else
-        session[:min_price], session[:max_price] = nil
+        session[:cat] = params[:cats] ? true : false
+        session[:dog] = params[:dogs] ? true : false
+     # else
+    #    session[:min_price], session[:max_price] = nil
       end
-      session[:min_price], session[:max_price] = nil if params[:clear]
+
       puts "=="*45
       puts "search?: #{params[:search]}"
       puts "clear?: #{params[:clear]}"
@@ -22,16 +24,23 @@ layout "standard"
       puts "max session : #{session[:max_price]}"
       puts "search min: #{params[:min_price]}"
       puts "search max: #{params[:max_price]}"
+      puts "cats: #{session[:cat]}"
+      puts "dogs: #{session[:dog]}"
       puts "=="*45
-        unless session[:max_price].nil?
+        unless session[:max_price].empty?
           cond_string << "price <= ?"
           cond_vars << session[:max_price]
         end
       
-        unless session[:min_price].nil?
+        unless session[:min_price].empty?
           cond_string << "price >= ?"
           cond_vars << session[:min_price]
         end 
+        cond_string << "dog is not null" if session[:dog]
+        cond_string << "cat is not null" if session[:cat]
+       
+         @dog = session[:dog]
+         @cat = session[:cat]
          @min_price = session[:min_price]
          @max_price = session[:max_price]
     
@@ -43,6 +52,7 @@ layout "standard"
       conds = []
       conds << cond_string.join(" and ")
       cond_vars.each { |var| conds << var  }
+      puts conds
       if logged_in?
         @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])
         @total = House.count(:conditions => conds)
@@ -76,6 +86,16 @@ layout "standard"
     else
       redirect_to choose_city_path
     end
+  end
+  
+  def clear_search
+    puts "=="*45
+    puts "=="*45
+    puts "clearing session stuff for searching"
+    puts "=="*45
+    puts "=="*45
+    session[:cat], session[:dog], session[:min_price], session[:max_price] = nil 
+    redirect_to :action => "index"
   end
   
   def choose_area

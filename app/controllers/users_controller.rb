@@ -1,6 +1,6 @@
 class UsersController < ApplicationController 
 layout "basic"
-#before_filter :login_required, :only=>"show"
+before_filter :login_required, :only=>["show","remove_saved"]
   
   def show
    # redirect_back_or_default('/') if current_user.not_tyler?    
@@ -42,5 +42,7 @@ layout "basic"
     flash[:notice] = "User destroyed"
     redirect_to user_path
   end
+
+
 
 end
