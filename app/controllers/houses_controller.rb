@@ -9,8 +9,8 @@ layout "standard"
       cond_vars = []
 
       if params[:search]
-        max_price = session[:max_price] = params[:max_price]
-        min_price = session[:min_price] = params[:min_price]
+        max_price = session[:max_price] = params[:max_price] unless params[:max_price].empty?
+        min_price = session[:min_price] = params[:min_price] unless params[:min_price].empty?
         session[:cat] = params[:cats] ? true : false
         session[:dog] = params[:dogs] ? true : false
      # else
@@ -27,12 +27,12 @@ layout "standard"
       puts "cats: #{session[:cat]}"
       puts "dogs: #{session[:dog]}"
       puts "=="*45
-        unless session[:max_price].empty?
+        unless session[:max_price].nil?
           cond_string << "price <= ?"
           cond_vars << session[:max_price]
         end
       
-        unless session[:min_price].empty?
+        unless session[:min_price].nil?
           cond_string << "price >= ?"
           cond_vars << session[:min_price]
         end 
