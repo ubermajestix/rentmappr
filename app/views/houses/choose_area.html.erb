@@ -7,7 +7,7 @@
 
 <div id="homes_list_title" style="position:absolute; top:25px; left:725px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:450px; height:50px; background:#fff; padding:5px">
 <h3><%= @map_areas.length %> cities to pick from <br/>
-	<span class="little" style="float:right"><%= @houses %> houses collected so far today. <%= House.count %> houses total.</span></h3>
+	<span class="little" style="float:right"><%= House.valid_total_today %> houses collected so far today. <%= House.valid_total %> houses total.</span></h3>
 	</div>
 <div id="home_list" style="position: absolute; top:65px; left:725px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:450px; height:382px; background:#fff; padding:5px">
 	

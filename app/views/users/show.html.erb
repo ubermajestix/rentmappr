@@ -4,7 +4,7 @@
 	<%= user.login %> <br/> 
 	<%= user.email %> <br/>
 	houses saved: <%= user.saved_houses.length %> <br/>
-	last visit: <%= user.last_visit %>
+	last visit: <%= numeric_time user.last_visit %><br/>
 	<%= link_to "destroy", "/users/#{user.id}", :method=>"delete" %>
 	</div>
 <%end%></div>

@@ -1,6 +1,6 @@
 class UsersController < ApplicationController 
 layout "basic"
-before_filter :login_required, :only=>["show","remove_saved"]
+before_filter :admin_only, :only=>["show", "destroy"]
   
   def show
    # redirect_back_or_default('/') if current_user.not_tyler?    

@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, :on => :create
   before_save :encrypt_password
   
   # prevents a user from submitting a crafted form that bypasses activation

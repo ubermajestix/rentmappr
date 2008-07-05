@@ -10,6 +10,22 @@ class House < ActiveRecord::Base
  # validates_uniqueness_of :href
 #  validates_presence_of :title, :href, :price, :address
  # validates_length_of :address, :minimum=>10
+
+   def self.valid_total
+     count(:conditions => ["geocoded = ?","s"])
+   end
+   
+   def self.valid_total_today
+     count(:conditions => ["created_at >= ? and geocoded = ?",midnight, "s"])
+   end
+    
+   def self.valid_total_for_area(map_area)
+     count(:conditions => ["map_area_id = ? and geocoded = ?",map_area.id, "s"])
+   end
+ 
+   def self.valid_total_for_area_today(map_area)
+    count(:conditions => ["created_at >= ? and map_area_id = ? and geocoded = ?",midnight, map_area.id, "s"])
+   end
  
   def self.saved(user)
     find(Userhouses.find_saved_house_ids(:user_id=>user.id))
@@ -57,5 +73,11 @@ class House < ActiveRecord::Base
 houses.each{|house|  house.has_images = true if house.images_href}
     houses
   end
+  
+
+
+   def self.midnight
+     Time.now - Time.now.sec - Time.now.min.minutes - Time.now.hour.hours
+   end
 
 end

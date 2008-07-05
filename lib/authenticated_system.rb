@@ -35,7 +35,7 @@ module AuthenticatedSystem
     end
     
     def tyler?
-     logged_in? ? current_user.login == "tyler" : false
+     logged_in? ? (current_user.login == "tyler" || current_user.email=="tyler.a.montgomery@gmail.com") : false
     end
 
     # Filter method to enforce a login requirement.

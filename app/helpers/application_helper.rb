@@ -20,6 +20,10 @@ module ApplicationHelper
       end
     end
     
+    def numeric_time(time)
+      time.kind_of?(Time) ? "#{time.strftime('%d/%m/%y %H:%M')}" : ""
+    end
+    
     def load_analytics?
       load = true
       load = false if request.host.match(/localhost/)

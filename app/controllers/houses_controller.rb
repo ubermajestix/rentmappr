@@ -78,7 +78,7 @@ layout "standard"
       #session[:houses] = @houses  
        @map_area = MapArea.find(session[:map_area_id])
       @start = GeoLoc.new(:lat=>@map_area.lat, :lng=> @map_area.lng)
-      @houses_collected = House.count(:conditions => ["created_at >= ? and map_area_id = ?",midnight, @map_area.id])
+      @houses_collected = House.valid_total_for_area_today(@map_area)
       @zoom=6
       @show_saved = true if params[:show_saved]
       @house_count = @houses.length

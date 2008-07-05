@@ -13,6 +13,7 @@ layout "basic"
         cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
       end
       current_user.last_visit=Time.now
+      current_user.save
       redirect_back_or_default('/')
       flash[:notice] = "Logged in successfully"
     else
