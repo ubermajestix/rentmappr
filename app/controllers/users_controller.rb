@@ -34,6 +34,15 @@ before_filter :admin_only, :only=>["show", "destroy"]
      render :action => 'new' if @render
   end
 
+  def reset_password
+    #
+  end
+  
+  def forgot_password
+    #generate reset code
+    #store it
+    #send email
+  end
 
   
   def destroy

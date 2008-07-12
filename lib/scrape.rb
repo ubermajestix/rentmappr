@@ -151,6 +151,7 @@ def parse_cl_page(link, map_area)
          end
         end
     #set dog and cat columns
+    house.bedrooms = house.title.match(/([0-9]br)/)
     house.cat = true if @cats.include?(house.href)
     house.dog = true if @dogs.include?(house.href)
    if house.dog || house.cat
