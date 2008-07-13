@@ -13,6 +13,7 @@ layout "standard"
         min_price = session[:min_price] = params[:min_price] unless params[:min_price].empty?
         session[:cat] = params[:cats] ? true : false
         session[:dog] = params[:dogs] ? true : false
+        session[:bedrooms] =  params[:bedrooms]
      # else
     #    session[:min_price], session[:max_price] = nil
       end
@@ -36,6 +37,12 @@ layout "standard"
           cond_string << "price >= ?"
           cond_vars << session[:min_price]
         end 
+        
+        unless session[:bedrooms].nil?
+          cond_string << "bedrooms = ?"
+          cond_vars << session[:bedrooms]
+        end
+        
         cond_string << "dog is not null" if session[:dog]
         cond_string << "cat is not null" if session[:cat]
        
@@ -43,6 +50,7 @@ layout "standard"
          @cat = session[:cat]
          @min_price = session[:min_price]
          @max_price = session[:max_price]
+         @bedrooms = session[:bedrooms]
     
       cond_string << "map_area_id = ?"
       cond_vars << session[:map_area_id]
@@ -94,7 +102,7 @@ layout "standard"
     puts "clearing session stuff for searching"
     puts "=="*45
     puts "=="*45
-    session[:cat], session[:dog], session[:min_price], session[:max_price] = nil 
+    session[:bedrooms], session[:cat], session[:dog], session[:min_price], session[:max_price] = nil 
     redirect_to :action => "index"
   end
   

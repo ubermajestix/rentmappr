@@ -39,11 +39,11 @@ module ApplicationHelper
       "rentmappr - locate a house to rent listed on craigslist.org"
     end
     
-    def bedroom_select( name )
+    def bedroom_select( name, selected )
       #return populated select tag
-      #
-      options = ["", "studio", "1bd", "2bd","3bd","4bd", "5bd", "6bd"]
-      select_tag(name, options_for_select(options))
+      #maybe options should be populated from unique set of housing for each city...
+      options = ["", "1br", "2br","3br","4br", "5br", "6br"]
+      select_tag(name, options_for_select(options, selected))
     end
 
 end
