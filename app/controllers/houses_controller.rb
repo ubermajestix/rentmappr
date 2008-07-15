@@ -13,6 +13,7 @@ layout "standard"
         min_price = session[:min_price] = params[:min_price] unless params[:min_price].empty?
         session[:cat] = params[:cats] ? true : false
         session[:dog] = params[:dogs] ? true : false
+        puts "bedrooms empty? #{params[:bedrooms].empty?}"
         session[:bedrooms] =  params[:bedrooms] unless params[:bedrooms].empty?
      # else
     #    session[:min_price], session[:max_price] = nil
@@ -27,6 +28,7 @@ layout "standard"
       puts "search max: #{params[:max_price]}"
       puts "cats: #{session[:cat]}"
       puts "dogs: #{session[:dog]}"
+      puts "bedrooms: #{session[:bedrooms]}"
       puts "=="*45
         unless session[:max_price].nil?
           cond_string << "price <= ?"
