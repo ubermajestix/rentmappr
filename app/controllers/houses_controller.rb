@@ -13,7 +13,7 @@ layout "standard"
         min_price = session[:min_price] = params[:min_price] unless params[:min_price].empty?
         session[:cat] = params[:cats] ? true : false
         session[:dog] = params[:dogs] ? true : false
-        session[:bedrooms] =  params[:bedrooms]
+        session[:bedrooms] =  params[:bedrooms] unless params[:bedrooms].empty?
      # else
     #    session[:min_price], session[:max_price] = nil
       end
