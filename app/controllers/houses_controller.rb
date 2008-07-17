@@ -9,12 +9,18 @@ layout "standard"
       cond_vars = []
 
       if params[:search]
-        max_price = session[:max_price] = params[:max_price] unless params[:max_price].empty?
-        min_price = session[:min_price] = params[:min_price] unless params[:min_price].empty?
-        session[:cat] = params[:cats] ? true : false
-        session[:dog] = params[:dogs] ? true : false
+        max_price = session[:max_price] = params[:max_price] unless params[:max_price].empty? || params[:max_price] == "none"
+        min_price = session[:min_price] = params[:min_price] unless params[:min_price].empty? || params[:min_price] == "none"
+        if params[:pets]
+          puts "pets: #{params[:pets]}"
+          params[:pets] == "cats" ? session[:cat] = true : session[:cat] = nil
+          params[:pets] == "dogs" ? session[:dog] = true : session[:dog] = nil
+        else
+          session[:cat] = params[:cats] ? true : false
+          session[:dog] = params[:dogs] ? true : false
+        end
         puts "bedrooms empty? #{params[:bedrooms].empty?}"
-        session[:bedrooms] =  params[:bedrooms] unless params[:bedrooms].empty?
+        session[:bedrooms] =  params[:bedrooms] unless params[:bedrooms].empty? || params[:bedrooms] == "none"
      # else
     #    session[:min_price], session[:max_price] = nil
       end

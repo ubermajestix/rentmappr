@@ -41,8 +41,11 @@ ActionController::Routing::Routes.draw do |map|
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
    map.root :controller => "houses"
-   
    map.search  '/search', :controller=>"houses", :action=>"index", :search=>true
+   
+   map.restful_search  '/search/:min_price/:max_price/:bedrooms/:dogs/:cats', :controller=>"houses", :action=>"index", :search=>true
+   map.restful_search_no_pets  '/search/:min_price/:max_price/:bedrooms', :controller=>"houses", :action=>"index", :search=>true
+   map.restful_search_dogs '/search/:min_price/:max_price/:bedrooms/:pets', :controller=>"houses", :action=>"index", :search=>true
  #  map.search  '/search/:min_price/:max_price', :controller=>"houses", :action=>"index", :search=>true
    map.clear_search '/clear', :controller=>"houses", :action=>"clear_search"
    map.landing '/landing', :controller=>"houses", :action=>"rickroll"
