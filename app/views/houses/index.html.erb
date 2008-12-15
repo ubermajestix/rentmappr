@@ -4,7 +4,7 @@ min: $<%= text_field_tag :min_price, @min_price, :size=>6, :class=>"small_input"
 max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input" %> 
 		<%= check_box_tag :dogs, "1", @dog %> dogs
 		<%= check_box_tag :cats, "1", @cat %> cats
-		<%= bedroom_select :bedrooms, @bedrooms %>
+		<%#= bedroom_select :bedrooms, @bedrooms %>
 <div style="position:absolute; top:0px; right:50px">	<%= link_to "clear", clear_search_path%></div>
 	<div style="position:absolute; top:0px; right:0px"><%= submit_tag "filter"%></div>
 	<!-- <a id="show_more_options" class="little fake_link" onclick="new Effect.BlindDown('more_search_options',{duration:0.3});$('show_more_options').hide();$('show_less_options').show();">more search options</a>
