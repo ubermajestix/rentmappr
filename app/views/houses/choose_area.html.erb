@@ -16,6 +16,6 @@
 </div>
 <div style="clear:both"><%= tybox_to_remote "what's this Rentmappr thing all about?", :url=>{:action=>:info}, :width=>650, :height=>320%><br/></div>
 
-<%= render :partial => 'houses/banner_ads', :locals=>{:choose_area=>true} %>
+<%= render :partial => 'houses/banner_ads', :object => (@choose_area = true) %>
 
 

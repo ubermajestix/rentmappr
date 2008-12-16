@@ -1,7 +1,7 @@
 	<% unless logged_in? %>
 	<%= %>
 <div id="banner_ads" style="margin-left:0px;">
-	<div style="width:500px; float: left; <%= 'background:#fff' unless choose_area  %>;"> 
+	<div style="width:500px; float: left; <%= 'background:#fff' unless @choose_area  %>;"> 
 		<center>
 			<!-- Begin: AdBrite -->
 		<script type="text/javascript">
@@ -17,7 +17,7 @@
 		</center>
 	</div>
 	
-<% unless choose_area %>
+<% unless @choose_area %>
 	<div style="margin-left:520px;width:510px;background:#fff">	
 
 			<center>	
