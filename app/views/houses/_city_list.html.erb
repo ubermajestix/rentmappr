@@ -9,11 +9,10 @@
 			<tr>  
 				<td><img src="/images/my_house.png" 
 				onclick="open_window(<%= area.id %>)" width="20" height="20", title="recenter map on this house" style="cursor:pointer" />
-				<%= area.name %>  </td>
+				<%= link_to area.name, {:action => "pick_area", :id=>area.id}, :title=>"search within #{area.name}" %></td>
 				<td> | </td>
 				<td>  <%= link_to area.craigslist, "http://#{area.craigslist}", :target=>"new" %> </td>
-				<td> | </td>
-				<td>  <%= link_to "pick this city", :action => "pick_area", :id=>area.id %></td>
+
 			
 		
 			</tr>
@@ -23,4 +22,4 @@
 <% else %>
  We don't have any cities. <br/>
 <% end %>
-<%= link_to "request a city", bug_report_path%>
+<%= link_to "request a city", add_city_path%>

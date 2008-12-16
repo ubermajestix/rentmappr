@@ -9,9 +9,11 @@ ActionController::Routing::Routes.draw do |map|
   map.login           '/login',           :controller => 'sessions',    :action => 'new'
   map.logout          '/logout',          :controller => 'sessions',    :action => 'destroy'
   map.bug_report      '/bug_report',      :controller => "houses",      :action => "bug_report"
+  map.add_city        '/add_city',        :controller => "houses",      :action => "bug_report", :city=>true
   map.file_bug_report '/file_bug_report', :controller => "houses",      :action => "file_bug"
   map.scrape          '/scrape/:id',      :controller => "map_areas",   :action => "scrape"
   map.choose_city     '/choose_city',     :controller => "houses",      :action => "choose_area"
+  map.pick_area       '/pick_area',       :controller => "houses",      :action => "pick_area"
   map.s               '/s',                :controller => "map_areas",   :action => "st"  
    map.confirm        '/reset_password/:reset_code',                    :controller => 'users',  :action => 'reset_password'
   # The priority is based upon order of creation: first created -> highest priority.

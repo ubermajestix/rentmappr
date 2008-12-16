@@ -7,6 +7,19 @@
   <title><%= global_page_title %></title>
   <%= stylesheet_link_tag 'scaffold' %>
   <%= javascript_include_tag :defaults %>
+	<%= javascript_include_tag 'jquery', 'lightbox' %>
+	  <script>
+	    var $j = jQuery.noConflict();
+
+	    // Use jQuery via $j(...)
+	    $j(document).ready(function(){
+	      // $j("div").hide();
+	    });
+
+	    // Use Prototype with $(...), etc.
+	    // $('someid').hide();
+	  </script>
+
  <%if online? %>
  <% @key =request.host =~ /rentmappr/ ? "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTFe1RIeuOf__AvzqPPVl3e_BFy2xR4LYWw1t-nh0FUMH7k3OkjcJU9ww" : "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTkn2cjlmPPsTmxGpadsO7XL1l5cxQRHnXCjbHxd4a9uQicYTUQkTi-8w" %>
 

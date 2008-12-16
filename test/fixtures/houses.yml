@@ -1,7 +1,16 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-# one:
-#   column: value
-#
-# two:
-#   column: value
+boulder_1:
+  title: blah
+  address: 3131 5th St., boulder, co
+  href: boulder.cl.org/apa/12345
+  <% loc = Georb.geocodr("3131 5th St., boulder, co") %>
+  lat: <%= loc.lat %>
+  lng: <%= loc.lng %>
+  price: $2600
+  images_href:
+  map_area: boulder
+  geocoded: <%= loc.success %>
+  dog: true
+  cat: false
+  bedrooms: 4

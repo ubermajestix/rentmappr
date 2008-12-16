@@ -120,7 +120,21 @@ layout "standard"
     @start = GeoLoc.new(:lat=>40.08058466412761, :lng=>  -95.9765625)
     @zoom=13
     render :template => "houses/choose_area", :layout=>"choose_area"
-  end  
+  end    
+  
+  def pick_area
+    session[:map_area_id] = params[:id]
+    current_user.update_attribute(:map_area_id, params[:id]) if logged_in?
+    redirect_to :action => "index"
+  end
+  
+  def show_change_city
+    @map_area = MapArea.find(session[:map_area_id])
+    map_areas = MapArea.find(:all)
+    @map_areas_hash = {}
+    map_areas.each { |m| @map_areas_hash[m.name]=m.id }
+    #render :partial => "change_city"
+  end
   
   def test_marker
        @map_area = MapArea.find(session[:map_area_id])
@@ -137,18 +151,13 @@ layout "standard"
        @house.saved = current_user.saved_houses.include?(@house) if logged_in?
   end
   
-  def pick_area
-    session[:map_area_id] = params[:id]
-    current_user.update_attribute(:map_area_id, params[:id]) if logged_in?
+  
+  def remove_all_saved
+    current_user.houses.each{|c| current_user.houses.delete(c) }
+    current_user.save
+    Userhouses.destroy_all
     redirect_to :action => "index"
   end
-  
-def remove_all_saved
-  current_user.houses.each{|c| current_user.houses.delete(c) }
-  current_user.save
-  Userhouses.destroy_all
-  redirect_to :action => "index"
-end
   
   #FIXME ajax call to save it / trash it 
   
@@ -193,6 +202,10 @@ end
   end
   
   def bug_report
+    if params[:city]
+      @title = "Please add me a city!"
+      @body = "Hey Rentmappr,\n\r I'd like you to add my city: (your city here)\n\r Sincerely,\n (your name here)"
+    end
     render :template => "houses/bug_report", :layout=>"basic"
   end
   
@@ -221,10 +234,5 @@ end
  end
     redirect_to bug_report_path
   end
-  
-  def rickroll
-    #redirect_to "http://google.com/"
-    redirect_to "http://smouch.net/lol/"
-  end
-  
+    
 end

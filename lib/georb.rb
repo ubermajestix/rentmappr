@@ -5,7 +5,7 @@ module Georb
 require 'hpricot'
 require 'open-uri'
  
-  def geocodr(address_str)
+  def self.geocodr(address_str)
       res = Hpricot.XML(open("http://maps.google.com/maps/geo?q=#{CGI.escape(address_str)}&output=xml&key=#{GeoKit::Geocoders::google}&oe=utf-8"))
       status = ""
       res.search("code"){|d| status = d.inner_html}

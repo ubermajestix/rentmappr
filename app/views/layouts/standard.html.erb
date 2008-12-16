@@ -7,6 +7,11 @@
   <title><%= global_page_title %></title>
   <%= stylesheet_link_tag 'scaffold' %>
   <%= javascript_include_tag :defaults %>
+  <%= stylesheet_link_tag 'lightbox' %>
+  <%= javascript_include_tag 'lightbox', 'builder' %>
+
+
+
 <link rel="icon" type="image/png" href="/images/favicon.png">
  <%if online? %>
  <% @key =request.host =~ /rentmappr/ ? "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTFe1RIeuOf__AvzqPPVl3e_BFy2xR4LYWw1t-nh0FUMH7k3OkjcJU9ww" : "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTkn2cjlmPPsTmxGpadsO7XL1l5cxQRHnXCjbHxd4a9uQicYTUQkTi-8w" %>
@@ -142,9 +147,10 @@ var map;
 
 
 
-
 <%= yield  %>
-
+<a href="images/image-1.jpg" rel="lightbox" title="my caption">image #1</a>
+<br/>
+<a id="link" href="#" onclick="Lightbox.prototype.start($('link'))">lightbox</a>
 <%if load_analytics? %>
 
 

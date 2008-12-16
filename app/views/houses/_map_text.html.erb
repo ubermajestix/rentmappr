@@ -1,4 +1,4 @@
-	<div style="line-height:25px;"> 
+	<div style="line-height:22px;"> 
 	<%if place %>
 
 
@@ -38,21 +38,30 @@
 			:html =>		{	:onclick=> "remove_marker(#{place.id})" , :title=>"don\'t show me this house again", :class=>"remote_link"}%>
 			
 	<% else %>
-	
-	<%= link_to 	image_tag("/images/save.png", :size=>"20x20") + " save it", 
-						"#", :onclick=>"new Effect.SlideDown('register_arrow');alert('you should register if you want to save houses...'); new Effect.SwitchOff('register_arrow', {delay:0.1}); new Effect.Highlight('register_link', {startcolor:'#66Ff33', endcolor:'#999999', delay:0.5, duration:2.0});", :title=>"add to my short list", :class=>"remote_link" %>
+	<%= link_to "register", signup_path %> or <%= link_to "login", login_path %> to: <br/>
+	<div style="border:1px solid #222; width:175px;">
 
-	<%= link_to 	image_tag("/images/trash.png", :size=>"20x20") + " trash it", 
-					"#", :onclick=>"new Effect.SlideDown('register_arrow');alert('you should register if you want to trash houses...'); new Effect.SwitchOff('register_arrow', {delay:0.1}); new Effect.Highlight('register_link', {startcolor:'#66Ff33', endcolor:'#999999', delay:0.5, duration:2.0}); ", :title=>"don\'t show me this house again", :class=>"remote_link"%>		
-			
+	<%= image_tag("/images/save.png", :size=>"20x20")%> save
+	<%= image_tag("/images/trash.png", :size=>"20x20")%> trash			
 	<% end %>
 	
 
 	<% end %> <br/>
 	<% if place.has_images %>
-		<%= link_to_remote image_tag("/images/images.png", :size=>"20x20") + " images", :url=>{:action=>:show_images, :id=>place.id}, :update=>"image_pane", :html=>{:title=>"show images of house", :class=>"remote_link", :onclick=>"$('sv').hide();$('image_pane').show();$('close_sv').hide();"} %>
+		<%if logged_in? %>
+			<%= link_to_remote image_tag("/images/images.png", :size=>"20x20") + " images", :url=>{:action=>:show_images, :id=>place.id}, :update=>"image_pane", :html=>{:title=>"show images of house", :class=>"remote_link", :onclick=>"$('sv').hide();$('image_pane').show();$('close_sv').hide();"} %>
+		<% else %>
+			<%= image_tag("/images/images.png", :size=>"20x20") %> images
+		<% end %>
 	<% end %>
-	<%= link_to image_tag("/images/streetview.png", :size=>"20x20") + " street view", "#",:onclick=>"openStreetView(#{place.lat}, #{place.lng});", :title=>"streetview panorama", :class=>"remote_link"  %>
-<% end %><br/>
-added <%= nice_time(place.created_at) %>
+	<%if logged_in? %>
+		<%= link_to image_tag("/images/streetview.png", :size=>"20x20") + " street view", "#",:onclick=>"openStreetView(#{place.lat}, #{place.lng});", :title=>"streetview panorama", :class=>"remote_link"  %>
+	<% else %>
+		<%= image_tag("/images/images.png", :size=>"20x20") %> images
+		<%= image_tag("/images/streetview.png", :size=>"20x20") %> street view
+		
+		</div>
+	<% end %>
+<% end %>
+added <%= nice_time(place.created_at) %> 
 </div>
