@@ -1,49 +1,55 @@
-<div class="search">
-	<% form_tag search_path do%>
-min: $<%= text_field_tag :min_price, @min_price, :size=>6, :class=>"small_input"%> 
-max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input" %> 
-		<%= check_box_tag :dogs, "1", @dog %> dogs
-		<%= check_box_tag :cats, "1", @cat %> cats
-		<%#= bedroom_select :bedrooms, @bedrooms %>
-<div style="position:absolute; top:0px; right:50px">	<%= link_to "clear", clear_search_path%></div>
-	<div style="position:absolute; top:0px; right:0px"><%= submit_tag "filter"%></div>
-	<!-- <a id="show_more_options" class="little fake_link" onclick="new Effect.BlindDown('more_search_options',{duration:0.3});$('show_more_options').hide();$('show_less_options').show();">more search options</a>
-	<a id="show_less_options" class="little fake_link" style="display:none;" onclick="new Effect.BlindUp('more_search_options',{duration:0.3});$('show_more_options').show();$('show_less_options').hide();">less search options</a> -->
-	<div id="more_search_options" style="display:none;position:absolute;z-index:100;background:#fff;width:490px;height:15px;padding:8px;margin-left:-10px;">
+<div id="left_container" style="width:500px; float:left">
+	<div class="search">
+		<% form_tag search_path do%>
+	min: $<%= text_field_tag :min_price, @min_price, :size=>6, :class=>"small_input"%> 
+	max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input" %> 
+			<%= check_box_tag :dogs, "1", @dog %> dogs
+			<%= check_box_tag :cats, "1", @cat %> cats
+			<%#= bedroom_select :bedrooms, @bedrooms %>
+	<div style="position:absolute; top:0px; right:50px">	<%= link_to "clear", clear_search_path%></div>
+		<div style="position:absolute; top:0px; right:0px"><%= submit_tag "filter"%></div>
+		<!-- <a id="show_more_options" class="little fake_link" onclick="new Effect.BlindDown('more_search_options',{duration:0.3});$('show_more_options').hide();$('show_less_options').show();">more search options</a>
+		<a id="show_less_options" class="little fake_link" style="display:none;" onclick="new Effect.BlindUp('more_search_options',{duration:0.3});$('show_more_options').show();$('show_less_options').hide();">less search options</a> -->
+		<div id="more_search_options" style="display:none;position:absolute;z-index:100;background:#fff;width:490px;height:15px;padding:8px;margin-left:-10px;">
 
 
-	<span style="clear:left">	<%= check_box_tag :show_saved, "1", @show_saved %> show only my short list </span>
+		<span style="clear:left">	<%= check_box_tag :show_saved, "1", @show_saved %> show only my short list </span>
+		</div>
+
+
+		<% end%>
 	</div>
 
-
-	<% end%>
+	<div id="map" class="clear_border" style="width: 500px; height:400px;" ></div>	
 </div>
 
-<div id="map" class="clear_border" style="width: 500px; height:400px;" ></div>
-
-<div id="homes_list_title" style="position:absolute; top:25px; left:525px; width:500px; height:40px; background:#fff; padding:5px; z-index:100">
-	<div id="city_details">
-		<div style="float:right" class="pagination" >
-	       <%= will_paginate @houses, :page_links => false%> <span class="little"><%= "displaying #{@houses.offset + 1} - #{@houses.offset + @houses.length} of #{@total} "%></span> 
-	  </div>
-		<h3><%= @map_area.name.titlecase %> 
-			<span class="little">
-				<%= link_to_remote "change city", :url=>{:action=>:show_change_city} %>
-			</span> 
-			<span class="little" style="float:left">
-				<%= @houses_collected %> houses collected so far today
-			</span>
-		</h3>
-	</div>
-	<div id="change_city" style="display:none;">
+<div id="right_container" style="margin-left:520px;">
+	<div id="homes_list_title" style="width:500px; height:40px; background:#fff; padding:5px;">
+		<div id="city_details">
+			<div style="float:right" class="pagination" >
+		       <%= will_paginate @houses, :page_links => false%> <span class="little"><%= "displaying #{@houses.offset + 1} - #{@houses.offset + @houses.length} of #{@total} "%></span> 
+		  </div>
+			<h3><%= @map_area.name.titlecase %> 
+				<span class="little">
+					<%#= link_to_remote "change city", :url=>{:action=>:show_change_city} %>
+					<%= tybox_to_remote "change city", :url=>{:action=>:show_change_city} %>
+				</span> 
+				<span class="little" style="float:left">
+					<%= @houses_collected %> houses collected so far today
+				</span>
+			</h3>
+		</div>
+		<div id="change_city" style="display:none;">
 		
+		</div>
 	</div>
-</div>
-<div id="home_list" style="position: absolute; top:70px; left:525px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:376px; background:#fff; padding:5px">
-	<% @houses = current_user.saved_houses + @houses if logged_in? and current_user.saved_houses %>
-<%= render :partial => 'houses/home_list', :locals=>{:houses=>@houses} %>
+	<div id="home_list" style="overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:376px; background:#fff; padding:5px">
+		<% @houses = current_user.saved_houses + @houses if logged_in? and current_user.saved_houses %>
+	<%= render :partial => 'houses/home_list', :locals=>{:houses=>@houses} %>
 
+	</div>	
 </div>
+
 
 
 <%= render :partial => 'houses/banner_ads' %>

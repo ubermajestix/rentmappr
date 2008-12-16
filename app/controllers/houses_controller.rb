@@ -114,6 +114,10 @@ layout "standard"
     redirect_to :action => "index"
   end
   
+  def info
+    render :partial => "houses/info"
+  end
+  
   def choose_area
     @map_areas = MapArea.find(:all)
     @houses = House.count(:conditions => ["created_at >= ?",midnight])
@@ -133,7 +137,7 @@ layout "standard"
     map_areas = MapArea.find(:all)
     @map_areas_hash = {}
     map_areas.each { |m| @map_areas_hash[m.name]=m.id }
-    #render :partial => "change_city"
+    render :partial => "change_city"
   end
   
   def test_marker

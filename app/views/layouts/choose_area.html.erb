@@ -7,7 +7,8 @@
   <title><%= global_page_title %></title>
   <%= stylesheet_link_tag 'scaffold' %>
   <%= javascript_include_tag :defaults %>
-	<%= javascript_include_tag 'jquery', 'lightbox' %>
+  <%= stylesheet_link_tag 'lightbox' %>
+  <%= javascript_include_tag 'lightbox', 'builder' %>
 	  <script>
 	    var $j = jQuery.noConflict();
 
@@ -91,10 +92,12 @@ var map;
 <%= render :partial => 'layouts/action_bar' %>
 
 
+<div style="margin-right:auto; margin-left: auto">
+	<%= yield  %>
+</div>
 
 
 
-<%= yield  %>
 
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

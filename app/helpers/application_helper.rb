@@ -45,5 +45,13 @@ module ApplicationHelper
       options = ["", "1br", "2br","3br","4br", "5br", "6br"]
       select_tag(name, options_for_select(options, selected))
     end
+    
+    def tybox_to_remote(name, options = {}, html_options = nil)
+      options.update( :update=>"lightboxImage", 
+                      :loading=>"Lightbox.prototype.start();", 
+                      :failure=>"Lightbox.prototype.end();", 
+                      :complete=>"Lightbox.prototype.resizeContainer(#{options[:width] || 350}, #{options[:height] || 200});")
+      link_to_function(name, remote_function(options), html_options || options.delete(:html))      
+    end
 
 end

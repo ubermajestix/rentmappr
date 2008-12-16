@@ -142,15 +142,19 @@ var map;
 <body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0});" unload="GUnload();">
 
 
+
+
+
 <%= render :partial => 'layouts/action_bar' %>
+<div style="height: 745px; width: 1060px; margin-left: auto; margin-right:auto; ">
+	
+	<%= yield  %>
+</div>
 
 
-
-
-<%= yield  %>
-<a href="images/image-1.jpg" rel="lightbox" title="my caption">image #1</a>
-<br/>
-<a id="link" href="#" onclick="Lightbox.prototype.start($('link'))">lightbox</a>
+	<%unless logged_in? %>
+		after 15 seconds lightbox with features and link to login/register
+	<% end %>
 <%if load_analytics? %>
 
 

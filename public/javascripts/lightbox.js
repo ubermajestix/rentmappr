@@ -86,6 +86,7 @@ Lightbox.prototype = {
         if (LightboxOptions.resizeSpeed < 1)  LightboxOptions.resizeSpeed = 1;
 
 	    this.resizeDuration = LightboxOptions.animate ? ((11 - LightboxOptions.resizeSpeed) * 0.15) : 0;
+	console.debug('resize dur in init: ' + this.resizeDuration)
 	    this.overlayDuration = LightboxOptions.animate ? 0.2 : 0;  // shadow fade in/out duration
 		console.debug('init overlay duration: ' + this.overlayDuration);
         // When Lightbox starts it will resize itself from 250 by 250 to the current image dimension.
@@ -100,7 +101,7 @@ Lightbox.prototype = {
         objBody.appendChild(Builder.node('div',{id:'lightbox'}, [
             Builder.node('div',{id:'outerImageContainer'}, 
                 Builder.node('div',{id:'imageContainer'}, [
-                    Builder.node('img',{id:'lightboxImage'}), 
+                    Builder.node('div',{id:'lightboxImage'}), 
                     Builder.node('div',{id:'hoverNav'}, [
                         Builder.node('a',{id:'prevLink', href: '#' }),
                         Builder.node('a',{id:'nextLink', href: '#' })
@@ -131,8 +132,8 @@ Lightbox.prototype = {
 		$('overlay').hide().observe('click', (function() { this.end(); }).bind(this));
 		$('lightbox').hide().observe('click', (function(event) { if (event.element().id == 'lightbox') this.end(); }).bind(this));
 		$('outerImageContainer').setStyle({ width: size, height: size });
-		$('prevLink').observe('click', (function(event) { event.stop(); this.changeImage(this.activeImage - 1); }).bindAsEventListener(this));
-		$('nextLink').observe('click', (function(event) { event.stop(); this.changeImage(this.activeImage + 1); }).bindAsEventListener(this));
+		$('prevLink').hide().observe('click', (function(event) { event.stop(); this.changeImage(this.activeImage - 1); }).bindAsEventListener(this));
+		$('nextLink').hide().observe('click', (function(event) { event.stop(); this.changeImage(this.activeImage + 1); }).bindAsEventListener(this));
 		$('loadingLink').observe('click', (function(event) { event.stop(); this.end(); }).bind(this));
 		$('bottomNavClose').observe('click', (function(event) { event.stop(); this.end(); }).bind(this));
 
@@ -167,83 +168,46 @@ console.debug('end of init');
     //  start()
     //  Display overlay and lightbox. If image is part of a set, add siblings to imageArray.
     //
-    start: function(imageLink) {    
+    start: function() {    
 			
         $$('select', 'object', 'embed').each(function(node){ node.style.visibility = 'hidden' });
 
         // stretch overlay to fill page and fade in
         var arrayPageSize = this.getPageSize();
         $('overlay').setStyle({ width: arrayPageSize[0] + 'px', height: arrayPageSize[1] + 'px' });
-	console.debug('in start');	
-        new Effect.Appear('overlay', { duration: 0.2, from: 0.0, to: LightboxOptions.overlayOpacity });
-		   // new Effect.Appear(this.overlay, { duration: this.overlayDuration, from: 0.0, to: LightboxOptions.overlayOpacity });
-    console.debug('overalyOpacity: ' + LightboxOptions.overlayOpacity);
-		console.debug('overlay duration: ' + Lightbox.prototype.overlayDuration);
-        // this.imageArray = [];
-         var imageNum = 0;       
-        // 
-        // if ((imageLink.rel == 'lightbox')){
-        //     // if image is NOT part of a set, add single image to imageArray
-        //     this.imageArray.push([imageLink.href, imageLink.title]);         
-        // } else {
-        //     // if image is part of a set..
-        //     this.imageArray = 
-        //         $$(imageLink.tagName + '[href][rel="' + imageLink.rel + '"]').
-        //         collect(function(anchor){ return [anchor.href, anchor.title]; }).
-        //         uniq();
-        //     
-        //     while (this.imageArray[imageNum][0] != imageLink.href) { imageNum++; }
-        // }
+        new Effect.Appear('overlay', { duration: 0.2, from: 0.0, to: 0.8});
 
         // calculate top and left offset for the lightbox 
         var arrayPageScroll = document.viewport.getScrollOffsets();
         var lightboxTop = arrayPageScroll[1] + (document.viewport.getHeight() / 10);
         var lightboxLeft = arrayPageScroll[0];
-       $('lightbox').setStyle({ top: lightboxTop + 'px', left: lightboxLeft + 'px' }).show();
-      //  this.lightbox.setStyle({ top: lightboxTop + 'px', left: lightboxLeft + 'px' }).show();
-        
-         this.changeImage(imageNum);
-    },
-
-    //
-    //  changeImage()
-    //  Hide most elements and preload image in preparation for resizing image container.
-    //
-    changeImage: function(imageNum) {   
-        
-        this.activeImage = imageNum; // update global var
-
-        // hide elements during transition
-        if (LightboxOptions.animate) $('loading').show();
-        // this.lightboxImage.hide();
-        // this.hoverNav.hide();
-$('hoverNav').hide();
-        // this.prevLink.hide();
-        // this.nextLink.hide();
-		// HACK: Opera9 does not currently support scriptaculous opacity and appear fx
+       	$('lightbox').setStyle({ top: lightboxTop + 'px', left: lightboxLeft + 'px' }).show();
+				
+				//  Hide most elements and preload content in preparation for resizing image container.
+       	$('loading').show();
+        $('lightboxImage').hide()
+				$('hoverNav').hide();
+				// HACK: Opera9 does not currently support scriptaculous opacity and appear fx
         $('imageDataContainer').setStyle({opacity: .0001});
-        $('numberDisplay').hide();      
-        
-        var imgPreloader = new Image();
-        
-        // once image is preloaded, resize image container
+        $('numberDisplay').hide();    
 
-
-        // imgPreloader.onload = (function(){
-        //     this.lightboxImage.src = this.imageArray[this.activeImage][0];
-        //     this.resizeImageContainer(imgPreloader.width, imgPreloader.height);
-        // }).bind(this);
-        // imgPreloader.src = this.imageArray[this.activeImage][0];
+				//this is where we need to loadcontent
+				//call start, load content, call resize, which calls showcontent
+   
+//TYLER! need to pass this the size of the div being passed in 
+				// this.resizeContainer(400, 300);
     },
+
+
 
     //
     //  resizeImageContainer()
     //
-    resizeImageContainer: function(imgWidth, imgHeight) {
+    resizeContainer: function(imgWidth, imgHeight) {
 
         // get current width and height
-        var widthCurrent  = this.outerImageContainer.getWidth();
-        var heightCurrent = this.outerImageContainer.getHeight();
+        var widthCurrent  = $('outerImageContainer').getWidth();
+        var heightCurrent = $('outerImageContainer').getHeight();
 
         // get new width and height
         var widthNew  = (imgWidth  + LightboxOptions.borderSize * 2);
@@ -257,9 +221,9 @@ $('hoverNav').hide();
         var wDiff = widthCurrent - widthNew;
         var hDiff = heightCurrent - heightNew;
 
-        if (hDiff != 0) new Effect.Scale(this.outerImageContainer, yScale, {scaleX: false, duration: this.resizeDuration, queue: 'front'}); 
-        if (wDiff != 0) new Effect.Scale(this.outerImageContainer, xScale, {scaleY: false, duration: this.resizeDuration, delay: this.resizeDuration}); 
-
+        if (hDiff != 0) new Effect.Scale( $('outerImageContainer'), yScale, {scaleX: false, duration: 0.6, queue: 'front', scaleContent: false}); 
+        if (wDiff != 0) new Effect.Scale( $('outerImageContainer'), xScale, {scaleY: false, duration: 0.6, delay: 0.6, scaleContent: false}); 
+// console.debug('in resize')
         // if new and old image are same size and no scaling transition is necessary, 
         // do a quick pause to prevent image flicker.
         var timeout = 0;
@@ -269,11 +233,8 @@ $('hoverNav').hide();
         }
 
         (function(){
-            this.prevLink.setStyle({ height: imgHeight + 'px' });
-            this.nextLink.setStyle({ height: imgHeight + 'px' });
-            this.imageDataContainer.setStyle({ width: widthNew + 'px' });
-
-            this.showImage();
+            $('imageDataContainer').setStyle({ width: widthNew + 'px' });
+            this.showContent();
         }).bind(this).delay(timeout / 1000);
     },
     
@@ -281,14 +242,13 @@ $('hoverNav').hide();
     //  showImage()
     //  Display image and begin preloading neighbors.
     //
-    showImage: function(){
-        this.loading.hide();
-        new Effect.Appear(this.lightboxImage, { 
-            duration: this.resizeDuration, 
-            queue: 'end', 
+    showContent: function(){
+        $('loading').hide();
+        new Effect.Appear($('lightboxImage'), { 
+            duration: 0.6, 
             afterFinish: (function(){ this.updateDetails(); }).bind(this) 
         });
-        this.preloadNeighborImages();
+        //this.preloadNeighborImages();
     },
 
     //
@@ -298,27 +258,27 @@ $('hoverNav').hide();
     updateDetails: function() {
     
         // if caption is not null
-        if (this.imageArray[this.activeImage][1] != ""){
-            this.caption.update(this.imageArray[this.activeImage][1]).show();
-        }
-        
-        // if image is part of set display 'Image x of x' 
-        if (this.imageArray.length > 1){
-            this.numberDisplay.update( LightboxOptions.labelImage + ' ' + (this.activeImage + 1) + ' ' + LightboxOptions.labelOf + '  ' + this.imageArray.length).show();
-        }
-
+        // if (this.imageArray[this.activeImage][1] != ""){
+        //     this.caption.update(this.imageArray[this.activeImage][1]).show();
+        // }
+        // 
+        // // if image is part of set display 'Image x of x' 
+        // if (this.imageArray.length > 1){
+        //     this.numberDisplay.update( LightboxOptions.labelImage + ' ' + (this.activeImage + 1) + ' ' + LightboxOptions.labelOf + '  ' + this.imageArray.length).show();
+        // }
+console.debug('need to know resizeDuration: ')
         new Effect.Parallel(
             [ 
-                new Effect.SlideDown(this.imageDataContainer, { sync: true, duration: this.resizeDuration, from: 0.0, to: 1.0 }), 
-                new Effect.Appear(this.imageDataContainer, { sync: true, duration: this.resizeDuration }) 
+                new Effect.SlideDown($('imageDataContainer'), { sync: true, duration: 0.6, from: 0.0, to: 1.0 }), 
+                new Effect.Appear($('imageDataContainer'), { sync: true, duration: 0.6 }) 
             ], 
             { 
-                duration: this.resizeDuration, 
+                duration: 0.6, 
                 afterFinish: (function() {
-	                // update overlay size and update nav
-	                var arrayPageSize = this.getPageSize();
-	                this.overlay.setStyle({ height: arrayPageSize[1] + 'px' });
-	                this.updateNav();
+        	                // update overlay size and update nav
+        	                var arrayPageSize = this.getPageSize();
+        	                $('overlay').setStyle({ height: arrayPageSize[1] + 'px' });
+        	                this.updateNav();
                 }).bind(this)
             } 
         );
@@ -329,16 +289,16 @@ $('hoverNav').hide();
     //  Display appropriate previous and next hover navigation.
     //
     updateNav: function() {
+console.debug('in update nav')
+        // $('hoverNav').show();               
 
-        this.hoverNav.show();               
-
-        // if not first image in set, display prev image button
-        if (this.activeImage > 0) this.prevLink.show();
-
-        // if not last image in set, display next image button
-        if (this.activeImage < (this.imageArray.length - 1)) this.nextLink.show();
-        
-        this.enableKeyboardNav();
+        // // if not first image in set, display prev image button
+        //   if (this.activeImage > 0) this.prevLink.show();
+        // 
+        //   // if not last image in set, display next image button
+        //   if (this.activeImage < (this.imageArray.length - 1)) this.nextLink.show();
+        //   
+        //   this.enableKeyboardNav();
     },
 
     //
@@ -407,10 +367,25 @@ $('hoverNav').hide();
     //
     end: function() {
         this.disableKeyboardNav();
-        this.lightbox.hide();
-        new Effect.Fade(this.overlay, { duration: this.overlayDuration });
-        $$('select', 'object', 'embed').each(function(node){ node.style.visibility = 'visible' });
-    },
+				 new Effect.Parallel(
+	            [ 
+	                new Effect.SlideUp($('imageDataContainer'), { sync: true, duration: 0.6, from: 1.0, to: 0.0 }), 
+	                new Effect.Fade($('imageDataContainer'), { sync: true, duration: 0.6 }), 
+									
+	            ], 
+	            { duration: 0.6, afterFinish: (
+								function() {
+				        	new Effect.Parallel(
+										[	new Effect.SlideUp('lightbox', {sync: true, duration: 0.6}),
+											new Effect.Fade('lightbox', {sync: true, duration: 0.6})
+										]);
+				        	new Effect.Fade('overlay', { duration: 0.6, delay: 0.6 });
+				        	$$('select', 'object', 'embed').each(function(node){ node.style.visibility = 'visible' });
+								}
+							)
+							}
+						)
+					},
 
     //
     //  getPageSize()
