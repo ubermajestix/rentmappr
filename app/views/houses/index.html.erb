@@ -21,6 +21,18 @@
 	</div>
 
 	<div id="map" class="clear_border" style="width: 500px; height:400px;" ></div>	
+	
+	<%if logged_in? %>	
+		<div id="short_list_title" style=" margin-top:10px; background: #fff; width:490px; padding:5px; height:50px; margin-bottom:-10px;">
+			<h3>the short list <br/>		<div id="legend"style="margin: 3px;"><b class="little">
+				<%= image_tag '/images/my_house.png', :size=>'12x12' %> saved house | <%= image_tag '/images/clicked_house.png', :size=>'12x12' %> viewed house | 	<%= image_tag '/images/new_house.png', :size=>'12x12' %> unviewed house | <%= image_tag '/images/pic_bullet.png', :size=>'20x20' %> has image</b>
+			</div></h3>
+		</div>
+		<div id="short_list" style=" background: #fff; width:490px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; height: 200px; padding:5px">
+			<%= render :partial => 'houses/short_list' %>
+		</div>
+	<% end %>
+	
 </div>
 
 <div id="right_container" style="margin-left:520px;">
@@ -48,23 +60,9 @@
 	<%= render :partial => 'houses/home_list', :locals=>{:houses=>@houses} %>
 
 	</div>	
-</div>
-
-
-
-<%= render :partial => 'houses/banner_ads' %>
-
-
+	
 	<%if logged_in? %>	
-		<div id="short_list_title" style=" margin-top:10px; background: #fff; width:490px; padding:5px; height:50px; margin-bottom:-10px;">
-			<h3>the short list <br/>		<div id="legend"style="margin: 3px;"><b class="little">
-				<%= image_tag '/images/my_house.png', :size=>'12x12' %> saved house | <%= image_tag '/images/clicked_house.png', :size=>'12x12' %> viewed house | 	<%= image_tag '/images/new_house.png', :size=>'12x12' %> unviewed house | <%= image_tag '/images/pic_bullet.png', :size=>'20x20' %> has image</b>
-			</div></h3>
-		</div>
-		<div id="short_list" style="position:absolute; background: #fff; width:490px; overflow-y: auto; white-space: nowrap; overflow-x:hidden; height: 200px; padding:5px">
-			<%= render :partial => 'houses/short_list' %>
-		</div>
-		<div id="images_and_streetview" style="position:absolute; height:400px; width:500px;  background:#fff; padding:5px; left:525px;margin-top:<% if logged_in? %> -60px; <% else %>-35px; <% end %>">
+		<div id="images_and_streetview" style="; height:400px; width:500px;  background:#fff; padding:5px;">
 				<h3>images and streetview</h3>
 				<div id="image_pane"></div>
 				<div id="sv" style="width: 500px; height:400px; position:absolute; background:#000; padding:5px; display:none; ">
@@ -72,6 +70,14 @@
 				</div>
 		</div>
 	<% end %>
+</div>
+
+
+
+<%= render :partial => 'houses/banner_ads' %>
+
+
+
 	
 	
 
