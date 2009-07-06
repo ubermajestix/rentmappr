@@ -19,8 +19,8 @@ layout "standard"
           session[:cat] = params[:cats] ? true : false
           session[:dog] = params[:dogs] ? true : false
         end
-        puts "bedrooms empty? #{params[:bedrooms].empty?}"
-        session[:bedrooms] =  params[:bedrooms] unless params[:bedrooms].empty? || params[:bedrooms] == "none"
+        # puts "bedrooms empty? #{params[:bedrooms].empty?}"
+        # session[:bedrooms] =  params[:bedrooms] unless params[:bedrooms].empty? || params[:bedrooms] == "none"
      # else
     #    session[:min_price], session[:max_price] = nil
       end
