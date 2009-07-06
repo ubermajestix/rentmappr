@@ -1,20 +1,11 @@
-
 <%if map_areas.length > 0 %>
 <table border="0" cellspacing="5" cellpadding="5">
-
-
 	<% for area in map_areas %>
-
 		<% if area.lat && area.lng %>
 			<tr>  
-				<td><img src="/images/my_house.png" 
-				onclick="open_window(<%= area.id %>)" width="20" height="20", title="recenter map on this house" style="cursor:pointer" />
-				<%= link_to area.name, {:action => "pick_area", :id=>area.id}, :title=>"search within #{area.name}" %></td>
-				<td> | </td>
-				<td>  <%= link_to area.craigslist, "http://#{area.craigslist}", :target=>"new" %> </td>
-
-			
-		
+				<td>
+				<%= link_to image_tag('/images/my_house.png', :size=>"20x20", :align=>:top) +' '+ area.name, {:action => "pick_area", :id=>area.id}, :title=>"search within #{area.name}" %>
+				</td>		
 			</tr>
 		<% end %>
 	<% end %>

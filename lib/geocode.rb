@@ -6,7 +6,7 @@ require 'activerecord'
 require 'rfuzz/client'
 require 'net/http'
 require 'logger'
-
+require 'rack'
 @start_run = Time.now
 ActiveRecord::Base.establish_connection(:adapter  => "mysql", 
                                         :host     => "localhost",
@@ -77,7 +77,7 @@ def geocodr(address_str)
   #puts "getting xml: #{address_str}"
    @start = GeoLoc.new
    begin
-    res = Hpricot.XML(open("http://maps.google.com/maps/geo?q=#{CGI.escape(address_str)}&output=xml&key=ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTJQa0g3IQ9GZqIMmInSLzwtGDKaBSJdHlrIYiFi9WNEHgJJlj6ZPq6Mw&oe=utf-8"))
+    res = Hpricot.XML(open("http://maps.google.com/maps/geo?q=#{Rack::Utils.escape(address_str)}&output=xml&key=ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTJQa0g3IQ9GZqIMmInSLzwtGDKaBSJdHlrIYiFi9WNEHgJJlj6ZPq6Mw&oe=utf-8"))
     status = ""  
     res.search("code"){|d| status = d.inner_html}
     if status == "200"

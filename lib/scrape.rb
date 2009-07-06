@@ -12,7 +12,8 @@ ActiveRecord::Base.establish_connection(
                                         :host     => "localhost",
                                         :username => "root",
                                         :password => "",
-                                        :database => "bldrcl")
+                                        :database => "bldrcl", 
+					:pool => 20, :wait_timeout => 15)
 
 @start_run = Time.now
 
@@ -207,7 +208,7 @@ end#of pull down page
 @map_areas = MapArea.find(:all)
 
 puts "scraping for #{@map_areas.length} cities"
-for map_area in @map_areas 
+for map_area in @map_areas.reverse 
   house_start = Time.now
   @houses = map_area.houses
   puts "#{@houses.length} in #{map_area.name}"

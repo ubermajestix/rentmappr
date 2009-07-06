@@ -1,4 +1,4 @@
-<div id="left_container" style="width:500px; float:left">
+<div id="left_container" style="width:500px; float:left;  margin-top:10px;">
 	<div class="search">
 		<% form_tag search_path do%>
 	min: $<%= text_field_tag :min_price, @min_price, :size=>6, :class=>"small_input"%> 
@@ -55,7 +55,7 @@
 		
 		</div>
 	</div>
-	<div id="home_list" style="overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:376px; background:#fff; padding:5px">
+	<div id="home_list" style="overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:376px; background:#fff; padding:5px; padding-bottom:20px;">
 		<% @houses = current_user.saved_houses + @houses if logged_in? and current_user.saved_houses %>
 	<%= render :partial => 'houses/home_list', :locals=>{:houses=>@houses} %>
 
