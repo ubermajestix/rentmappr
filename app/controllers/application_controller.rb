@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   include Georb
   include GeoKit::Geocoders
   include AuthenticatedSystem
+  include HoptoadNotifier::Catcher
   require 'open-uri'  
 
   def midnight
