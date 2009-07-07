@@ -1,12 +1,11 @@
 class UsersController < ApplicationController 
 layout "basic"
 before_filter :admin_only, :only=>["show", "destroy"]
-  
   def show
    # redirect_back_or_default('/') if current_user.not_tyler?    
     @users = User.find(:all) 
   end
-  
+
   def new
   end
 
@@ -37,21 +36,17 @@ before_filter :admin_only, :only=>["show", "destroy"]
   def reset_password
     #
   end
-  
+
   def forgot_password
     #generate reset code
     #store it
     #send email
   end
 
-  
   def destroy
     @user = User.find(params[:id])
     @user.destroy
     flash[:notice] = "User destroyed"
     redirect_to user_path
   end
-
-
-
 end

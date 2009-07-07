@@ -18,8 +18,8 @@ Rails::Initializer.run do |config|
   }
   require 'memcache'
 
-    config.action_controller.session_store = :mem_cache_store
-    CACHE = MemCache.new 'localhost:11211', :namespace => 'rentmappr'
+  config.action_controller.session_store = :mem_cache_store
+  CACHE = MemCache.new 'localhost:11211', :namespace => 'rentmappr'
 
 
   # Add additional load paths for your own custom dirs

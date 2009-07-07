@@ -5,4 +5,10 @@ development:
   username: root
   password:
   host: localhost
+test:
+  adapter: mysql
+  database: rentmapper_test
+  username: root
+  password:
+  host: localhost
 production: development
