@@ -5,7 +5,10 @@ RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
-
+require 'rubygems'
+require 'hpricot'
+gem 'mislav-will_paginate', '=2.3.11'
+require 'will_paginate'
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
@@ -27,10 +30,10 @@ Rails::Initializer.run do |config|
 
   # Specify gems that this application depends on and have them installed with rake gems:install
   # config.gem "bj"
-  config.gem "hpricot"
+  # config.gem "hpricot"
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem 'mislav-will_paginate'#, :version => '~> 2.3.8', :lib => 'will_paginate', :source => 'http://gems.github.com'
+  # config.gem 'mislav-will_paginate'#, :version => '~> 2.3.8', :lib => 'will_paginate', :source => 'http://gems.github.com'
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
