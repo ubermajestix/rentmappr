@@ -204,8 +204,12 @@ def pull_down_page(links, map_area)#pass queue
  end 
  parser_threads.each { |t| t.join }
 end#of pull down page 
-
-@map_areas = MapArea.find(:all)
+unless ARGV[0]
+  @map_areas = MapArea.find(:all) 
+else
+  puts ARGV[0]
+  @map_areas = MapArea.find_all_by_name(ARGV[0])
+end
 
 puts "scraping for #{@map_areas.length} cities"
 for map_area in @map_areas.reverse 
