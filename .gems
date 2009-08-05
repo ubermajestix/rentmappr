@@ -1,1 +1,2 @@
+rfuzz --version 0.9
 mislav-will_paginate --version 2.3.11 --source http://gems.github.com
