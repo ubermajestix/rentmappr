@@ -35,11 +35,11 @@ before_filter :admin_only, :except=>:st
 
   def scrape
     @map_area = MapArea.find(params[:id])
-    spawn do
-   puts "=="*45
-
-     puts `ruby #{FileUtils.pwd}/lib/scrape.rb #{@map_area.id}`
-    end
+   #  spawn do
+   # puts "=="*45
+   # 
+   #   puts `ruby #{FileUtils.pwd}/lib/scrape.rb #{@map_area.id}`
+   #  end
     puts "=="*45
     redirect_to :action => "show", :id=>params[:id]
   end

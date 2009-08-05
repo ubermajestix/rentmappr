@@ -3,22 +3,40 @@ require 'rubygems'
 require 'open-uri'
 require 'hpricot'
 require 'activerecord'
+Dir.glob("app/models/*.rb").sort.each {|rb| require rb}
 require 'rfuzz/client'
 require 'net/http'
 require 'logger'
 require 'rack'
-@start_run = Time.now
-ActiveRecord::Base.establish_connection(:adapter  => "mysql", 
-                                        :host     => "localhost",
-                                        :username => "root",
-                                        :password => "",
-                                        :database => "bldrcl")
-
-class House < ActiveRecord::Base
-end
-
-class MapArea < ActiveRecord::Base
-end
+class Geocode
+  def initialize
+    # @logger = logger
+    logger.info "Craigslist Geocoding"
+    establish_database_connection
+    @start_run = Time.now
+    nil
+  end
+  attr_reader :start_run
+  # public :initialize
+  
+  def logger
+    return @logger if @logger
+    Logging.appenders.stdout(:level => :debug,:layout => Logging.layouts.pattern(:pattern => '[%c:%5l] %p %d --- %m\n'))
+    log = Logging.logger['RentmapprScraper']
+    log.add_appenders 'stdout'
+    @logger = log
+  end
+    
+  def establish_database_connection
+      logger.info "connecting to db"
+    ActiveRecord::Base.establish_connection(
+                                            :adapter  => "mysql", 
+                                            :host     => "localhost",
+                                            :username => "root",
+                                            :password => "",
+                                            :database => "bldrcl", 
+    					:pool => 20, :wait_timeout => 15)
+  end
 
 class GeoLoc
   attr_accessor :lat
@@ -32,7 +50,7 @@ end
 def geocode(houses)
   
   @houses = houses
-  puts "geocoding: #{@houses.length}"
+  logger.info "geocoding: #{@houses.length}"
   #split into 10 batches
   #put batches onto queue
   #spawn threads - consume queue
@@ -41,13 +59,13 @@ def geocode(houses)
   # 10.times do |batch_num| 
   #   length = @houses.length/10    
   #   batch = @houses[batch_num*length..(batch_num + 1)*length]
-  #   puts "=="*45
+  #   logger.info "=="*45
   #     geo_threads << Thread.new(batch, batch_num){|t_houses, num|
-  #      puts "in thread: #{num}"
+  #      logger.info "in thread: #{num}"
      #  begin
         for house in @houses #t_houses
         loc = house.address ? geocodr(house.address) : GeoLoc.new()
-        puts "   #{@houses.index(house)}/#{@houses.length}".rjust(10) if @houses.index(house)%5==0
+        logger.info "   #{@houses.index(house)}/#{@houses.length}".rjust(10) if @houses.index(house)%5==0
         if loc.success
           print "."
           house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :geocoded=>"s")
@@ -55,6 +73,7 @@ def geocode(houses)
         else
           print "X"
           #retry geocoding with at+some+street stripped out
+          begin
           house.address = retry_address(house.address)
           loc = house.address ? geocodr(house.address) : GeoLoc.new()
            if loc.success
@@ -62,11 +81,14 @@ def geocode(houses)
               house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address, :geocoded=>"s")
            else
              house.update_attribute(:geocoded, "f")
-           end                              
+           end      
+           rescue StandardError => e
+             logger.fatal e.inspect
+           end                        
         end #loc.succes 1st time
       end
     # rescue Exception => e
-    #            puts e
+    #            logger.info e
     #     end
         #    }
     # end
@@ -74,30 +96,31 @@ def geocode(houses)
 end
 
 def geocodr(address_str)
-  #puts "getting xml: #{address_str}"
+  #logger.info "getting xml: #{address_str}"
    @start = GeoLoc.new
    begin
     res = Hpricot.XML(open("http://maps.google.com/maps/geo?q=#{Rack::Utils.escape(address_str)}&output=xml&key=ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTJQa0g3IQ9GZqIMmInSLzwtGDKaBSJdHlrIYiFi9WNEHgJJlj6ZPq6Mw&oe=utf-8"))
     status = ""  
     res.search("code"){|d| status = d.inner_html}
     if status == "200"
-     # puts "parsing xml"
+     # logger.info "parsing xml"
      coords = []
      res.search("coordinates"){|l| coords = l.inner_html.split(",")} 
      @start.lat = coords[1]
      @start.lng = coords[0]
      @start.success = true
     end
-  rescue Exception => e
-    puts e    
+  rescue StandardError => e
+    logger.info e    
   rescue Timeout::Error => e
-    puts e
+    logger.info e
   end
     @start
   
 end
 
   def retry_address(address)
+    raise "no adress to correct" unless address
     if address.match(/\+at\+/)
       if address.match(/([0-9])([\+])([A-Za-z])/)
         street = address[0...address.index("+at+")]
@@ -110,26 +133,27 @@ end
     end
     address
   end
-@map_areas = MapArea.find(:all)
-  for map_area in @map_areas 
-    @houses = House.find(:all, :conditions => ["map_area_id = ? and geocoded = ?", map_area.id, 'n' ])
-    
-    # @houses.length < 15000/@map_areas.length ? 
-    geocode(@houses)  
-    #: puts "too many results to geocode today"
-
-  end  
   
-
-@houses = House.find(:all)
-s = f = n = 0
-@houses.each { |house| 
-n +=1  if house.geocoded == 'n' 
-s +=1  if house.geocoded == 's' 
-f +=1  if house.geocoded == 'f'  }
-puts "failed: #{f}"
-puts "success: #{s}"
-puts "not yet: #{n}"
-puts
-puts "took: #{Time.now - @start_run}"
-puts Time.now.strftime("%m/%d/%Y %H:%M")
+  def start_geocoding  
+    @map_areas = MapArea.find(:all)
+    for map_area in @map_areas 
+      @houses = House.find(:all, :conditions => ["map_area_id = ? and geocoded = ?", map_area.id, 'n' ])
+      geocode(@houses)  
+    end  
+  end
+  
+  def stats
+    @houses = House.find(:all)
+    s = f = n = 0
+    @houses.each { |house| 
+    n +=1  if house.geocoded == 'n' 
+    s +=1  if house.geocoded == 's' 
+    f +=1  if house.geocoded == 'f'  }
+    logger.info "failed: #{f}"
+    logger.info "success: #{s}"
+    logger.info "not yet: #{n}"
+    logger.info
+    logger.info "took: #{Time.now - self.start_run}"
+    logger.info Time.now.strftime("%m/%d/%Y %H:%M")
+  end
+end
