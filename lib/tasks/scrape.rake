@@ -3,14 +3,14 @@ namespace :cl do
   require "#{Dir.pwd}/lib/geocode"
   
   desc "scrape craigslist for houses"
-  task :scrape do
+  task :scrape => :environment do
     # @scraper = Scraper.initialize
     @scraper = Scraper.new
     @scraper.start_scraper
   end
   
   desc "geocode craigslist results"
-  task :geocode do
+  task :geocode => :environment do
     @geocoder = Geocode.new
     @geocoder.start_geocoding
   end

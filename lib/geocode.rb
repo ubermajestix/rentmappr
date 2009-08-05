@@ -12,7 +12,7 @@ class Geocode
   def initialize
     # @logger = logger
     logger.info "Craigslist Geocoding"
-    establish_database_connection
+    # establish_database_connection
     @start_run = Time.now
     nil
   end

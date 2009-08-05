@@ -16,7 +16,7 @@ class Scraper
   def initialize
     # @logger = logger
     logger.info "Craigslist Scraping"
-    establish_database_connection
+    # establish_database_connection
     @start_run = Time.now
     nil
   end
