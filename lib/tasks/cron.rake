@@ -2,7 +2,7 @@ task :cron  do
   begin
     Rake::Task['cl:scrape'].invoke
     Rake::Task['cl:geocode'].invoke
-  rescue
+  rescue StandardError => e
     Rake::Task['cl:geocode'].invoke
   end
 end
