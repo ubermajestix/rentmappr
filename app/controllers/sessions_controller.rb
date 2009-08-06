@@ -1,6 +1,6 @@
 # This controller handles the login/logout function of the site.  
 class SessionsController < ApplicationController
-layout "basic"
+  layout "basic"
   # render new.rhtml
   def new
   end
@@ -28,7 +28,7 @@ layout "basic"
     flash[:notice] = "You have been logged out."
     redirect_back_or_default('/')
   end
-  
-  def mr_t    
+
+  def mr_t
   end
 end
