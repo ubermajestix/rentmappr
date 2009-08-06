@@ -199,6 +199,7 @@ class Scraper
    end 
   rescue Timeout::Error => e
    puts e
+   ActiveRecord::Base.clear_active_connections!
   end#of parse_cl_page
 
   def pull_down_page(links, map_area)#pass queue
