@@ -1,3 +1,8 @@
 task :cron  do
-  Rake::Task['cl:scrape_and_geocode'].invoke
+  begin
+    Rake::Task['cl:scrape'].invoke
+    Rake::Task['cl:geocode'].invoke
+  rescue
+    Rake::Task['cl:geocode'].invoke
+  end
 end
