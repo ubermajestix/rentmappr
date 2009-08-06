@@ -229,6 +229,8 @@ class Scraper
   end#of pull down page 
  
 def start_scraper(opts={})
+  logger.info ActiveRecord::Base.connection.instance_values["config"]
+  sleep 3
   @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
   self.logger.info "scraping for #{@map_areas.length} cities"
   
