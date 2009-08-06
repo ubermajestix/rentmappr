@@ -142,9 +142,10 @@ class Scraper
   def parse_cl_page(link, map_area)
    
      house = House.new
-     puts house.href = "http://#{link}"
+     house.href = "scraping #{link}"
+     logger.info house.href
 
-     hdoc = Hpricot(open("http://#{link}"))
+     hdoc = Hpricot(open("#{link}"))
      hdoc.search("a") do |goog|
        puts glink = goog.get_attribute("href").to_s if google_link(goog.get_attribute("href").to_s)
        if glink
@@ -195,6 +196,7 @@ class Scraper
       house.geocoded = 'n'
       puts house
       house.save
+      ActiveRecord::Base.clear_active_connections!
       puts "**"*45
    else
      puts "XX"*45
@@ -203,20 +205,15 @@ class Scraper
    end 
   rescue Timeout::Error => e
    puts e
-   ActiveRecord::Base.clear_active_connections!
   end#of parse_cl_page
 
   def pull_down_page(links, map_area)#pass queue
     addresses = []
-
- 
-   parser_threads = []
-   links.length.times do |batch_num|
-     #thread this
+    parser_threads = []
+    links.length.times do |batch_num|
+    #thread this
    	cl_links = links.deq	
    	puts "before flatten #{cl_links.inspect}"
-
-   puts cl_links.length
    	parser_threads << Thread.new(cl_links, batch_num, map_area){|t_links, num, area|
    	  puts t_links.length
    	  for link in t_links
@@ -229,7 +226,7 @@ class Scraper
   end#of pull down page 
  
 def start_scraper(opts={})
-  logger.info ActiveRecord::Base.connection.instance_values["config"]
+  logger.info ActiveRecord::Base.connection.instance_values["config"].inspect
   sleep 3
   @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
   self.logger.info "scraping for #{@map_areas.length} cities"
