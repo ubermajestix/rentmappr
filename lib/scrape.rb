@@ -26,6 +26,7 @@ class Scraper
   def logger
     return @logger if @logger
     Logging.appenders.stdout(:level => :debug,:layout => Logging.layouts.pattern(:pattern => '[%c:%5l] %p %d --- %m\n'))
+    # TODO need email appender to send error messages
     log = Logging.logger['RentmapprScraper']
     log.add_appenders 'stdout'
     @logger = log
@@ -198,7 +199,13 @@ class Scraper
       house.map_area_id = map_area.id
       house.geocoded = 'n'
       puts house
-      house.save
+      begin
+        house.save
+      rescue StandardError => e
+        puts "X-"*45
+        logger.error e.inspect
+        puts "X-"*45
+      end
       ActiveRecord::Base.clear_active_connections!
       puts "**"*45
    else
