@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include GeoKit::Geocoders
   include AuthenticatedSystem
   include HoptoadNotifier::Catcher
+  include Stats
   require 'open-uri'  
 
   def midnight
