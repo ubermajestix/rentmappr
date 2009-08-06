@@ -141,9 +141,14 @@ var map;
 
 <div id="container">
   <%= render :partial => 'layouts/action_bar' %>
-  <div style="height: 745px; width: 1060px; margin-left: auto; margin-right:auto; ">
+  <!-- <div style="height: 745px; width: 1060px; margin-left: auto; margin-right:auto; "> -->
+    <div style="margin-left: auto; margin-right:auto; ">
+    
   	<%= yield  %>
+  	<div class="clear"></div>
+  	<div id="push"></div>
   </div>
+  
   <%= render :partial => 'layouts/footer' %>
 </div>
 	

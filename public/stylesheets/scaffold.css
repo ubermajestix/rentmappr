@@ -1,6 +1,7 @@
 
 *{margin:0pt;}
-body { background-color: #ddd; color: #333; height:100%; }
+html,body{height:100%;}
+body { background-color: #ddd; color: #333;  }
 
 body, p, ol, ul, td {
   font-family: verdana, arial, helvetica, sans-serif;
@@ -10,7 +11,14 @@ body, p, ol, ul, td {
 
 }
 
-#container{min-height:100%; position:relative}
+#container {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  position: relative
+  margin: 0 auto 20px;
+}
+
 
 img { border: none;}
 
@@ -352,10 +360,10 @@ ul#minitabs a:hover {
 }
 
 /**************login on front page*******************/
-
+#push{height:18px;}
 #footer {
-  position: absolute;
-  bottom:0;
+/*  position: absolute;
+  bottom:0;*/
   height: 18px;
   background: #999;
   color: #fff;
@@ -365,7 +373,7 @@ ul#minitabs a:hover {
 }
 #footer_content {
   padding-left: 10px;
-  padding-right: 10px;
+  padding-right: 20px;
 }
 /*Form Format*/
 form {

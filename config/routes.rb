@@ -14,7 +14,14 @@ ActionController::Routing::Routes.draw do |map|
   map.scrape          '/scrape/:id',      :controller => "map_areas",   :action => "scrape"
   map.choose_city     '/choose_city',     :controller => "houses",      :action => "choose_area"
   map.pick_area       '/pick_area',       :controller => "houses",      :action => "pick_area"
-  map.s               '/s',                :controller => "map_areas",   :action => "st"
+  map.s '/s',:controller => "map_areas",   :action => "st"
+  map.s_all               '/s/all/:last_12/:areas/:week',               :controller => "map_areas",   :action => "st", :defaults=>{:last_12=>true, :areas=>true, :week=>true}
+  map.s_day           '/s/day/:last_12',  :controller => "map_areas",   :action => "st", :defaults=>{:last_12=>true}
+  map.s_areas           '/s/areas/:areas',  :controller => "map_areas",   :action => "st", :defaults=>{:areas=>true}
+  map.s_week          '/s/week/:week',  :controller => "map_areas",   :action => "st", :defaults=>{:week=>true}
+  
+  
+  
    map.confirm        '/reset_password/:reset_code',                    :controller => 'users',  :action => 'reset_password'
   # The priority is based upon order of creation: first created -> highest priority.
 
