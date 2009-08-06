@@ -120,11 +120,15 @@ class Scraper
         t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
       
       end
-      # doc.search("h4") do |page_date|
-      #   date_array = parsedate(page_date.to_s)
-      #   date = Time.local(Time.now.year, date_array[1], date_array[2])
-      # end
-      links << t_links
+      
+      # here we want to only push urls onto the "links" Queue that we haven't seen
+      logger.info "#{cl_page} tlinks before: " + t_links.length.to_s
+      t_links.collect!{|t| "http://#{cl_site}#{t}"}
+      seen_these_hrefs = House.all(:select=>"href", :conditions=>["href in (#{t_links.collect{|h| "'#{h}'"}.join(',')})"]).map(&:href)
+      logger.info "seen em: " + seen_these_hrefs.length.to_s
+      t_links = t_links - seen_these_hrefs
+      logger.info "#{cl_page} tlinks after: " + t_links.length.to_s
+      links << t_links unless t_links.empty?
       puts "found: #{t_links.length} links"
       puts "queue length: #{links.length}"
       }
@@ -138,9 +142,9 @@ class Scraper
   def parse_cl_page(link, map_area)
    
      house = House.new
-     puts house.href = "http://#{map_area.craigslist}#{link}"
+     puts house.href = "http://#{link}"
 
-     hdoc = Hpricot(open("http://#{map_area.craigslist}#{link}"))
+     hdoc = Hpricot(open("http://#{link}"))
      hdoc.search("a") do |goog|
        puts glink = goog.get_attribute("href").to_s if google_link(goog.get_attribute("href").to_s)
        if glink
