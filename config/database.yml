@@ -7,4 +7,11 @@ development:
   host: localhost
   pool: 20
   wait_timeout: 15
-production: development
+production:
+  adapter: mysql
+  database: bldrcl
+  username: root
+  password:
+  host: localhost
+  pool: 20
+  wait_timeout: 15
