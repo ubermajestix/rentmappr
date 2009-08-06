@@ -1,0 +1,15 @@
+<div id="footer" class="footer">
+  <div id="footer_content"> 
+    <div class="left">
+      &copy; 2008-2009 Tyler Montgomery
+    </div>
+    <div class="right">
+      <%= tybox_to_remote "what's this Rentmappr thing all about?", :url=>{:action=>:info}, :width=>650, :height=>320, :html=>{:class=>"footer"} %>&nbsp;|&nbsp;
+      <%= link_to "found a bug?", bug_report_path, :class=>"footer", :title=>"report a bug or request a feature"%>&nbsp;|&nbsp;
+      <%= link_to "request a city", add_city_path, :class=>"footer"%>
+      
+    </div>
+    <div class="clear"></div>
+
+  </div>
+</div>

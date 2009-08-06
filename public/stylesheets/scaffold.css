@@ -1,6 +1,6 @@
 
 *{margin:0pt;}
-body { background-color: #ddd; color: #333; }
+body { background-color: #ddd; color: #333; height:100%; }
 
 body, p, ol, ul, td {
   font-family: verdana, arial, helvetica, sans-serif;
@@ -9,6 +9,9 @@ body, p, ol, ul, td {
 
 
 }
+
+#container{min-height:100%; position:relative}
+
 img { border: none;}
 
 
@@ -19,21 +22,19 @@ pre {
   font-size: 11px;
 }
 
-a.action_bar
+a.action_bar, a.action_bar:visited  {color: #000; text-decoration: none;  }
+a.action_bar:hover { color: #39FF2A; text-decoration: none; }
 
-a.action_bar {color: #000; padding-left:8px; padding-right:8px; text-decoration: none;  }
-a.action_bar:visited {color: #000; padding-left:8px; padding-right:8px; text-decoration: none;  }
-a.action_bar:hover { color: #fff; padding-left:8px; padding-right:8px; background: #000; text-decoration: none; }
+a.remote_link, a.remote_link:visited {color: #000; text-decoration: none;}
+a.remote_link:hover { color: #39FF2A; text-decoration: none;}
 
-a.remote_link {color: #000; text-decoration: none; padding:5px; padding-top:8px; }
-a.remote_link:visited {color: #000; text-decoration: none; padding:5px;   }
-a.remote_link:hover { color: #fff; padding:5px; background: #000; text-decoration: none; padding-top:8px;}
-
-a { color: #000; }
-a:visited { color: #666; }
-a:hover { color: #fff; background-color:#000; }
+a, a:visited { color: #000; text-decoration:none; }
+a:hover { color: #39FF2A;  }
 
 a.logo:hover{background:#6F3; padding-top:50px;}
+
+a.footer, a.footer:visited {color:#fff; text-decoration:none;}
+a.footer:hover { color: #39FF2A;  }
 
 div.search{
 	background: #fff;
@@ -234,6 +235,9 @@ position:relative;
  padding:10px;
 
 }
+.left{float:left;}
+.right{float:right;}
+.clear{clear: both;}
 .strike{text-decoration: line-through}
 .green_border{border:1px solid #0F3}
 .flash_border {width:350px;background-color:#e9fdd8;font-size:15px;border-style:solid; border-width: 1px;padding:5px;margin:5px;}
@@ -311,27 +315,67 @@ width:800px;
 
 /*Navigation Tabs*/
 
-#tab_nav{ margin: 0px 0px -22px 205px;}
-#tab_nav { *margin: 0px 0px -30px 205px;}
-ul#minitabs{list-style: none;}
-ul#minitabs li{display: inline;font-size:12px;letter-spacing:1px; }
-ul#minitabs a
-{  -moz-border-radius-topleft: 0.4em;
-    -moz-border-radius-topright: 0.4em;background-color:
-#ECF9FF; border-bottom: 3px solid #ccc; color: #000; padding:0px 10px 0px 10px; text-decoration:none}
-ul#minitabs a#current{border-color: #777; color: #000; background-color:
-#B0E6FF;}
-ul#minitabs a:hover#current{border-color: #000; background-color:#eee}
-ul#minitabs a:hover{border-color: #000; background-color:#eee;}
+#tab_nav {
+  margin: 0px 0px -22px 205px;
+}
+#tab_nav {*margin: 0px 0px -30px 205px;
+}
+ul#minitabs {
+  list-style: none;
+}
+ul#minitabs li {
+  display: inline;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+ul#minitabs a {
+  -moz-border-radius-topleft: 0.4em;
+  -moz-border-radius-topright: 0.4em;
+  background-color: #ECF9FF;
+  border-bottom: 3px solid #ccc;
+  color: #000;
+  padding: 0px 10px 0px 10px;
+  text-decoration: none
+}
+ul#minitabs a#current {
+  border-color: #777;
+  color: #000;
+  background-color: #B0E6FF;
+}
+ul#minitabs a:hover#current {
+  border-color: #000;
+  background-color: #eee
+}
+ul#minitabs a:hover {
+  border-color: #000;
+  background-color: #eee;
+}
 
 /**************login on front page*******************/
 
-#footer{position: relative; margin-top:150px; text-align:center;}
-
+#footer {
+  position: absolute;
+  bottom:0px;
+  height: 18px;
+  background: #999;
+  color: #fff;
+  width: 100%;
+  font-size: 8pt ;
+  margin-top:20px;
+}
+#footer_content {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 /*Form Format*/
-form { position:relative; }
-form input {  font-size:10.5px;
-font-weight:bold}
+form {
+  position: relative;
+}
+form input {
+  font-size: 10.5px;
+  font-weight: bold
+}
+
 
 /************** pagination  *******************/
 .pagination {

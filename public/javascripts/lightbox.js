@@ -77,7 +77,6 @@ Lightbox.prototype = {
     // overlay and the image container.
     //
     initialize: function() {    
-        console.debug("in Lightbox init");
         this.updateImageList();
         
         this.keyboardAction = this.keyboardAction.bindAsEventListener(this);
@@ -86,9 +85,7 @@ Lightbox.prototype = {
         if (LightboxOptions.resizeSpeed < 1)  LightboxOptions.resizeSpeed = 1;
 
 	    this.resizeDuration = LightboxOptions.animate ? ((11 - LightboxOptions.resizeSpeed) * 0.15) : 0;
-	console.debug('resize dur in init: ' + this.resizeDuration)
 	    this.overlayDuration = LightboxOptions.animate ? 0.2 : 0;  // shadow fade in/out duration
-		console.debug('init overlay duration: ' + this.overlayDuration);
         // When Lightbox starts it will resize itself from 250 by 250 to the current image dimension.
         // If animations are turned off, it will be hidden as to prevent a flicker of a
         // white 250 by 250 box.
@@ -144,7 +141,6 @@ Lightbox.prototype = {
                 'imageDataContainer imageData imageDetails caption numberDisplay bottomNav bottomNavClose';   
             $w(ids).each(function(id){ th[id] = $(id); });
         }).defer();
-console.debug('end of init');
     },
 
     //
@@ -223,7 +219,6 @@ console.debug('end of init');
 
         if (hDiff != 0) new Effect.Scale( $('outerImageContainer'), yScale, {scaleX: false, duration: 0.6, queue: 'front', scaleContent: false}); 
         if (wDiff != 0) new Effect.Scale( $('outerImageContainer'), xScale, {scaleY: false, duration: 0.6, delay: 0.6, scaleContent: false}); 
-// console.debug('in resize')
         // if new and old image are same size and no scaling transition is necessary, 
         // do a quick pause to prevent image flicker.
         var timeout = 0;
@@ -266,7 +261,6 @@ console.debug('end of init');
         // if (this.imageArray.length > 1){
         //     this.numberDisplay.update( LightboxOptions.labelImage + ' ' + (this.activeImage + 1) + ' ' + LightboxOptions.labelOf + '  ' + this.imageArray.length).show();
         // }
-console.debug('need to know resizeDuration: ')
         new Effect.Parallel(
             [ 
                 new Effect.SlideDown($('imageDataContainer'), { sync: true, duration: 0.6, from: 0.0, to: 1.0 }), 
@@ -289,7 +283,6 @@ console.debug('need to know resizeDuration: ')
     //  Display appropriate previous and next hover navigation.
     //
     updateNav: function() {
-console.debug('in update nav')
         // $('hoverNav').show();               
 
         // // if not first image in set, display prev image button

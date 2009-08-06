@@ -49,12 +49,14 @@
 	<% end %> <br/>
 	<% if place.has_images %>
 		<%if logged_in? %>
-			<%= link_to_remote image_tag("/images/images.png", :size=>"20x20") + " images", :url=>{:action=>:show_images, :id=>place.id}, :update=>"image_pane", :html=>{:title=>"show images of house", :class=>"remote_link", :onclick=>"$('sv').hide();$('image_pane').show();$('close_sv').hide();"} %>
+			<%= tybox_to_remote image_tag("/images/images.png", :size=>"20x20") + " images", :url=>{:action=>:show_images, :id=>place.id}, :height=>320,:width=>500, :html=>{:title=>"show images of house", :class=>"remote_link"} %>
 		<% else %>
 			<%= image_tag("/images/images.png", :size=>"20x20") %> images
 		<% end %>
 	<% end %>
 	<%if logged_in? %>
+	<%= tybox_to_remote image_tag("/images/streetview.png", :size=>"20x20") + " streetview", :url=>{:action=>:streetview, :id=>place.id}, :height=>320,:width=>600, :html=>{:title=>"streetview panorama", :class=>"remote_link"} %>
+	
 		<%= link_to image_tag("/images/streetview.png", :size=>"20x20") + " street view", "#",:onclick=>"openStreetView(#{place.lat}, #{place.lng});", :title=>"streetview panorama", :class=>"remote_link"  %>
 	<% else %>
 		<%= image_tag("/images/images.png", :size=>"20x20") %> images

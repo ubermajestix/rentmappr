@@ -202,7 +202,11 @@ layout "standard"
   def show_images
     @house = House.find(params[:id])
     render :partial => "houses/images"
-    
+  end
+  
+  def streetview
+    @house = House.find(params[:id])
+    render :partial => "houses/streetview"
   end
   
   def bug_report

@@ -78,12 +78,10 @@ var map;
 	var current_pitch = 0 ;
 
 	function openStreetView(lat, lng){
-		$('image_pane').hide();
-		$('close_sv').show();
-	 	
-		sv = new GStreetviewPanorama($('sv'));
-		sv.setLocationAndPOV(new GLatLng(lat, lng));
-		$('sv').show();
+    // $('sv').hide();
+    sv = new GStreetviewPanorama($('sv'));
+    sv.setLocationAndPOV(new GLatLng(lat, lng));
+    // new Effect.BlindDown('sv', {delay: 4.0, duration:0.6});
 	}
 	
 	
@@ -141,32 +139,15 @@ var map;
 
 <body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0});" unload="GUnload();">
 
-
-
-
-
-<%= render :partial => 'layouts/action_bar' %>
-<div style="height: 745px; width: 1060px; margin-left: auto; margin-right:auto; ">
-	
-	<%= yield  %>
+<div id="container">
+  <%= render :partial => 'layouts/action_bar' %>
+  <div style="height: 745px; width: 1060px; margin-left: auto; margin-right:auto; ">
+  	<%= yield  %>
+  </div>
+  <%= render :partial => 'layouts/footer' %>
 </div>
+	
+<%= render :partial => 'layouts/google_analytics' %>
 
-
-	<%unless logged_in? %>
-		after 15 seconds lightbox with features and link to login/register
-	<% end %>
-<%if load_analytics? %>
-
-
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-var pageTracker = _gat._getTracker("UA-2899967-2");
-pageTracker._initData();
-pageTracker._trackPageview();
-</script>
-<% end %>
 </body>
 </html>
