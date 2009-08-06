@@ -131,6 +131,8 @@ class Scraper
       links << t_links unless t_links.empty?
       puts "found: #{t_links.length} links"
       puts "queue length: #{links.length}"
+      ActiveRecord::Base.clear_active_connections!
+      
       }
     end
 
