@@ -1,0 +1,14 @@
+<div style="float:right" class="pagination" >
+		       <%= will_paginate @houses, :page_links => false%> <span class="little"><%= "displaying #{@houses.offset + 1} - #{@houses.offset + @houses.length} of #{@total} "%></span> 
+		  </div>
+			<h3><%= @map_area.name.titlecase %> 
+				<span class="little">
+					<%= link_to_remote "change city", :url=>{:action=>:show_change_city} %>
+					<%#= tybox_to_remote "change city", :url=>{:action=>:show_change_city} %>
+				</span>
+				 
+				<div class="little">
+					<%= @houses_collected %> houses collected so far today
+				</div>
+				<div class="clear"></div>
+			</h3>

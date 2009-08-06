@@ -1,0 +1,5 @@
+Need to insert urls that I've already downloaded to db.
+So scraping should
+1. fetch 10 pages of urls
+2. drop urls in db
+3. uses those urls to scrape from

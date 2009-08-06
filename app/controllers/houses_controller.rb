@@ -69,6 +69,8 @@ layout "standard"
       conds << cond_string.join(" and ")
       cond_vars.each { |var| conds << var  }
       puts conds
+      session[:house_conds] = conds
+      session[:house_page] = params[:page]
       if logged_in?
         @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])
         @total = House.count(:conditions => conds)
@@ -137,7 +139,21 @@ layout "standard"
     map_areas = MapArea.find(:all)
     @map_areas_hash = {}
     map_areas.each { |m| @map_areas_hash[m.name]=m.id }
-    render :partial => "change_city"
+    # render :partial => "change_city"
+  end
+  
+  def city_details
+    @houses = House.paginate(
+      :conditions    => session[:house_conds],
+      :order         => "created_at DESC",
+      :total_entries => @total,
+      :page          => session[:house_page], 
+      :per_page      => 250
+      )
+    @houses.each { |h| h.has_images=true if h.images_href }
+    @total = House.count(:conditions => session[:house_conds])
+    @map_area = MapArea.find(session[:map_area_id])
+    @houses_collected = House.valid_total_for_area_today(@map_area)
   end
   
   def test_marker

@@ -1,8 +1,8 @@
-# page.visual_effect :blind_up, 'city_details', :duration=>0.6
-# page.delay(0.6) do
-#   page.replace_html :change_city, :partial=>"change_city"
-#   page.visual_effect :blind_down, :change_city, :duration=>0.6
-# end
-page << "Lightbox.prototype.start();"
-page.replace_html :lightboxImage, :partial=>"change_city"
-page <<" Lightbox.prototype.resizeContainer(300, 100);"
+page.visual_effect :blind_up, 'city_details', :duration=>0.6
+page.delay(0.6) do
+  page.replace_html :change_city, :partial=>"change_city"
+  page.visual_effect :blind_down, :change_city, :duration=>0.6
+end
+# page << "Lightbox.prototype.start();"
+# page.replace_html :lightboxImage, :partial=>"change_city"
+# page <<" Lightbox.prototype.resizeContainer(300, 100);"

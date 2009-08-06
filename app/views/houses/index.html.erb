@@ -38,18 +38,8 @@
 <div id="right_container" style="margin-left:520px;">
 	<div id="homes_list_title" style="width:500px; height:40px; background:#fff; padding:5px;">
 		<div id="city_details">
-			<div style="float:right" class="pagination" >
-		       <%= will_paginate @houses, :page_links => false%> <span class="little"><%= "displaying #{@houses.offset + 1} - #{@houses.offset + @houses.length} of #{@total} "%></span> 
-		  </div>
-			<h3><%= @map_area.name.titlecase %> 
-				<span class="little">
-					<%#= link_to_remote "change city", :url=>{:action=>:show_change_city} %>
-					<%= tybox_to_remote "change city", :url=>{:action=>:show_change_city} %>
-				</span> 
-				<span class="little" style="float:left">
-					<%= @houses_collected %> houses collected so far today
-				</span>
-			</h3>
+			<%= render :partial => 'city_details' %>
+
 		</div>
 		<div id="change_city" style="display:none;">
 		

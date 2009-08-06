@@ -1,0 +1,5 @@
+page.visual_effect :blind_up, 'change_city', :duration=>0.6
+page.delay(0.6) do
+  page.replace_html :city_details, :partial=>"city_details"
+  page.visual_effect :blind_down, :city_details, :duration=>0.6
+end

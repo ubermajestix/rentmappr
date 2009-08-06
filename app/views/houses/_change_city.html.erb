@@ -1,6 +1,6 @@
 <% form_tag pick_area_path do%>
-<b>pick a different city:</b><br/>
-<%= select_tag :id, 	options_for_select(@map_areas_hash, @map_area.id)%>
-<%= submit_tag "change city"%>
-<!-- <a onclick="new Effect.BlindUp('change_city', {duration: 0.6}); new Effect.BlindDown('city_details', {delay:0.7, duration: 0.6})">cancel</a> -->
+  <b>pick a different city:</b><br/>
+  <%= select_tag :id, 	options_for_select(@map_areas_hash, @map_area.id)%>
+  <%= submit_tag "change city"%>
+  <%= link_to_remote "cancel", :url=>{:action=>:city_details}, :html=>{:style=>"font-size: 8pt"} %>
 <% end%>
