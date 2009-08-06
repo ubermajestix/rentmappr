@@ -55,14 +55,11 @@
 		<% end %>
 	<% end %>
 	<%if logged_in? %>
-	<%= tybox_to_remote image_tag("/images/streetview.png", :size=>"20x20") + " streetview", :url=>{:action=>:streetview, :id=>place.id}, :height=>320,:width=>600, :html=>{:title=>"streetview panorama", :class=>"remote_link"} %>
-	
-		<%= link_to image_tag("/images/streetview.png", :size=>"20x20") + " street view", "#",:onclick=>"openStreetView(#{place.lat}, #{place.lng});", :title=>"streetview panorama", :class=>"remote_link"  %>
-	<% else %>
+	  <%= tybox_to_remote image_tag("/images/streetview.png", :size=>"20x20") + " streetview", :url=>{:action=>:streetview, :id=>place.id}, :height=>320,:width=>600, :html=>{:title=>"streetview panorama", :class=>"remote_link"} %>
+		<% else %>
 		<%= image_tag("/images/images.png", :size=>"20x20") %> images
 		<%= image_tag("/images/streetview.png", :size=>"20x20") %> street view
-		
-		</div>
+			</div>
 	<% end %>
 <% end %>
 added <%= nice_time(place.created_at) %> 

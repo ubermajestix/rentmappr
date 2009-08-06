@@ -5,7 +5,7 @@ module ApplicationHelper
        begin
         open("http://www.google.com")
         online = true
-      rescue Exception => e
+      rescue StandardError => e
         puts e
         online = false
       end

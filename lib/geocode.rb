@@ -64,29 +64,30 @@ def geocode(houses)
   #      logger.info "in thread: #{num}"
      #  begin
         for house in @houses #t_houses
-        loc = house.address ? geocodr(house.address) : GeoLoc.new()
-        logger.info "   #{@houses.index(house)}/#{@houses.length}".rjust(10) if @houses.index(house)%5==0
-        if loc.success
-          print "."
-          house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :geocoded=>"s")
-         # sleep 1
-        else
-          print "X"
-          #retry geocoding with at+some+street stripped out
-          begin
-          house.address = retry_address(house.address)
+          sleep 2 if @houses.index(house) % 10 == 0
           loc = house.address ? geocodr(house.address) : GeoLoc.new()
-           if loc.success
-              print "+"
-              house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address, :geocoded=>"s")
-           else
-             house.update_attribute(:geocoded, "f")
-           end      
-           rescue StandardError => e
-             logger.fatal e.inspect
-           end                        
-        end #loc.succes 1st time
-      end
+          logger.info "   #{@houses.index(house)}/#{@houses.length}".rjust(10) if @houses.index(house)%5==0
+          if loc.success
+            print "."
+            house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :geocoded=>"s")
+           # sleep 1
+          else
+            print "X"
+            #retry geocoding with at+some+street stripped out
+            begin
+            house.address = retry_address(house.address)
+            loc = house.address ? geocodr(house.address) : GeoLoc.new()
+             if loc.success
+                print "+"
+                house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address, :geocoded=>"s")
+             else
+               house.update_attribute(:geocoded, "f")
+             end      
+             rescue StandardError => e
+               logger.fatal e.inspect
+             end                        
+          end #loc.succes 1st time
+        end
     # rescue Exception => e
     #            logger.info e
     #     end
