@@ -109,6 +109,9 @@ def geocodr(address_str)
      @start.lat = coords[1]
      @start.lng = coords[0]
      @start.success = true
+    elsif status == "403"
+      logger.warn "Looks like we've been shut off."
+      # TODO kill and further geocoding attempts
     end
   rescue StandardError => e
     logger.info e    
@@ -120,18 +123,21 @@ def geocodr(address_str)
 end
 
   def retry_address(address)
-    raise "no adress to correct" unless address
-    if address.match(/\+at\+/)
-      if address.match(/([0-9])([\+])([A-Za-z])/)
-        street = address[0...address.index("+at+")]
-        print "-"
-        csc = address.split("+")
-        csc = csc[csc.length-3...csc.length]
-        address = street + "+" + csc.join("+")
-        address.gsub!(".","")
+    if address
+      if address.match(/\+at\+/)
+        if address.match(/([0-9])([\+])([A-Za-z])/)
+          street = address[0...address.index("+at+")]
+          print "-"
+          csc = address.split("+")
+          csc = csc[csc.length-3...csc.length]
+          address = street + "+" + csc.join("+")
+          address.gsub!(".","")
+        end
       end
+      return address
+    else
+      print "?"
     end
-    address
   end
   
   def start_geocoding  

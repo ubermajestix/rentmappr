@@ -16,8 +16,7 @@ before_filter :admin_only, :except=>:st
 
 
   def st
-    @stats= `ruby #{RAILS_ROOT}/lib/stats.rb`
-    @stats = @stats.split("\n")
+    @stats = "Stats.go"
     render :template => "map_areas/st", :layout=>false
   end
   # GET /map_areas/1

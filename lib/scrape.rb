@@ -245,7 +245,7 @@ def start_scraper(opts={})
      house_start = Time.now
      @houses = map_area.houses
      puts "#{@houses.length} in #{map_area.name}"
-     @houses.each { |house| house.destroy }
+     # @houses.each { |house| house.destroy }
        puts "scraping #{map_area.craigslist}" 
         queue = scrape_links(map_area.craigslist)
         pull_down_page(queue, map_area)
