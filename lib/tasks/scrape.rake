@@ -22,9 +22,24 @@ namespace :cl do
     @geocoder.start_geocoding
   end
   
-  desc "collection stats"
-  task :stats => :environment do
-    puts Stats.get_stats
+  namespace :stats do
+    desc "collection stats"
+    task :all => :environment do
+      puts Stats.get_stats(:week=>true, :last_12=>true, :area=>true)
+    end
+    desc "collection stats for the week"
+    task :week => :environment do
+      puts Stats.get_stats(:week=>true)
+    end
+    desc "collection stats for the day"
+    task :day => :environment do
+      puts Stats.get_stats(:last_12=>true)
+    end
+    desc "collection stats for areas"
+    task :areas => :environment do
+      puts Stats.get_stats(:areas=>true)
+    end
+  
   end
   
 end

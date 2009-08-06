@@ -355,7 +355,7 @@ ul#minitabs a:hover {
 
 #footer {
   position: absolute;
-  bottom:0px;
+  bottom:0;
   height: 18px;
   background: #999;
   color: #fff;
