@@ -51,7 +51,7 @@ module Stats
   def self.week
     output = []
      7.times do |day| 
-      houses = House.find(:all, :conditions => ["created_at >= ? and created_at <= ?",Time.now - day.days,  Time.now - (day+1).days])# 
+      houses = House.find(:all, :conditions => ["created_at <= ? and created_at >= ?",Time.now - day.days,  Time.now - (day+1).days])# 
       output << "---#{(Time.now - day.days).strftime('%m/%d/%y')}---"
       output << fspt(houses)
     end
@@ -61,7 +61,7 @@ module Stats
   def self.last_12_hours
     output = []
     12.times do |hour|
-      houses = House.find(:all, :conditions => ["created_at >= ? and created_at <= ?",Time.now - hour.hours, Time.now - (hour+1).hours]) 
+      houses = House.find(:all, :conditions => ["created_at <= ? and created_at >= ?",Time.now - hour.hours, Time.now - (hour+1).hours]) 
       output << "--- #{(Time.now - hour.hours).strftime('%H:%M')} ---"
       output << fspt(houses)
     end
