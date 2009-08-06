@@ -238,6 +238,7 @@ layout "standard"
     @body = params[:body]
   if params[:planet].downcase == "earth"
     if  !@title.empty? || !@body.empty?
+      raise "bug report: #{@title} \r\n #{@body}"
     Lighthouse.account = 'ubermajestix'
     Lighthouse.token = "4971a7da4778b8746c9fc63c9ac962fb9cf86259"
 
