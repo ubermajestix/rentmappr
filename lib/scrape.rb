@@ -95,9 +95,15 @@ class Scraper
        pet_urls
     end
   
-
-  
-
+    def flagged?(cl_string)
+      match = cl_string.match "This posting has been <a href=\"http://www.craigslist.org/about/help/flags_and_community_moderation\">flagged</a> for removal"
+      !!match
+    end
+    
+    def removed?(cl_string)
+      match = cl_string.match "This posting has been deleted by its author."
+      !!match
+    end
 
   #scrape links
   def scrape_links(map_area)#returns queue
@@ -115,8 +121,9 @@ class Scraper
       #  cl = RFuzz::HttpClient.new(cl_site, 80)
        # doc = Hpricot(cl.get(cl_page).http_body)
         cl = open("http://#{map_area.scrape_url}#{cl_page}")
-        if cl.status.first == "200"
-          doc = Hpricot(cl.read)
+        cl_string = cl.read
+        if cl.status.first == "200" and not flagged?(cl_string) and not removed?(cl_string)
+          doc = Hpricot(cl_string)
           t_links = []
           doc.search("a") do |item|
             t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
