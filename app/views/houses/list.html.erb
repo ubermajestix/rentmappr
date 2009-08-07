@@ -1,0 +1,31 @@
+<div style="background: #fff; margin:20px; padding:20px;">
+  <div class="left">Houses for <%= @map_area.name %></div>
+  <div class="right"><%= will_paginate @houses %></div>
+  <div class="clear"></div>
+  <table>
+    <tr>  
+      <th> geocoded </th>
+      <th> accuracy </th>
+      <th> title </th>
+      <th> link </th>
+      <th> coords </th>
+      <th> address </th>
+      <th> price </th>
+      <th> pets </th>
+      <th> created_at </th>
+    </tr>
+  <%for house in @houses %>
+    <tr> 
+      <td> <%= house.geocoded %> </td>
+      <td style="border:1px solid #aaa"> <%= house.accuracy %> </td>
+      <td> <%=h house.title[0,50]%> </td>
+      <td><%= link_to "link", house.href %> </td>
+      <td> <%= house.lat %>, <%= house.lng %> </td>
+      <td style="border:1px solid #aaa"> <%=h Rack::Utils.unescape(house.address) %> </td>
+      <td> <%= house.price %> </td>
+      <td> dog: <%= house.dog %> cat: <%= house.cat %> </td>
+      <td><%= house.created_at %></td>    
+    </tr>
+  <%end%>
+  </table>
+</div>

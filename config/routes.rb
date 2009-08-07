@@ -20,6 +20,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.edit_area '/map_areas/edit/:id', :controller=>"map_areas", :action=>"edit"
 
+  map.list_houses '/houses/:id', :controller => "houses", :action => "list"
   
    map.confirm        '/reset_password/:reset_code',                    :controller => 'users',  :action => 'reset_password'
   # The priority is based upon order of creation: first created -> highest priority.

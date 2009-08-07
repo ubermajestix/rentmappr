@@ -42,6 +42,7 @@ class GeoLoc
   attr_accessor :lat
   attr_accessor :lng
   attr_accessor :success
+  attr_accessor :accuracy
 end
 
 
@@ -69,8 +70,13 @@ def geocode(houses)
           logger.info "   #{@houses.index(house)}/#{@houses.length}".rjust(10) if @houses.index(house)%5==0
           if loc.success
             print "."
-            house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :geocoded=>"s")
+            house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :geocoded=>"s", :accuracy=>loc.accuracy)
            # sleep 1
+          elsif loc.success == "403"
+            logger.fatal "X"*25
+            logger.fatal "Over geocoding limit"
+            logger.fatal "X"*25
+            break #means we've been shut off don't do anymore geocoding
           else
             print "X"
             #retry geocoding with at+some+street stripped out
@@ -79,7 +85,7 @@ def geocode(houses)
             loc = house.address ? geocodr(house.address) : GeoLoc.new()
              if loc.success
                 print "+"
-                house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address, :geocoded=>"s")
+                house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address, :geocoded=>"s", :accuracy=>loc.accuracy)
              else
                house.update_attribute(:geocoded, "f")
              end      
@@ -105,14 +111,13 @@ def geocodr(address_str)
     res.search("code"){|d| status = d.inner_html}
     if status == "200"
      # logger.info "parsing xml"
-     coords = []
-     res.search("coordinates"){|l| coords = l.inner_html.split(",")} 
-     @start.lat = coords[1]
-     @start.lng = coords[0]
+     res.search("coordinates"){|l| @start.lng,@start.lat = *l.inner_html.split(",")} 
+     @start.accuracy = res.search("AddressDetails").first.get_attribute("Accuracy")
      @start.success = true
     elsif status == "403"
       logger.warn "Looks like we've been shut off."
       # TODO kill and further geocoding attempts
+      @start.success = "403"
     end
   rescue StandardError => e
     logger.info e    

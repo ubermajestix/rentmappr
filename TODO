@@ -21,3 +21,5 @@ Deal with several houses in one location on the map. Move houses out of the way 
 
 Long list needs to reflect colors, green: seen it, blue: liked it. 
 
+Timeout for redirection loop? Scraper breaks b/c of it.
+

@@ -157,72 +157,77 @@ class Scraper
      house = House.new
      house.href = link
      logger.info house.href
-
-     hdoc = Hpricot(open("#{link}"))
-     hdoc.search("a") do |goog|
-       puts glink = goog.get_attribute("href").to_s if google_link(goog.get_attribute("href").to_s)
-       if glink
-         puts  house.address = glink[glink.index("?q=loc")+10...glink.length] if glink.index("?q=loc")
+     cl = open("#{link}")
+     cl_string = cl.read
+     if cl.status.first == "200" and not flagged?(cl_string) and not removed?(cl_string)
+       hdoc = Hpricot(cl_string)
+       hdoc.search("a") do |goog|
+         puts glink = goog.get_attribute("href").to_s if google_link(goog.get_attribute("href").to_s)
+         if glink
+           puts  house.address = glink[glink.index("?q=loc")+10...glink.length] if glink.index("?q=loc")
+         end
        end
-     end
-     hdoc.search("h2") do |title|
-       puts title = title.inner_html.to_s
-       title_end = title.index("(") ? title.index("(") : title.length
-       puts house.title = title[0...title_end] unless flagged(title)
-       house.title = house.title[0,255]
-       puts house.price = house.title.match(/([\$])([0-9]{3,})/).to_s.gsub("$", "") if house.title && house.title.match(/([\$])([0-9]{3,})/)
-       #find price in title $number 
-     end
+       hdoc.search("h2") do |title|
+         puts title = title.inner_html.to_s
+         title_end = title.index("(") ? title.index("(") : title.length
+         puts house.title = title[0...title_end] unless flagged(title)
+         house.title = house.title[0,255]
+         puts house.price = house.title.match(/([\$])([0-9]{3,})/).to_s.gsub("$", "") if house.title && house.title.match(/([\$])([0-9]{3,})/)
+         #find price in title $number 
+       end
 
 
-     if house.valid?
-         hdoc.search("table") do |table|
-          images = []
-           if table.to_s.match(/images.craigslist.org/)
-             puts "finding images............"
-             table.search("img") do |img|
-               puts img
-               images << img          
+       if house.valid?
+           hdoc.search("table") do |table|
+            images = []
+             if table.to_s.match(/images.craigslist.org/)
+               puts "finding images............"
+               table.search("img") do |img|
+                 puts img
+                 images << img          
+               end
+               house.images_href = images.join("\n")
+               puts house.images_href
              end
-             house.images_href = images.join("\n")
-             puts house.images_href
-           end
-          end
+            end
  
-      #set bedrooms
-      house.bedrooms = house.title.match(/([0-9]br)/)
+        #set bedrooms
+        house.bedrooms = house.title.match(/([0-9]br)/)
     
-      #set dog and cat columns
-      house.cat = true if @cats.include?(house.href)
-      house.dog = true if @dogs.include?(house.href)
-     if house.dog || house.cat
-       puts "*^*"*45
-       puts "cats: #{house.cat}"
-       puts "dogs: #{house.dog}"
-       puts "*^*"*45
-     end
-      #get email address and/or phone
-      #pull down email address
-      #look for phone number formatted text in description and title
+        #set dog and cat columns
+        house.cat = true if @cats.include?(house.href)
+        house.dog = true if @dogs.include?(house.href)
+       if house.dog || house.cat
+         puts "*^*"*45
+         puts "cats: #{house.cat}"
+         puts "dogs: #{house.dog}"
+         puts "*^*"*45
+       end
+        #get email address and/or phone
+        #pull down email address
+        #look for phone number formatted text in description and title
     
-      puts "map_area: #{map_area.id} | #{map_area.name}"
-      house.map_area_id = map_area.id
-      house.geocoded = 'n'
-      puts house
-      begin
-        house.save
-      rescue StandardError => e
-        puts "X-"*45
-        logger.error e.inspect
-        puts "X-"*45
-      end
-      ActiveRecord::Base.clear_active_connections!
-      puts "**"*45
-   else
-     puts "XX"*45
-     puts house.errors.full_messages 
-     puts "XX"*45
-   end 
+        puts "map_area: #{map_area.id} | #{map_area.name}"
+        house.map_area_id = map_area.id
+        house.geocoded = 'n'
+        puts house
+        begin
+          house.save
+        rescue StandardError => e
+          puts "X-"*45
+          logger.error e.inspect
+          puts "X-"*45
+        end
+        ActiveRecord::Base.clear_active_connections!
+        puts "**"*45
+     else
+       puts "XX"*45
+       puts house.errors.full_messages 
+       puts "XX"*45
+     end 
+   end # status == 200 not flagged? not removed?
+  rescue StandardError => e
+    logger.error e.inspect
   rescue Timeout::Error => e
    puts e
   end#of parse_cl_page

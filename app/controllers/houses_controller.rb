@@ -236,28 +236,38 @@ layout "standard"
   def file_bug
     @title = params[:title]
     @body = params[:body]
-  if params[:planet].downcase == "earth"
-    if  !@title.empty? || !@body.empty?
-      raise "bug report: #{@title} \r\n #{@body}"
-    Lighthouse.account = 'ubermajestix'
-    Lighthouse.token = "4971a7da4778b8746c9fc63c9ac962fb9cf86259"
-
-     @type = params[:type] == 'bug' ? 'bug' : 'feature request'
-     user = logged_in? ? current_user.email : (params[:email].empty? ? "unknown" : params[:email]) 
-     ticket = Lighthouse::Ticket.new(:project_id => 12220)
-     ticket.title = @title
-     ticket.body = @body
-     ticket.tags << 'user reported' << @type << user
-     ticket.save
-
- flash[:notice] = "Successfully created ticket"
- else
-   flash[:notice] = "You need to have either a title or body to submit"
- end
- else
-   flash[:notice] = "you don't appear to be human, try again"
- end
-    redirect_to bug_report_path
+    if params[:planet].downcase == "earth"
+      if  !@title.empty? || !@body.empty?
+        Lighthouse.account = 'ubermajestix'
+        Lighthouse.token = "4971a7da4778b8746c9fc63c9ac962fb9cf86259"
+        @type = params[:type] == 'bug' ? 'bug' : 'feature request'
+        user = logged_in? ? current_user.email : (params[:email].empty? ? "unknown" : params[:email]) 
+        ticket = Lighthouse::Ticket.new(:project_id => 12220)
+        ticket.title = @title
+        ticket.body = @body
+        ticket.tags << 'user reported' << @type << user
+        ticket.save
+        flash[:notice] = "Successfully created ticket"
+        begin 
+          raise "bug report: #{@title} \r\n #{@body}"
+        rescue StandardError => e
+          notify_hoptoad(e)
+          redirect_to bug_report_path
+        end
+        
+        # sends email with hoptoad instead?
+      else
+        flash[:notice] = "You need to have either a title or body to submit"
+      end
+    else
+      flash[:notice] = "you don't appear to be human, try again"
+    end    
+  end
+  
+  def list
+    @map_area = MapArea.find(params[:id])
+    @houses = House.paginate(:all, :conditions=>{:map_area_id => @map_area.id}, :order=>"accuracy DESC", :page=>params[:page], :per_page=>30)
+    render :template => "houses/list", :layout => "basic"
   end
     
 end
