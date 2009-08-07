@@ -61,6 +61,7 @@ module Stats
   def self.last_12_hours
     output = []
     12.times do |hour|
+      hour-=1
       houses = House.find(:all, :conditions => ["created_at <= ? and created_at >= ?",Time.now - hour.hours, Time.now - (hour+1).hours]) 
       output << "--- #{(Time.now - hour.hours).strftime('%H:%M')} ---"
       output << fspt(houses)
