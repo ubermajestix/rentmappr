@@ -66,10 +66,9 @@ class Scraper
   # exit
 
   
-    def pet_threads(site, pet_type)
-       puts "going to #{site}/search/apa?#{pet_type}"
-         main_page = Hpricot(open("http://#{site}/search/apa?#{pet_type}"))
-      # puts main_page.inspect  
+    def pet_threads(map_area, pet_type)
+        puts "going to http://#{map_area.search_url}#{pet_type}"
+        main_page = Hpricot(open("http://#{map_area.search_url}#{pet_type}")) 
         items = main_page.search("div.sh")
         bold_items = items.first.search("b")
         found = bold_items[1].inner_html.to_s
@@ -79,12 +78,12 @@ class Scraper
         urls = Queue.new
         pet_threads = []
         pages.times do |page|
-          pet_threads << Thread.new("/search/apa?#{pet_type}&s=#{page}00", site) {|cl_page, cl_site|
-            puts "scraping #{page} on #{cl_site}#{cl_page}"
-            doc = Hpricot(open("http://#{cl_site}#{cl_page}"))
+          pet_threads << Thread.new("#{pet_type}&s=#{page}00", map_area) {|cl_page, map_area|
+            puts "scraping #{page} on #{map_area.search_url}#{cl_page}"
+            doc = Hpricot(open("http://#{map_area.search_url}#{cl_page}"))
             #return all /apa/#{a number} formatted links
             doc.search("a") do |link|
-              urls << "http://#{cl_site}#{link.get_attribute("href")}" if link.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
+              urls << "http://#{map_area.url}#{link.get_attribute("href")}" if link.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
             end
           }
        end
@@ -101,21 +100,21 @@ class Scraper
 
 
   #scrape links
-  def scrape_links(site)#returns queue
+  def scrape_links(map_area)#returns queue
     links = Queue.new
-    @cats = pet_threads(site, "addTwo=purrr")
-    @dogs = pet_threads(site, "addThree=wooof")
+    @cats = pet_threads(map_area, "addTwo=purrr")
+    @dogs = pet_threads(map_area, "addThree=wooof")
     scraper_threads = []
     pages = []
     date = Time.now
-    puts "hitting #{site}"
+    puts "hitting #{map_area.scrape_url}"
     10.times do |page|
     # while date > Time.now-7.days do |page|
-      scraper_threads << Thread.new("/apa/index#{page}00.html", site) {|cl_page, cl_site|
-        puts "scraping #{page} on #{cl_site}#{cl_page}"
+      scraper_threads << Thread.new("#{page}00.html", map_area) {|cl_page, map_area|
+        puts "scraping page #{page} on #{map_area.scrape_url}#{cl_page}"
       #  cl = RFuzz::HttpClient.new(cl_site, 80)
        # doc = Hpricot(cl.get(cl_page).http_body)
-        doc = Hpricot(open("http://#{cl_site}#{cl_page}"))
+        doc = Hpricot(open("http://#{map_area.scrape_url}#{cl_page}"))
         t_links = []
       doc.search("a") do |item|
         t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
@@ -124,7 +123,7 @@ class Scraper
       
       # here we want to only push urls onto the "links" Queue that we haven't seen
       logger.info "#{cl_page} tlinks before: " + t_links.length.to_s
-      t_links.collect!{|t| "http://#{cl_site}#{t}"}
+      t_links.collect!{|t| "http://#{map_area.url}#{t}"}
       seen_these_hrefs = House.all(:select=>"href", :conditions=>["href in (#{t_links.collect{|h| "'#{h}'"}.join(',')})"]).map(&:href)
       logger.info "seen em: " + seen_these_hrefs.length.to_s
       t_links = t_links - seen_these_hrefs
@@ -247,7 +246,7 @@ def start_scraper(opts={})
      puts "#{@houses.length} in #{map_area.name}"
      # @houses.each { |house| house.destroy }
        puts "scraping #{map_area.craigslist}" 
-        queue = scrape_links(map_area.craigslist)
+        queue = scrape_links(map_area)
         pull_down_page(queue, map_area)
         puts map_area.houses.length
         puts "took: #{Time.now - house_start}"

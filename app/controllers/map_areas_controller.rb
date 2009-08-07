@@ -85,7 +85,7 @@ before_filter :admin_only, :except=>:st
     respond_to do |format|
       if @map_area.update_attributes(params[:map_area])
         flash[:notice] = 'MapArea was successfully updated.'
-        format.html { redirect_to(@map_area) }
+        format.html { redirect_to map_areas_path}
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

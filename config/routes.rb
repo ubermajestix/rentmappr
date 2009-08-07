@@ -1,9 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :map_areas
-
   map.resources :users
   map.resource :session
-  map.resource :map_areas
+  map.resources :map_areas
   
   map.signup          '/signup',          :controller => 'users',       :action => 'new'
   map.login           '/login',           :controller => 'sessions',    :action => 'new'
@@ -20,7 +18,8 @@ ActionController::Routing::Routes.draw do |map|
   map.s_areas           '/s/areas/:areas',  :controller => "map_areas",   :action => "st", :defaults=>{:areas=>true}
   map.s_week          '/s/week/:week',  :controller => "map_areas",   :action => "st", :defaults=>{:week=>true}
   
-  
+  map.edit_area '/map_areas/edit/:id', :controller=>"map_areas", :action=>"edit"
+
   
    map.confirm        '/reset_password/:reset_code',                    :controller => 'users',  :action => 'reset_password'
   # The priority is based upon order of creation: first created -> highest priority.

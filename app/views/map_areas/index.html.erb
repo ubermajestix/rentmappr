@@ -1,9 +1,9 @@
 <%= @map_areas.length %> areas collected <br/>
-<%= link_to "add new area", new_map_areas_path  %>
+<%= link_to "add new area", new_map_area_path  %>
 <div id="stats"  style="position:absolute;left:700px; background: #fff; width:300px; padding:5px margin-top:-25px; white-space: nowrap;">
 	stats
 
-	<%= debug @stat %> 
+	<%= debug @stats %> 
 
 </div>
 <div id="map" style="width:700px; height:500px;">
@@ -14,8 +14,8 @@
 
 	<%for area in @map_areas %>
 <tr> 
-	<td> <%= area.name %> </td>
-	<td> <%= area.craigslist %>  </td>
+	<td> <%= link_to area.name, edit_area_path(area), :title=>"edit" %> </td>
+	<td> <%= area.craigslist %><%= "/#{area.region}" if area.region %>  </td>
 	<td>  <%= area.expires_in %> </td>
 	 </tr>
 	<%end%>

@@ -1,12 +1,26 @@
 <h1>Editing map_area</h1>
 
-<%= error_messages_for :map_area %>
+<div class="session"><% form_for @map_area  do |a|%>
+name: <br/>
+<%= a.text_field :name, :class=>"large_input" %><br/>
 
-<% form_for(@map_area) do |f| %>
-  <p>
-    <%= f.submit "Update" %>
-  </p>
-<% end %>
+craigslist <br/>
+<%= a.text_field :craigslist, :class=>"large_input",:size=>30 %>/
+<%= a.text_field :region,     :class=>"large_input", :size=>5 %><br/>
 
-<%= link_to 'Show', @map_area %> |
-<%= link_to 'Back', map_areas_path %>
+records expire in: <%= a.text_field :expires_in, :size=>5, :class=>"large_input" %> days 
+
+<br/><br/>
+<div style="position:absolute; left:310px">
+	lat:<%= a.text_field :lat, :size=>15, :class=>"large_input" %> <br/>
+	lng:<%= a.text_field :lng, :size=>15, :class=>"large_input" %>
+</div>
+
+<div id="map" style="width: 300px; height: 300px; cursor:crosshair"></div>
+
+<%= submit_tag "submit"%>
+<% end%>
+</div>
+
+
+<%= link_to 'Back', :action=>:index %>

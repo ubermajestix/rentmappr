@@ -1,5 +1,16 @@
-Need to insert urls that I've already downloaded to db.
-So scraping should
-1. fetch 10 pages of urls
-2. drop urls in db
-3. uses those urls to scrape from
+Let user correct address of house
+Let user flag house as 1. repost 2. spam (flag with craigslist?)
+
+Only geocode for addresses with street
+
+Add region for city's like sf => sfbay.craigslist.org/<region> but search is sfbay.craigslist.org/search/apa/<region>
+
+Check if posting deleted by author
+
+Remove posts older than mapareas defined time frame.
+Do this once per night - cron.rake check hour == 00:00
+
+Check to see if posts have been removed -> will return 405 status if flagged or deleted
+Do this once per night
+
+Check status of property before scraping (status == 200)
