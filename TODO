@@ -16,3 +16,8 @@ Check to see if existing posts have been removed -> will return 405 status if fl
 Do this once per night
 
 DONE 8/7/09 Check status of property before scraping (status == 200)
+
+Deal with several houses in one location on the map. Move houses out of the way and point arrows? Have icon to populate longlist with several at one loc?
+
+Long list needs to reflect colors, green: seen it, blue: liked it. 
+
