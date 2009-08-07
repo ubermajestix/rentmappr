@@ -81,11 +81,10 @@ before_filter :admin_only, :except=>:st
   # PUT /map_areas/1.xml
   def update
     @map_area = MapArea.find(params[:id])
-
     respond_to do |format|
       if @map_area.update_attributes(params[:map_area])
         flash[:notice] = 'MapArea was successfully updated.'
-        format.html { redirect_to map_areas_path}
+        format.html { redirect_to map_areas_path }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

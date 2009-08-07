@@ -15,7 +15,7 @@
 	<%for area in @map_areas %>
 <tr> 
 	<td> <%= link_to area.name, edit_area_path(area), :title=>"edit" %> </td>
-	<td> <%= area.craigslist %><%= "/#{area.region}" if area.region %>  </td>
+	<td> <%= area.craigslist %><%= "/#{area.region}"%>  </td>
 	<td>  <%= area.expires_in %> </td>
 	 </tr>
 	<%end%>

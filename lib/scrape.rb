@@ -114,25 +114,25 @@ class Scraper
         puts "scraping page #{page} on #{map_area.scrape_url}#{cl_page}"
       #  cl = RFuzz::HttpClient.new(cl_site, 80)
        # doc = Hpricot(cl.get(cl_page).http_body)
-        doc = Hpricot(open("http://#{map_area.scrape_url}#{cl_page}"))
-        t_links = []
-      doc.search("a") do |item|
-        t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
-      
-      end
-      
-      # here we want to only push urls onto the "links" Queue that we haven't seen
-      logger.info "#{cl_page} tlinks before: " + t_links.length.to_s
-      t_links.collect!{|t| "http://#{map_area.url}#{t}"}
-      seen_these_hrefs = House.all(:select=>"href", :conditions=>["href in (#{t_links.collect{|h| "'#{h}'"}.join(',')})"]).map(&:href)
-      logger.info "seen em: " + seen_these_hrefs.length.to_s
-      t_links = t_links - seen_these_hrefs
-      logger.info "#{cl_page} tlinks after: " + t_links.length.to_s
-      links << t_links unless t_links.empty?
-      puts "found: #{t_links.length} links"
-      puts "queue length: #{links.length}"
-      ActiveRecord::Base.clear_active_connections!
-      
+        cl = open("http://#{map_area.scrape_url}#{cl_page}")
+        if cl.status.first == "200"
+          doc = Hpricot(cl.read)
+          t_links = []
+          doc.search("a") do |item|
+            t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
+          end      
+          # here we want to only push urls onto the "links" Queue that we haven't seen
+          logger.info "#{cl_page} tlinks before: " + t_links.length.to_s
+          t_links.collect!{|t| "http://#{map_area.url}#{t}"}
+          seen_these_hrefs = House.all(:select=>"href", :conditions=>["href in (#{t_links.collect{|h| "'#{h}'"}.join(',')})"]).map(&:href)
+          logger.info "seen em: " + seen_these_hrefs.length.to_s
+          t_links = t_links - seen_these_hrefs
+          logger.info "#{cl_page} tlinks after: " + t_links.length.to_s
+          links << t_links unless t_links.empty?
+          puts "found: #{t_links.length} links"
+          puts "queue length: #{links.length}"
+          ActiveRecord::Base.clear_active_connections!
+        end # status == 200
       }
     end
 
