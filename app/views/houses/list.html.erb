@@ -21,7 +21,7 @@
       <td> <%=h house.title[0,50]%> </td>
       <td><%= link_to "link", house.href %> </td>
       <td> <%= house.lat %>, <%= house.lng %> </td>
-      <td style="border:1px solid #aaa"> <%=h Rack::Utils.unescape(house.address) %> </td>
+      <td style="border:1px solid #aaa"> <%= Rack::Utils.unescape(house.address) if house.address %> </td>
       <td> <%= house.price %> </td>
       <td> dog: <%= house.dog %> cat: <%= house.cat %> </td>
       <td><%= house.created_at %></td>    
