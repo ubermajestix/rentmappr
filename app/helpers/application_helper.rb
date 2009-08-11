@@ -53,5 +53,14 @@ module ApplicationHelper
                       :complete=>"Lightbox.prototype.resizeContainer(#{options[:width] || 350}, #{options[:height] || 200});")
       link_to_function(name, remote_function(options), html_options || options.delete(:html))      
     end
+    
+    def saved_houses
+      houses = [] 
+      houses << current_user.saved_houses if logged_in?
+      houses << House.find(session[:saved_houses]) if session[:saved_houses]
+      houses.flatten.uniq
+    end
+    
+
 
 end

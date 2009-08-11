@@ -25,5 +25,18 @@ class ApplicationController < ActionController::Base
   def local_request?
     false
   end
-
+  
+  def setup_session
+    session[:saved_houses]  ||=[]
+    session[:trashed_houses]||=[]
+    session[:clicked_houses]||=[]
+    session[:saved_houses].uniq!
+    session[:trashed_houses].uniq!
+    session[:clicked_houses].uniq!
+    puts "ss"*25
+    puts "saved " + session[:saved_houses].inspect  
+    puts "trashed " + session[:trashed_houses].inspect
+    puts "clicked " + session[:clicked_houses].inspect
+    puts "ss"*25
+  end
 end

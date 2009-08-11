@@ -52,7 +52,7 @@ LightboxOptions = Object.extend({
     overlayOpacity: 0.8,   // controls transparency of shadow overlay
 
     animate: true,         // toggles resizing animations
-    resizeSpeed: 7,        // controls the speed of the image resizing animations (1=slowest and 10=fastest)
+    resizeSpeed: 10,        // controls the speed of the image resizing animations (1=slowest and 10=fastest)
 
     borderSize: 10,         //if you adjust the padding in the CSS, you will need to update this variable
 
@@ -217,8 +217,8 @@ Lightbox.prototype = {
         var wDiff = widthCurrent - widthNew;
         var hDiff = heightCurrent - heightNew;
 
-        if (hDiff != 0) new Effect.Scale( $('outerImageContainer'), yScale, {scaleX: false, duration: 0.6, queue: 'front', scaleContent: false}); 
-        if (wDiff != 0) new Effect.Scale( $('outerImageContainer'), xScale, {scaleY: false, duration: 0.6, delay: 0.6, scaleContent: false}); 
+        if (hDiff != 0) new Effect.Scale( $('outerImageContainer'), yScale, {scaleX: false, duration: 0.2, queue: 'front', scaleContent: false}); 
+        if (wDiff != 0) new Effect.Scale( $('outerImageContainer'), xScale, {scaleY: false, duration: 0.2, delay: 0.6, scaleContent: false}); 
         // if new and old image are same size and no scaling transition is necessary, 
         // do a quick pause to prevent image flicker.
         var timeout = 0;
@@ -240,7 +240,8 @@ Lightbox.prototype = {
     showContent: function(){
         $('loading').hide();
         new Effect.Appear($('lightboxImage'), { 
-            duration: 0.6, 
+          delay:0.4,
+            duration: 0.2, 
             afterFinish: (function(){ this.updateDetails(); }).bind(this) 
         });
         //this.preloadNeighborImages();
@@ -263,11 +264,12 @@ Lightbox.prototype = {
         // }
         new Effect.Parallel(
             [ 
-                new Effect.SlideDown($('imageDataContainer'), { sync: true, duration: 0.6, from: 0.0, to: 1.0 }), 
-                new Effect.Appear($('imageDataContainer'), { sync: true, duration: 0.6 }) 
+                new Effect.SlideDown($('imageDataContainer'), { sync: true, duration: 0.2, from: 0.0, to: 1.0 }), 
+                new Effect.Appear($('imageDataContainer'), { sync: true, duration: 0.2, delay:0.6 }) 
             ], 
             { 
-                duration: 0.6, 
+                delay: 0.6, 
+                duration: 0.2, 
                 afterFinish: (function() {
         	                // update overlay size and update nav
         	                var arrayPageSize = this.getPageSize();
@@ -362,17 +364,17 @@ Lightbox.prototype = {
         this.disableKeyboardNav();
 				 new Effect.Parallel(
 	            [ 
-	                new Effect.SlideUp($('imageDataContainer'), { sync: true, duration: 0.6, from: 1.0, to: 0.0 }), 
-	                new Effect.Fade($('imageDataContainer'), { sync: true, duration: 0.6 }), 
+	                new Effect.SlideUp($('imageDataContainer'), { sync: true, duration: 0.1, from: 1.0, to: 0.0 }), 
+	                new Effect.Fade($('imageDataContainer'), { sync: true, duration: 0.4 }), 
 									
 	            ], 
-	            { duration: 0.6, afterFinish: (
+	            { duration: 0.2, afterFinish: (
 								function() {
 				        	new Effect.Parallel(
-										[	new Effect.SlideUp('lightbox', {sync: true, duration: 0.6}),
-											new Effect.Fade('lightbox', {sync: true, duration: 0.6})
+										[	new Effect.SlideUp('lightbox', {sync: true, duration: 0.2}),
+											new Effect.Fade('lightbox', {sync: true, duration: 0.2})
 										]);
-				        	new Effect.Fade('overlay', { duration: 0.6, delay: 0.6 });
+				        	new Effect.Fade('overlay', { duration: 0.4, delay: 0.6 });
 				        	$$('select', 'object', 'embed').each(function(node){ node.style.visibility = 'visible' });
 								}
 							)

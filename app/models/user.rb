@@ -93,6 +93,10 @@ class User < ActiveRecord::Base
     self.email == "tyler.a.montgomery@gmail.com"
   end
   
+  def self.saved_user
+    find_by_login("saved")
+  end
+  
   
   protected
     # before filter 

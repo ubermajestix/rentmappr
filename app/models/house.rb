@@ -74,6 +74,26 @@ houses.each{|house|  house.has_images = true if house.images_href}
     houses
   end
   
+  def self.find_for_session (opts={})
+    puts "=="*45
+    puts "saved " + opts[:saved_ids].inspect
+    puts "trashed " + opts[:trashed_ids].inspect
+    puts "clicked " + opts[:clicked_ids].inspect
+    puts "=="*45
+    houses = find( :all, 
+                   :conditions=>opts[:conditions],
+                   :offset => opts[:offset],
+                   :limit  => opts[:limit], 
+                   :order=>"created_at DESC")
+    houses.reject!{|h| opts[:trashed_ids].include?(h.id)}
+    houses.each do |house|
+      puts "#{house.id} saved!" if opts[:saved_ids].include?(house.id.to_s)
+      puts "#{house.id} clicked!" if opts[:clicked_ids].include?(house.id.to_s)
+      house.saved   =  opts[:saved_ids].include?(house.id.to_s)    
+      house.clicked =  opts[:clicked_ids].include?(house.id.to_s)
+    end
+  end
+  
 
 
    def self.midnight

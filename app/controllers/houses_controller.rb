@@ -1,6 +1,7 @@
 class HousesController < ApplicationController
 
-before_filter :login_required, :only=>%w{save_it remove_it trash_it remove_all_saved}
+before_filter :login_required, :only=>%w{remove_all_saved}
+before_filter :setup_session
 layout "standard"  
   #TODO have user draw area on map in which they would like to search...awesome
   def index
@@ -83,8 +84,12 @@ layout "standard"
           :per_page      => 250
            )
       else
-         @total = House.count(:conditions => conds)
+        @total = House.count(:conditions => conds)
         @houses = House.paginate(
+          :finder => :find_for_session,
+          :saved_ids => session[:saved_houses],
+          :trashed_ids => session[:trashed_houses],
+          :clicked_ids => session[:clicked_houses],
           :conditions    => conds,
           :order         => "created_at DESC",
           :total_entries => @total,
@@ -165,10 +170,12 @@ layout "standard"
   end
   
   def load_info_window
-     Userhouses.create(:user_id=>current_user.id, :house_id=>params[:house_id], :clicked=>true) if logged_in?
+     user = current_user || User.saved_user 
+     Userhouses.create(:user_id=>user.id, :house_id=>params[:house_id], :clicked=>true)
+     session[:clicked_houses] << params[:house_id]
      @house = House.find(params[:house_id])
      @house.has_images = !@house.images_href.nil?
-       @house.saved = current_user.saved_houses.include?(@house) if logged_in?
+     @house.saved = logged_in? ? current_user.saved_houses.include?(@house) : session[:saved_houses].include?(@house.id)
   end
   
   
@@ -184,7 +191,9 @@ layout "standard"
   
   def save_it
    @house = House.find(params[:id])    
-    Userhouses.create(:user_id=>current_user.id, :house_id=>params[:id], :saved=>true)
+    user = current_user || User.saved_user 
+    Userhouses.create(:user_id=>user.id, :house_id=>params[:id], :saved=>true)
+    session[:saved_houses] << params[:id]
     @house.update_attribute(:saved, true)
     @houses = session[:houses]
     @house.has_images = !@house.images_href.nil?
@@ -197,14 +206,18 @@ layout "standard"
     #remove house from userhouses
     @house = House.find(params[:id])
     @house.update_attribute(:saved, false)
-    current_user.houses.delete(@house)
+    user = current_user || User.saved_user 
+    user.houses.delete(@house)
+    session[:saved_houses].delete(params[:id])
     @houses = [] #session[:houses]
-     @house.has_images = !@house.images_href.nil?
+    @house.has_images = !@house.images_href.nil?
     #TODO call rjs to remove marker, add it back as pink, then update short list
   end
   
   def trash_it
+    user = current_user || User.saved_user 
     Userhouses.create(:user_id=>current_user.id, :house_id=>params[:id], :trash=>true)
+    session[:trashed_houses] << params[:id]
     @house = House.find(params[:id])
     @house.update_attribute(:saved, false)
     @houses = session[:houses]

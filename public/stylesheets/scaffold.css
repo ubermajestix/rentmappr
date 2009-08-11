@@ -15,8 +15,9 @@ body, p, ol, ul, td {
   min-height: 100%;
   height: auto !important;
   height: 100%;
-  position: relative
+  position: relative;
   margin: 0 auto 20px;
+  width: 1030px;
 }
 
 

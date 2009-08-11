@@ -1,66 +1,46 @@
-	<div style="line-height:22px;"> 
+<div style="line-height:22px;"> 
 	<%if place %>
-
-
-		<%= link_to strip_tags(place.title), place.href, :target=>:new %>
-
-	<br/>
-	<%if place.dog || place.cat %>
-	pets:
-	<%if place.cat %>
-		<%= image_tag '/images/cat.png', :size=>"20x20" %>
-	<% end %>
+		<%= link_to strip_tags(place.title), place.href, :target=>:new %><br/>
+	  <%if place.dog || place.cat %>
+  	  pets:
+  	  <%if place.cat %>
+  		  <%= image_tag '/images/cat.png', :size=>"20x20" %>
+  	  <% end %>
 	
-	<%if place.dog %>
-		<%= image_tag '/images/dog.png', :size=>"20x20" %>
-	<% end %>
+  	  <%if place.dog %>
+  		    <%= image_tag '/images/dog.png', :size=>"20x20" %>
+  	  <% end %>
+  		<br/>
+  	<% end %>
 	
-		<br/>
-	<% end %>
-	
-	<%if place.saved %>
-	<%= link_to_remote 	image_tag("/images/remove.png", :size=>"20x20") + " remove it", 
-						:url=>{:action=>:remove_it, :id=>place.id}, 
-						:html=>{ :title=>"remove from my short list", :class=>"remote_link"} %>
+  	<%if place.saved %>
+  	  saved:<%= place.saved %>
+  	  <%= link_to_remote 	image_tag("/images/remove.png", :size=>"20x20") + " remove it", 
+  						:url  => { :action=>:remove_it, :id=>place.id}, 
+  						:html => { :title=>"remove from my short list", :class=>"remote_link"} %>
 
-	<%= link_to_remote 	image_tag("/images/trash.png", :size=>"20x20") + " trash it", 
-						:url=>{:action=>:trash_it, :id=>place.id},
-			:html =>		{	:onclick=>"remove_marker(#{place.id})", :title=>"don\'t show me this house again", :class=>"remote_link" }%>
-	<% else %>
-	
-	<%if logged_in? %>
-	<%= link_to_remote 	image_tag("/images/save.png", :size=>"20x20") + " save it", 
-						:url=>{:action=>:save_it, :id=>place.id},
-						:html=>{:title=>"add to my short list", :class=>"remote_link"} %>
+  	  <%= link_to_remote 	image_tag("/images/trash.png", :size=>"20x20") + " trash it", 
+  						:url  => { :action=>:trash_it, :id=>place.id},
+  			      :html => { :onclick=>"remove_marker(#{place.id})", :title=>"don\'t show me this house again", :class=>"remote_link" }%>
+  	<% else %>
+  	  <% unless logged_in? %>
+  		  <%= link_to "register", signup_path %> or <%= link_to "login", login_path %> to: <br/>
+  	  <% end %>
+  	  <%= link_to_remote 	image_tag("/images/save.png", :size=>"20x20") + " save it", 
+  						:url=>{:action=>:save_it, :id=>place.id},
+  						:html=>{:title=>"add to my short list", :class=>"remote_link"} %>
 
-	<%= link_to_remote 	image_tag("/images/trash.png", :size=>"20x20") + " trash it", 
-						:url=>{  :action=> :trash_it, :id=>place.id},
-			:html =>		{	:onclick=> "remove_marker(#{place.id})" , :title=>"don\'t show me this house again", :class=>"remote_link"}%>
-			
-	<% else %>
-	<%= link_to "register", signup_path %> or <%= link_to "login", login_path %> to: <br/>
-	<div style="border:1px solid #222; width:175px;">
+  	  <%= link_to_remote 	image_tag("/images/trash.png", :size=>"20x20") + " trash it", 
+  						:url=>{  :action=> :trash_it, :id=>place.id},
+  			:html =>		{	:onclick=> "remove_marker(#{place.id})" , :title=>"don\'t show me this house again", :class=>"remote_link"}%>
 
-	<%= image_tag("/images/save.png", :size=>"20x20")%> save
-	<%= image_tag("/images/trash.png", :size=>"20x20")%> trash			
-	<% end %>
-	
-
-	<% end %> <br/>
-	<% if place.has_images %>
-		<%if logged_in? %>
-			<%= tybox_to_remote image_tag("/images/images.png", :size=>"20x20") + " images", :url=>{:action=>:show_images, :id=>place.id}, :height=>320,:width=>500, :html=>{:title=>"show images of house", :class=>"remote_link"} %>
-		<% else %>
-			<%= image_tag("/images/images.png", :size=>"20x20") %> images
-		<% end %>
-	<% end %>
-	<%if logged_in? %>
-	  <%= tybox_to_remote image_tag("/images/streetview.png", :size=>"20x20") + " streetview", :url=>{:action=>:streetview, :id=>place.id}, :height=>320,:width=>600, :html=>{:title=>"streetview panorama", :class=>"remote_link"} %>
-		<% else %>
-		<%= image_tag("/images/images.png", :size=>"20x20") %> images
-		<%= image_tag("/images/streetview.png", :size=>"20x20") %> street view
-			</div>
-	<% end %>
-<% end %>
+  	<% end %> <br/>
+  	<% if place.has_images %>
+  			<%= tybox_to_remote image_tag("/images/images.png", :size=>"20x20") + " images", :url=>{:action=>:show_images, :id=>place.id}, :height=>320,:width=>500, :html=>{:title=>"show images of house", :class=>"remote_link"} %>
+  	<% end %>
+  	<%= tybox_to_remote image_tag("/images/streetview.png", :size=>"20x20") + " streetview", :url=>{:action=>:streetview, :id=>place.id}, :height=>320,:width=>600, :html=>{:title=>"streetview panorama", :class=>"remote_link"} %>
+  <% else %>
+    <%= debug place %>
+  <% end %>
 <p>added <%= nice_time(place.created_at) %> </p>
 </div>
