@@ -23,3 +23,14 @@ Long list needs to reflect colors, green: seen it, blue: liked it.
 
 Timeout for redirection loop? Scraper breaks b/c of it.
 
+Same geoloc, same price, appears to be repost -> take newer one's info and update old one with new info -> don't have to update users [saved,clicked,trashed]
+
+Same geoloc, diff price, not a repost -> move house's geoloc to the northeast by a factor of the icon width/height -> need to figure out how to fit several to one loc, so keep adding to location and no one house sits on another. 
+Use polyline to draw line back to original geoloc:
+ var polyline = new GPolyline([
+  new GLatLng(37.4419, -122.1419),
+  new GLatLng(37.4519, -122.1519)
+], "#ff0000", 10);
+map.addOverlay(polyline); i
+
+
