@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title><%= global_page_title %></title>
+    <%= stylesheet_link_tag 'test' %>
+    <%= javascript_include_tag :defaults %>
+    <%= stylesheet_link_tag 'lightbox' %>
+    <%= javascript_include_tag 'lightbox', 'builder' %>
+    <script>
+      var $j = jQuery.noConflict();
+      $j(document).ready(function(){});
+    </script>
+   <%if online? %>
+     <% @key =request.host =~ /rentmappr/ ? "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTFe1RIeuOf__AvzqPPVl3e_BFy2xR4LYWw1t-nh0FUMH7k3OkjcJU9ww" : "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTkn2cjlmPPsTmxGpadsO7XL1l5cxQRHnXCjbHxd4a9uQicYTUQkTi-8w" %>
+     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= @key %>" type="text/javascript"></script>
+     <script type="text/javascript">
+       var markers = [];
+       // helper function to create markers
+    	 function createMarker(point,html,icon) {
+    	  var marker = new GMarker(point,icon);
+    	  GEvent.addListener(marker, "click", function() {marker.openInfoWindowHtml(html);});
+        return marker;
+    	 }
+
+       //FIXME: draw bounds to find properties - limits db/cache scope
+       var map;
+       function initialize() {
+    	  map = new GMap($("map"));
+    	  var start = new GPoint(<%=@start.lng %>,<%=@start.lat %>);
+    	  map.addControl(new GSmallMapControl());
+    	  map.addControl(new GMapTypeControl());
+    	  map.centerAndZoom(start, <%= @zoom %>);
+        <% if @map_areas %>
+          <% for place in @map_areas %>
+            <% if place.lat and place.lng %>
+              var point = new GPoint(<%=place.lng%>,<%=place.lat%>);
+              var icon = saved_house_icon(false) ;
+              var marker = createMarker(point,"<%=escape_javascript(render :partial=>'houses/pick_area',:locals=>{:place => place}) %>",icon);
+              map.addOverlay(marker);
+      	      markers[<%= place.id %>] = marker; 
+           <% end %>
+         <% end %>
+       <% end %>
+    	}
+    	function saved_house_icon(has_images){
+    		var icon = new GIcon();
+    		if (has_images){	icon.image =  '/images/my_house_pic.png';	}
+    		else {icon.image =  '/images/my_house.png';}
+    	  icon.shadow =  '/images/house_shadow.png';
+    	  icon.iconSize = new GSize(20,20);
+    	  icon.iconAnchor = new GPoint(10, 20);
+    	  icon.infoWindowAnchor = new GPoint(12, 8);
+    	  return icon;
+    	}
+	
+    	function open_window(id){GEvent.trigger(markers[id], "click");}
+      </script>
+   <% end %>
+  </head>
+
+  <body onload="initialize();" unload="GUnload();">
+    <div id='map'></div>
+    <div id="container">
+       <%= yield %>
+    </div>
+  </body>
+</html>

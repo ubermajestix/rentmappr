@@ -88,13 +88,13 @@ var map;
 
 <body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0})" unload="GUnload();">
 
-<div id="container">
-  <%= render :partial => 'layouts/action_bar' %>
-  <div style="height: 500px; margin-right:auto; margin-left: auto">
+  <div id="header">
+    <%= image_tag '/images/logo.png' %> Find a place to rent. 
+  </div>
+  <div id="container" style="border: 1px solid">
   	<%= yield  %>
   </div>
   <%= render :partial => 'layouts/footer' %>
-</div>
 
 
 

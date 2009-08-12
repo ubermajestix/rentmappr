@@ -4,6 +4,11 @@ before_filter :login_required, :only=>%w{remove_all_saved}
 before_filter :setup_session
 layout "standard"  
   #TODO have user draw area on map in which they would like to search...awesome
+  def test
+    @start = GeoLoc.new(:lat=>40.08058466412761, :lng=>  -95.9765625)
+    @zoom=13
+    render :template => "houses/test", :layout => "test"
+  end
   def index
      if session[:map_area_id]
       cond_string = []

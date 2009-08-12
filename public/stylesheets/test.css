@@ -1,0 +1,26 @@
+*{margin: 0;}
+body{
+  height:100%; width:100%; margin:0
+}
+div#map{
+  position:absolute;top:0px; left:0px; width:100%; height:100%; z-index:-100;
+}
+div#container{margin:25px 25px 10px 45px; height:100%; border:1px solid;}
+
+.odd{background:#CBDAF0;}
+.even{background:#E0E0E0;}
+.left{float:left;}
+.right{float:right;}
+.clear{clear:both;}
+
+a, a:visited{color:#5C8AF7;}
+a:hover{color:#00ADFF;}
+
+table{font-size:11pt;}
+
+
+
+
+
+
+

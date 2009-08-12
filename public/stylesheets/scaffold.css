@@ -1,21 +1,15 @@
 
 *{margin:0pt;}
-html,body{height:100%;}
 body { background-color: #ddd; color: #333;  }
-
+html, body, #container {height: 100%;}
+body > #container {height: auto; min-height: 100%;}
 body, p, ol, ul, td {
   font-family: verdana, arial, helvetica, sans-serif;
   font-size:   13px;
   line-height: 18px;
-
-
 }
 
 #container {
-  min-height: 100%;
-  height: auto !important;
-  height: 100%;
-  position: relative;
   margin: 0 auto 20px;
   width: 1030px;
 }
@@ -240,7 +234,8 @@ position:relative;
 #header
 {
  background-color:#FFFFFF;
- margin:10px;
+ margin: 0 0 10px 0;
+ width: 100%;
  padding:10px;
 
 }
