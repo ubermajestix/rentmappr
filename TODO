@@ -31,6 +31,10 @@ Use polyline to draw line back to original geoloc:
   new GLatLng(37.4419, -122.1419),
   new GLatLng(37.4519, -122.1519)
 ], "#ff0000", 10);
-map.addOverlay(polyline); i
+map.addOverlay(polyline);
+
+Checkout DragZoom -> draw area to zoom into http://gmaps-utility-library.googlecode.com/svn/trunk/dragzoom/release/
+Think about using this to only load data within bounds of map...
+So we could know the default zoom and center and thus the bounds on load, so load that data. Then as page moves fire off js to retrieve houses in the new map bounds.... dunno about this... i like the paginated by created time. 
 
 

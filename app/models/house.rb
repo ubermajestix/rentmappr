@@ -8,7 +8,7 @@ class House < ActiveRecord::Base
   attr_accessor :clicked
   attr_accessor :has_images
  # validates_uniqueness_of :href
-#  validates_presence_of :title, :href, :price, :address
+ # validates_presence_of :title, :href, :price, :address
  # validates_length_of :address, :minimum=>10
 
    def self.valid_total
@@ -60,7 +60,7 @@ class House < ActiveRecord::Base
       saved =  Userhouses.find_saved_house_ids(:user_id=>user.id)
       trashed = Userhouses.find_trashed_house_ids(:user_id=>user.id)
       clicked = Userhouses.find_clicked_house_ids(:user_id=>user.id)
-      houses.reject!{|h| trashed.include?(h.id)}
+      houses.reject!{|h| trashed.include?(h.id)|| h.matches_center}
      houses.each do |house|
        house.saved =  saved.include?(house.id)    
        house.clicked =  clicked.include?(house.id)
@@ -85,7 +85,7 @@ houses.each{|house|  house.has_images = true if house.images_href}
                    :offset => opts[:offset],
                    :limit  => opts[:limit], 
                    :order=>"created_at DESC")
-    houses.reject!{|h| opts[:trashed_ids].include?(h.id)}
+    houses.reject!{|h| opts[:trashed_ids].include?(h.id) || h.matches_center}  
     houses.each do |house|
       puts "#{house.id} saved!" if opts[:saved_ids].include?(house.id.to_s)
       puts "#{house.id} clicked!" if opts[:clicked_ids].include?(house.id.to_s)
@@ -98,6 +98,10 @@ houses.each{|house|  house.has_images = true if house.images_href}
 
    def self.midnight
      Time.now - Time.now.sec - Time.now.min.minutes - Time.now.hour.hours
+   end
+   
+   def matches_center
+     self.map_area.center_lat == self.lat and self.map_area.center_lng == self.lng
    end
 
 end

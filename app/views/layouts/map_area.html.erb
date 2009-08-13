@@ -16,8 +16,6 @@
 var markers = [];
         // helper function to create markers
 	function createMarker(point,html,icon) {
-	
-
 	    var marker = new GMarker(point,icon);
 	    GEvent.addListener(marker, "click", function() {
 	     marker.openInfoWindowHtml(html);
