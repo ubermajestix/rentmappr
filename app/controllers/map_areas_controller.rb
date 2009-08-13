@@ -5,7 +5,7 @@ before_filter :admin_only, :except=>:st
     @map_areas = MapArea.find(:all)
     @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
     @zoom=13
-    @stats = Stats.get_stats(:areas=>true, :week=>true, :last_12=>true)
+    @stats = ""#Stats.get_stats(:areas=>true, :week=>true, :last_12=>true)
     puts @stats.length
     respond_to do |format|
       format.html # index.html.erb
