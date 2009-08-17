@@ -39,4 +39,36 @@ class ApplicationController < ActionController::Base
     puts "clicked " + session[:clicked_houses].inspect
     puts "ss"*25
   end
+# class Gaslamp
+#   attr_accessor :conds
+#   
+#   def add_query(conds)
+#     @conds << format_query(conds)
+#   end
+#   
+  def format_query(db_query, bind_variables)
+    # if there is a like and bindvar is a string wrap it in % ???
+    if bind_variables.kind_of?(String) or bind_variables.kind_of?(Fixnum)
+      bind_varialbles = bind_variables.to_s if bind_variables.kind_of?(Fixnum)
+      if bind_variables and not bind_variables.blank?
+        bind_variables = "%#{bind_variables}%" if db_query.downcase.include?("like")
+        return [db_query, bind_variables]
+      end
+    elsif bind_variables.kind_of?(Array)
+      return [db_query, *bind_variables] if bind_variables and not bind_variables.empty?
+    end
+  end
+  
+  def format_conditions(conds)
+    conds.compact! # remove nil entries
+    conditions = [[]]
+    conds.each do |c| 
+      conditions.first << c.delete(c.first); 
+      c.each{|e| conditions << e}
+    end
+    conditions[0] = conditions.first.join(" AND ")
+    return conditions    
+  end
 end
+#   
+# end

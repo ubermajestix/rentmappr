@@ -12,6 +12,8 @@ require 'open-uri'
       @start = GeoLoc.new
       if status == "200"
        coords = []
+       puts res.inspect
+       puts res.search("address").first.inner_html.inspect
        res.search("coordinates"){|l| coords = l.inner_html.split(",")} 
        @start.lat = coords[1]
        @start.lng = coords[0]

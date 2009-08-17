@@ -17,6 +17,7 @@
 	<td> <%= link_to area.name, edit_area_path(area), :title=>"edit" %> </td>
 	<td> <%= area.craigslist %><%= "/#{area.region}"%>  </td>
 	<td>  <%= area.expires_in %> </td>
+	<td> <%= link_to "list", list_houses_path(area) %> </td>
 	 </tr>
 	<%end%>
 

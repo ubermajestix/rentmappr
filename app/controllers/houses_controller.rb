@@ -284,8 +284,27 @@ layout "standard"
   
   def list
     @map_area = MapArea.find(params[:id])
+    session[:list_map_id] = @map_area.id
     @houses = House.paginate(:all, :conditions=>{:map_area_id => @map_area.id}, :order=>"accuracy DESC", :page=>params[:page], :per_page=>30)
     render :template => "houses/list", :layout => "basic"
+  end
+  
+  def search_list
+    conds = []
+    conds << format_query("map_area_id = ?", session[:list_map_id])
+    conds << format_query("LOWER(title) like LOWER(?)", params[:title])
+    conds << format_query("LOWER(href) like LOWER(?)", params[:href])
+    conds << format_query("LOWER(address) like LOWER(?)", Rack::Utils.escape(params[:address]))
+    # if params[:address] and not params[:address].empty?
+    #   geo_loc = Georb.geocodr(params[:address])
+    #   # search_bounds = [geo_loc.lat.to_f - 0.002, geo_loc.lat.to_f + 0.002, geo_loc.lng.to_f - 0.002, geo_loc.lng.to_f + 0.002  ]
+    #   # conds << format_query("lat >= ? and lat<=? and lng >= ? and lng <= ?", search_bounds)
+    #   search_bounds = [geo_loc.lat.to_f - 0.002, geo_loc.lat.to_f + 0.002 ]
+    #   conds << format_query("lat >= ? and lat<=?", search_bounds)
+    # end
+    @map_area = MapArea.find(session[:list_map_id])
+    @houses = House.paginate(:conditions=>format_conditions(conds), :page=>params[:page], :per_page=>30)
+    render :template => "houses/list", :layout=>"basic"
   end
     
 end

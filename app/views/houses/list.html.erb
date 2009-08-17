@@ -2,6 +2,23 @@
   <div class="left">Houses for <%= @map_area.name %></div>
   <div class="right"><%= will_paginate @houses %></div>
   <div class="clear"></div>
+   <% form_tag search_list_path do%>
+    <table>
+      <tr>
+        <td>title</td>
+        <td>href</td>
+        <td>address</td>
+      </tr>
+      <tr>
+        <td><%= text_field_tag :title, params[:title] %></td>
+        <td><%= text_field_tag :href, params[:href] %></td>
+        <td><%= text_field_tag :address, params[:address], :size=>35 %></td>
+        <td> <%= text_field_tag :bounds, params[:bounds] || "0.004", :size=>8 %> </td>
+        <td>  <%= submit_tag "search"%> </td> <td><%= link_to "clear", list_houses_path(@map_area) %> </td>
+      </tr>
+    </table>
+   
+  <% end%>
   <table>
     <tr>  
       <th> geocoded </th>
@@ -16,7 +33,7 @@
     </tr>
   <%for house in @houses %>
     <tr> 
-      <td> <%= house.geocoded %> </td>
+      <td> <%= house.geocoded %> <%= "matches center" if house.matches_center %> </td>
       <td style="border:1px solid #aaa"> <%= house.accuracy %> </td>
       <td> <%=h house.title[0,50]%> </td>
       <td><%= link_to "link", house.href %> </td>
