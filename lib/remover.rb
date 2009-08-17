@@ -53,6 +53,19 @@ class Remover
      end   
   end
   
+  def remove_center_match
+    self.logger.info "Removing houses that match city center"
+    #remove houses that match the city center
+      @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
+       for map_area in @map_areas.reverse
+         @houses = map_area.houses
+         self.logger.info "#{@houses.length} for #{map_area.name}"
+         @houses.collect!{|h| h.destroy if h.matches_center}
+         self.logger.info "removed matching center: #{map_area.houses.length} for #{map_area.name}"
+       end
+  end
+    
+  
   def scrape_links(map_area)#returns queue
     urls = []
     links = Queue.new

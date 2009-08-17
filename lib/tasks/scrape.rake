@@ -29,6 +29,12 @@ namespace :cl do
     @remover.remove_old
   end
   
+  desc "removes houses that match city center"
+  task :remove_center => :environment do 
+    @remover = Remover.new
+    @remover.remove_matches_center
+  end
+  
   desc "remove old houses and check if remaining are flagged/removed"
   task :remove_flagged => :environment do 
     @remover = Remover.new
