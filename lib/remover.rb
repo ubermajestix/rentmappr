@@ -15,7 +15,7 @@ class Remover
 
   def initialize
     # @logger = logger
-    logger.info "Craigslist Scraping"
+    logger.info "Remover now ready to remove"
     # establish_database_connection
     @start_run = Time.now
     nil
@@ -47,8 +47,9 @@ class Remover
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
      for map_area in @map_areas.reverse 
        expiration = Time.now - map_area.expires_in.days
-       @houses = House.destroy(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
-       puts "removed #{@houses.length} houses #{map_area.craigslist} older than #{expiration}"   
+       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
+       puts "removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}"   
+       @houses.each{|h| h.destroy}
      end   
   end
   
