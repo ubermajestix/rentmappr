@@ -23,9 +23,6 @@
   						:url  => { :action=>:trash_it, :id=>place.id},
   			      :html => { :onclick=>"remove_marker(#{place.id})", :title=>"don\'t show me this house again", :class=>"remote_link" }%>
   	<% else %>
-  	  <% unless logged_in? %>
-  		  <%= link_to "register", signup_path %> or <%= link_to "login", login_path %> to: <br/>
-  	  <% end %>
   	  <%= link_to_remote 	image_tag("/images/save.png", :size=>"20x20") + " save it", 
   						:url=>{:action=>:save_it, :id=>place.id},
   						:html=>{:title=>"add to my short list", :class=>"remote_link"} %>
