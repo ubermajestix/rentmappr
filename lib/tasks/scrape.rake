@@ -36,10 +36,17 @@ namespace :cl do
   end
   
   desc "remove old houses and check if remaining are flagged/removed"
-  task :remove_flagged => :environment do 
+  task :remove_flagged_one_off => :environment do 
     @remover = Remover.new
     @remover.remove_flagged
     # @remover.remove_flagged if Time.now < (Time.now.midnight + 1.hour)
+  end
+  
+  desc "remove old houses and check if remaining are flagged/removed"
+  task :remove_flagged => :environment do 
+    @remover = Remover.new
+    @remover.remove_flagged if Time.now < (Time.now.midnight + 1.hour)
+    puts "not running this its not between midnight and 1am" unless Time.now < (Time.now.midnight + 1.hour)
   end
   
   namespace :stats do

@@ -96,8 +96,9 @@ class Remover
             if flagged?(cl_string) or removed?(cl_string)
               # see if house is saved... if not delete : if so update 
               removed += 1
-               puts "#{house.href} flagged or removed"
+               puts "#{house.href}"
                house.saved? ? house.update_attributes(:cl_removed=>true) : house.destroy
+               ActiveRecord::Base.clear_active_connections!
               # house.update_attributes(:cl_removed=>true)
             end 
           rescue StandardError => e
