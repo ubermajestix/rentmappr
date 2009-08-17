@@ -32,22 +32,14 @@ namespace :cl do
   desc "removes houses that match city center"
   task :remove_center => :environment do 
     @remover = Remover.new
-    @remover.remove_matches_center
+    @remover.remove_matches_center()
   end
   
   desc "remove old houses and check if remaining are flagged/removed"
   task :remove_flagged => :environment do 
     @remover = Remover.new
-    map_area = MapArea.find_by_name("san francisco")
-    urls = @remover.scrape_links(map_area)
-    puts urls.inspect
-    puts "=="*45
-    puts urls.include?("http://boulder.craigslist.org/apa/1311570748.html")
-    urls = @remover.scrape_links(map_area)
-     removed = urls - map_area.houses.map(&:href)
-     puts map_area.houses.length
-     puts urls.length
-     puts removed.length
+    @remover.remove_flagged
+    # @remover.remove_flagged if Time.now < (Time.now.midnight + 1.hour)
   end
   
   namespace :stats do

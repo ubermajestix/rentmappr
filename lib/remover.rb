@@ -45,66 +45,71 @@ class Remover
  
   def remove_old(opts={})
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
-     for map_area in @map_areas.reverse 
-       expiration = Time.now - map_area.expires_in.days
-       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
-       puts "removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}"   
-       @houses.each{|h| h.destroy}
-     end   
+    for map_area in @map_areas.reverse 
+      expiration = Time.now - map_area.expires_in.days
+      @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
+      puts "removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}"   
+      @houses.each{|h| h.destroy}
+    end   
   end
   
   def remove_matches_center(opts={})
     self.logger.info "Removing houses that match city center"
     #remove houses that match the city center
-      @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
-       for map_area in @map_areas.reverse
-         destroyed = []
-         @houses = map_area.houses
-         self.logger.info "#{@houses.length} for #{map_area.name}"
-         @houses.each{|h| if h.matches_center
-           destroyed << h
-           h.destroy 
-           end}
-         self.logger.info "removed #{destroyed.length} matching center for #{map_area.name}"
-       end
+    @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
+    for map_area in @map_areas.reverse
+      destroyed = []
+      @houses = map_area.houses
+      self.logger.info "#{@houses.length} for #{map_area.name}"
+      @houses.each{|h| if h.matches_center
+        destroyed << h
+        h.destroy 
+        end}
+      self.logger.info "removed #{destroyed.length} matching center for #{map_area.name}"
+    end
   end
-    
   
-  def scrape_links(map_area)#returns queue
-    urls = []
-    links = Queue.new
-    scraper_threads = []
-    pages = []
-    puts "hitting #{map_area.scrape_url}"
-    10.times do |page|
-      scraper_threads << Thread.new("#{page}00.html", map_area) {|cl_page, map_area|
-        begin
-          puts "scraping page #{page} on #{map_area.scrape_url}#{cl_page}"
-          cl = open("http://#{map_area.scrape_url}#{cl_page}")
-          cl_string = cl.read
-          if cl.status.first == "200" and not flagged?(cl_string) and not removed?(cl_string)
-            doc = Hpricot(cl_string)
-            t_links = []
-            doc.search("a") do |item|
-              t_links << item.get_attribute("href") if item.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
-            end      
-            t_links.collect!{|t| "http://#{map_area.url}#{t}"}
-            links << t_links unless t_links.empty?
-            puts "found: #{t_links.length} links"
-            ActiveRecord::Base.clear_active_connections!
-          end # status == 200
-        rescue StandardError => e
-          logger.error e.inspect
-        rescue Timeout::Error => e
-          logger.error "Timeout! " + e.inspect
-        end
-      }
-    end
-    scraper_threads.each{|t| t.join}
-    links.length.times do |batch_num|
-      urls << links.deq
-    end
-    return urls.flatten
+  def remove_flagged(opts={})
+     self.logger.info "Removing houses that match city center"
+      #remove houses that are flagged or removed
+      @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
+        for map_area in @map_areas.reverse
+          queue = Queue.new
+          houses = map_area.houses
+          10.times{|n| queue << houses[n*11,houses.length/10]}
+          parse_flagged(queue)
+      end    
   end
+  
+  def parse_flagged(links)#pass queue
+    addresses = []
+    parser_threads = []
+    links.length.times do |batch_num|
+      cl_links = links.deq	
+     	parser_threads << Thread.new(cl_links, batch_num){|t_links, num|
+     	  removed = 0
+     	  for house in t_links
+     	    begin
+     	      puts "#{t_links.index(house)} / #{num} / #{removed}"
+       	    cl = open(house.href)
+            cl_string = cl.read        
+            if flagged?(cl_string) or removed?(cl_string)
+              # see if house is saved... if not delete : if so update 
+              removed += 1
+               puts "#{house.href} flagged or removed"
+               house.saved? ? house.update_attributes(:cl_removed=>true) : house.destroy
+              # house.update_attributes(:cl_removed=>true)
+            end 
+          rescue StandardError => e
+            logger.error e.inspect
+          rescue Timeout::Error => e
+            logger.error "Timeout! " + e.inspect
+          end    
+     	  end
+     	}
+   end 
+   parser_threads.each { |t| t.join }
+  end#parse_flagged
+    
 
 end

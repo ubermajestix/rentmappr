@@ -1,8 +1,15 @@
 <%if saved_houses.length > 0 %>
   <%for home in saved_houses %>
+    <%= '<b style="color: red"> ' if house.cl_removed %>
 		<%= image_tag !home.images_href.nil? ? '/images/my_house_pic.png' : '/images/my_house.png', :size=>"20x20", :title=>"recenter map on this house", :style=>"cursor:pointer", :onclick=>"open_window(#{home.id})" %>
 		<%= link_to_remote image_tag("/images/remove.png", :size=>"20x20"),:url=>{ :action => "remove_it", :id=>home.id }, :html=>{:title=>"remove from list", :class=>"remote_link"} %>
-	  <%= link_to home.title, home.href, :target=>"new", :title=>"added #{nice_time(home.created_at)}" %> <br/>
+	  <% unless house.cl_removed %>
+	    <%= link_to home.title, home.href, :target=>"new", :title=>"added #{nice_time(home.created_at)}" %> 
+	  <% else %>
+	    *Posting removed*
+	  <% end %>
+	  <%= '</b> ' if house.cl_removed %>
+    <br/>
 	<%end%>
 <% else %>
   <b>to add a house, click one on the map, then click "save it." </b>

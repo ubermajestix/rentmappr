@@ -103,5 +103,9 @@ houses.each{|house|  house.has_images = true if house.images_href}
    def matches_center
      self.map_area.center_lat == self.lat and self.map_area.center_lng == self.lng
    end
+   
+   def saved?
+     self.users.length > 0
+   end
 
 end
