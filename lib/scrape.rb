@@ -192,8 +192,10 @@ class Scraper
             end
  
         #set bedrooms
-        beds = .downcase.scan(/[0-9]br/).first
+        beds = house.title.downcase.scan(/[0-9]br/).first
         house.bedrooms = beds.gsub(/\D/,'').to_i if beds
+        studio = !!house.title.downcase.match(/studio/)
+        house.bedrooms = 0 if studio
         #set dog and cat columns
         house.cat = true if @cats.include?(house.href)
         house.dog = true if @dogs.include?(house.href)

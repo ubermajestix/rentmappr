@@ -37,4 +37,4 @@ Checkout DragZoom -> draw area to zoom into http://gmaps-utility-library.googlec
 Think about using this to only load data within bounds of map...
 So we could know the default zoom and center and thus the bounds on load, so load that data. Then as page moves fire off js to retrieve houses in the new map bounds.... dunno about this... i like the paginated by created time. 
 
-Deal with studio bedrooms -> they get value 0. 
+FIXED 8/18/09 Deal with studio bedrooms -> they get value 0. 
