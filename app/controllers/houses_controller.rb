@@ -217,6 +217,8 @@ layout "standard"
     session[:saved_houses].delete(params[:id])
     @houses = [] #session[:houses]
     @house.has_images = !@house.images_href.nil?
+    @house.clicked = session[:clicked_houses].include?(@house.id.to_s)
+    
     #TODO call rjs to remove marker, add it back as pink, then update short list
   end
   
