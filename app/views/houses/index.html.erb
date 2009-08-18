@@ -5,8 +5,8 @@
 		  <tr>
         <td>	min: $<%= text_field_tag :min_price, params[:min_price], :size=>6, :class=>"small_input"%> 
         max: $<%= text_field_tag :max_price, params[:max_price], :size=>6, :class=>"small_input" %> 
-        <%= check_box_tag :dogs, "1", params[:dog] %> dogs
-        <%= check_box_tag :cats, "1", params[:cat] %> cats </td>
+        <%= check_box_tag :dogs, "1", params[:dogs]=="1" %> dogs
+        <%= check_box_tag :cats, "1", params[:cats]=="1" %> cats </td>
         <td class="right"><%= submit_tag "filter"%></td>
       </tr>
       <tr>
