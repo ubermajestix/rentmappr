@@ -9,19 +9,19 @@ Only geocode for addresses with street
 DONE 8/6/09 Add region for city's like sf => sfbay.craigslist.org/<region> but search is sfbay.craigslist.org/search/apa/<region>
 
 
-Remove posts older than mapareas defined time frame.
-Do this once per night - cron.rake check hour == 00:00
+DONE 8/16/09 Remove posts older than mapareas defined time frame.
+DONE 8/16/09 Do this once per night - cron.rake check hour == 00:00
 
-Check to see if existing posts have been removed -> will return 405 status if flagged or deleted
-Do this once per night
+DONE 8/16/09 Check to see if existing posts have been removed -> will return 405 status if flagged or deleted
+DONE 8/16/09 Do this once per night
 
 DONE 8/7/09 Check status of property before scraping (status == 200)
 
 Deal with several houses in one location on the map. Move houses out of the way and point arrows? Have icon to populate longlist with several at one loc?
 
-Long list needs to reflect colors, green: seen it, blue: liked it. 
+DONE 8/17/09 Long list needs to reflect colors, green: seen it, blue: liked it. 
 
-Timeout for redirection loop? Scraper breaks b/c of it.
+FIXED Timeout for redirection loop? Scraper breaks b/c of it.
 
 Same geoloc, same price, appears to be repost -> take newer one's info and update old one with new info -> don't have to update users [saved,clicked,trashed]
 
@@ -37,4 +37,4 @@ Checkout DragZoom -> draw area to zoom into http://gmaps-utility-library.googlec
 Think about using this to only load data within bounds of map...
 So we could know the default zoom and center and thus the bounds on load, so load that data. Then as page moves fire off js to retrieve houses in the new map bounds.... dunno about this... i like the paginated by created time. 
 
-
+Deal with studio bedrooms -> they get value 0. 

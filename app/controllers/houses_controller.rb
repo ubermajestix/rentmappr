@@ -11,68 +11,19 @@ layout "standard"
   end
   def index
      if session[:map_area_id]
-      cond_string = []
-      cond_vars = []
-
-      if params[:search]
-        max_price = session[:max_price] = params[:max_price] unless params[:max_price].empty? || params[:max_price] == "none"
-        min_price = session[:min_price] = params[:min_price] unless params[:min_price].empty? || params[:min_price] == "none"
-        if params[:pets]
-          puts "pets: #{params[:pets]}"
-          params[:pets] == "cats" ? session[:cat] = true : session[:cat] = nil
-          params[:pets] == "dogs" ? session[:dog] = true : session[:dog] = nil
-        else
-          session[:cat] = params[:cats] ? true : false
-          session[:dog] = params[:dogs] ? true : false
-        end
-        # session[:bedrooms] =  params[:bedrooms].to_i unless params[:bedrooms].empty?
-      end
-
-      puts "=="*45
-      puts "search?: #{params[:search]}"
-      puts "clear?: #{params[:clear]}"
-      puts "min session: #{session[:min_price]}"
-      puts "max session : #{session[:max_price]}"
-      puts "search min: #{params[:min_price]}"
-      puts "search max: #{params[:max_price]}"
-      puts "cats: #{session[:cat]}"
-      puts "dogs: #{session[:dog]}"
-      puts "bedrooms: #{session[:bedrooms]}"
-      puts "=="*45
-        unless session[:max_price].nil?
-          cond_string << "price <= ?"
-          cond_vars << session[:max_price]
-        end
-      
-        unless session[:min_price].nil?
-          cond_string << "price >= ?"
-          cond_vars << session[:min_price]
-        end 
-        
-        # unless session[:bedrooms] == 0
-        #   cond_string << "bedrooms <= ?" unless session[:bedrooms].to_i >= 5
-        #   cond_vars << session[:bedrooms]
-        # end
-        
-        cond_string << "dog is not null" if session[:dog]
-        cond_string << "cat is not null" if session[:cat]
-       
-         @dog = session[:dog]
-         @cat = session[:cat]
-         @min_price = session[:min_price]
-         @max_price = session[:max_price]
-         @bedrooms = session[:bedrooms]
-    
-      cond_string << "map_area_id = ?"
-      cond_vars << session[:map_area_id]
-      
-      cond_string << "lat is not null and lng is not null"
-      
       conds = []
-      conds << cond_string.join(" and ")
-      cond_vars.each { |var| conds << var  }
-      puts conds
-      session[:house_conds] = conds
+       if params[:search]
+         conds << format_query("price <= ?", params[:max_price])
+         conds << format_query("price >= ?", params[:min_price])
+         if params[:bedrooms].to_i > -1
+           conds << format_query("bedrooms <= ?", params[:bedrooms]) if params[:bedroom_operator] == "less"
+           conds << format_query("bedrooms >= ?", params[:bedrooms]) if params[:bedroom_operator] == "more"
+         end
+         conds <<  ["dog is not null"] if params[:dog]
+         conds <<  ["cat is not null"] if params[:cat]
+       end
+      conds = format_conditions(conds)
+  
       session[:house_page] = params[:page]
       if logged_in?
         @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])

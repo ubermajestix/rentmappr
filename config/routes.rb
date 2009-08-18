@@ -56,7 +56,7 @@ ActionController::Routing::Routes.draw do |map|
    map.restful_search_no_pets  '/search/:min_price/:max_price/:bedrooms', :controller=>"houses", :action=>"index", :search=>true
    map.restful_search_dogs '/search/:min_price/:max_price/:bedrooms/:pets', :controller=>"houses", :action=>"index", :search=>true
  #  map.search  '/search/:min_price/:max_price', :controller=>"houses", :action=>"index", :search=>true
-   map.clear_search '/clear', :controller=>"houses", :action=>"clear_search"
+   map.clear_search '/clear', :controller=>"houses", :action=>"index"
    map.landing '/landing', :controller=>"houses", :action=>"rickroll"
   # See how all your routes lay out with "rake routes"
 
