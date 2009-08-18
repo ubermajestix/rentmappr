@@ -3,6 +3,7 @@
 		<% form_tag search_path do%>
 	min: $<%= text_field_tag :min_price, @min_price, :size=>6, :class=>"small_input"%> 
 	max: $<%= text_field_tag :max_price, @max_price, :size=>6, :class=>"small_input" %> 
+	bedrooms: <%= select_tag :bedrooms, options_for_select({'no preference'=>nil, 'studio'=>0, "1 bedroom"=>1, "2 bedrooms"=> 2 , "3 bedrooms"=>3, "4 bedrooms"=>4, "5 or more"=>5},params[:bedrooms]=='' ? nil : params[:bedrooms].to_i), :class=>"small_input" %><br/>
 			<%= check_box_tag :dogs, "1", @dog %> dogs
 			<%= check_box_tag :cats, "1", @cat %> cats
 			<%#= bedroom_select :bedrooms, @bedrooms %>
@@ -44,9 +45,7 @@
 		</div>
 	</div>
 	<div id="home_list" style="overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:500px; height:626px; background:#fff; padding:5px; padding-bottom:20px;">
-	<%  %>
-	<%= render :partial => 'houses/home_list', :locals=>{:houses=>@houses} %>
-
+	  <%= render :partial => 'houses/home_list', :locals=>{:houses=>@houses} %>
 	</div>	
 	
 	<%if logged_in? %>	

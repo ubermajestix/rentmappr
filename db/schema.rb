@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090817180443) do
+ActiveRecord::Schema.define(:version => 20090818041452) do
 
   create_table "houses", :force => true do |t|
     t.string   "title"
@@ -25,9 +25,9 @@ ActiveRecord::Schema.define(:version => 20090817180443) do
     t.string   "geocoded"
     t.boolean  "dog"
     t.boolean  "cat"
-    t.string   "bedrooms"
     t.string   "accuracy"
     t.boolean  "cl_removed"
+    t.integer  "bedrooms"
   end
 
   create_table "map_areas", :force => true do |t|

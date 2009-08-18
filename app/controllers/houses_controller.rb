@@ -25,10 +25,7 @@ layout "standard"
           session[:cat] = params[:cats] ? true : false
           session[:dog] = params[:dogs] ? true : false
         end
-        # puts "bedrooms empty? #{params[:bedrooms].empty?}"
-        # session[:bedrooms] =  params[:bedrooms] unless params[:bedrooms].empty? || params[:bedrooms] == "none"
-     # else
-    #    session[:min_price], session[:max_price] = nil
+        session[:bedrooms] =  params[:bedrooms].to_i unless params[:bedrooms].empty?
       end
 
       puts "=="*45
@@ -52,8 +49,8 @@ layout "standard"
           cond_vars << session[:min_price]
         end 
         
-        unless session[:bedrooms].nil?
-          cond_string << "bedrooms = ?"
+        unless session[:bedrooms] == 0
+          cond_string << "bedrooms <= ?" unless session[:bedrooms].to_i >= 5
           cond_vars << session[:bedrooms]
         end
         
