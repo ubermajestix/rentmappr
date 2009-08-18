@@ -10,6 +10,14 @@ class House < ActiveRecord::Base
  # validates_uniqueness_of :href
  # validates_presence_of :title, :href, :price, :address
  # validates_length_of :address, :minimum=>10
+ before_save :ensure_bedrooms_integers
+
+   def ensure_bedrooms_integers
+     if self.bedrooms.kind_of? String
+       beds = self.bedrooms
+       self.bedrooms = beds.gsub(/\D/,'').to_i
+     end
+   end
 
    def self.valid_total
      count(:conditions => ["geocoded = ?","s"])

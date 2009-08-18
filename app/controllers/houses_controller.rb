@@ -25,7 +25,7 @@ layout "standard"
           session[:cat] = params[:cats] ? true : false
           session[:dog] = params[:dogs] ? true : false
         end
-        session[:bedrooms] =  params[:bedrooms].to_i unless params[:bedrooms].empty?
+        # session[:bedrooms] =  params[:bedrooms].to_i unless params[:bedrooms].empty?
       end
 
       puts "=="*45
@@ -49,10 +49,10 @@ layout "standard"
           cond_vars << session[:min_price]
         end 
         
-        unless session[:bedrooms] == 0
-          cond_string << "bedrooms <= ?" unless session[:bedrooms].to_i >= 5
-          cond_vars << session[:bedrooms]
-        end
+        # unless session[:bedrooms] == 0
+        #   cond_string << "bedrooms <= ?" unless session[:bedrooms].to_i >= 5
+        #   cond_vars << session[:bedrooms]
+        # end
         
         cond_string << "dog is not null" if session[:dog]
         cond_string << "cat is not null" if session[:cat]
