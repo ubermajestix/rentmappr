@@ -17,9 +17,9 @@ class House < ActiveRecord::Base
    
    def self.valid_houses(opts={})
      if opts[:map_area]
-       find(:conditions => ["geocoded = ? and map_area_id = ?","s", opts[:map_area].id])
+       all(:conditions => ["geocoded = ? and map_area_id = ?","s", opts[:map_area].id])
      else
-       find(:conditions => ["geocoded = ?","s"])
+       all(:conditions => ["geocoded = ?","s"])
      end
    end
    
