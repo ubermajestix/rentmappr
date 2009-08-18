@@ -212,7 +212,7 @@ class Scraper
         puts "map_area: #{map_area.id} | #{map_area.name}"
         house.map_area_id = map_area.id
         house.geocoded = 'n'
-        puts house
+        puts house.inspect
         begin
           house.save
         rescue StandardError => e

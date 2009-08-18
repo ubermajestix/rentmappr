@@ -22,6 +22,7 @@ layout "standard"
          conds <<  ["dog is not null"] if params[:dog]
          conds <<  ["cat is not null"] if params[:cat]
        end
+      conds << ["map_area_id  = #{session[:map_area_id]}"] 
       conds = format_conditions(conds)
   
       session[:house_page] = params[:page]
