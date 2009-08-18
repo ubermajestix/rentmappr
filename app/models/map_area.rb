@@ -14,7 +14,7 @@ class MapArea < ActiveRecord::Base
   end
   
   def url
-    self.craigslist + (self.region!="" ? "/#{self.region}" : '')
+    self.craigslist #+ (self.region!="" ? "/#{self.region}" : '')
   end
   
   def scrape_url
