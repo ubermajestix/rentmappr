@@ -13,10 +13,17 @@ class House < ActiveRecord::Base
  before_save :ensure_bedrooms_integers
 
    def ensure_bedrooms_integers
-     if self.bedrooms.kind_of? String
-       beds = self.bedrooms
-       self.bedrooms = beds.gsub(/\D/,'').to_i
+     if self.bedrooms
+       if self.bedrooms.kind_of? String
+         beds = self.bedrooms
+         self.bedrooms = beds.gsub(/\D/,'').to_i
+       end
      end
+   end
+   
+   def self.correct_apa
+      h=House.all(:select=>"id,href",:conditions=>["href ilike '%%//apa%%'"])
+      h.each{|house| house.update_attributes(:href=>house.href.gsub("//apa","/apa"))}
    end
 
    def self.valid_total
