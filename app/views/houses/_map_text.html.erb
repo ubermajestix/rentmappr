@@ -14,7 +14,6 @@
   	<% end %>
 	
   	<%if place.saved %>
-  	  saved:<%= place.saved %>
   	  <%= link_to_remote 	image_tag("/images/remove.png", :size=>"20x20") + " remove it", 
   						:url  => { :action=>:remove_it, :id=>place.id}, 
   						:html => { :title=>"remove from my short list", :class=>"remote_link"} %>
