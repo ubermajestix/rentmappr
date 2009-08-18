@@ -6,6 +6,7 @@ class ChangeBedsToInteger < ActiveRecord::Migration
    houses.each do |house|
     beds = t.title.downcase.scan(/[0-9]br/).first
     unless beds.nil?
+      puts "#{houses.index(house)}/#{houses.length}"
       beds = beds.gsub(/\D/,'').to_i
       house.update_attributes(:bedrooms=>beds.to_i)
     end
