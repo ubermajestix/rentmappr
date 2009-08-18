@@ -11,10 +11,10 @@
       </tr>
       <tr>
         <td>
-          <%= select_tag :bedrooms, options_for_select({'all size'=>-1,'studio'=>0, "1"=>1, "2"=> 2 , "3"=>3, "4"=>4, "5"=>5},params[:bedrooms].to_i||-1), :class=>"small_input", 
+          <%= select_tag :bedrooms, options_for_select({'all size'=>-1,'studio'=>0, "1"=>1, "2"=> 2 , "3"=>3, "4"=>4, "5"=>5},params[:bedrooms] ? params[:bedrooms].to_i : -1), :class=>"small_input", 
                          :onchange=>"if(this.options[this.selectedIndex].value!=-1){$('bed_options').show();}else{$('bed_options').hide()};if(this.options[this.selectedIndex].value=='1'){$('plural').hide()} else{$('plural').show()}" %>
           bedroom<span id="plural">s</span>
-          <span id="bed_options" style="<%= 'display:none;' if params[:bedrooms].to_i == -1 %>">
+          <span id="bed_options" style="<%= 'display:none;' if params[:bedrooms].to_i == -1 || params[:bedrooms].nil? %>">
           
           <%= select_tag :bedroom_operator, options_for_select({"or more"=>"more", "and smaller"=>"less"}, params[:bedroom_operator]) %>
         </td> 

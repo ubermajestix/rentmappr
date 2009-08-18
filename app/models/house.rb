@@ -23,6 +23,7 @@ class House < ActiveRecord::Base
    
    def self.correct_apa
       h=House.all(:conditions=>["href ilike '%%//apa%%'"])
+      puts h.length
       h.each{|house| house.update_attributes(:href=>house.href.gsub("//apa","/apa"))}
    end
 
