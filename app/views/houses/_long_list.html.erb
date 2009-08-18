@@ -1,0 +1,9 @@
+<%if home.clicked %>
+  <img src="/images/<%= home.saved ? (home.has_images ? 'my_house_pic.png' : 'my_house.png') :(home.has_images ? 'clicked_house_pic.png' : 'clicked_house.png') %>" 
+  onclick="open_window(<%= home.id %>)" width="20" height="20", title="recenter map on this house" style="cursor:pointer" />
+<% else %>
+  <img src="/images/<%= home.saved ? (home.has_images ? 'my_house_pic.png' : 'my_house.png') : (home.has_images ? 'new_house_pic.png' : 'new_house.png') %>" 
+	onclick="open_window(<%= home.id %>)" width="20" height="20", title="recenter map on this house" style="cursor:pointer" />
+<% end %>
+
+<%= link_to strip_tags(home.title), home.href, :target=>"new", :title=>"added #{nice_time(home.created_at)}", :class=>"long_list" %>

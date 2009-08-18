@@ -101,12 +101,11 @@ var map;
 			var icon = new GIcon();
 			if (has_images){icon.image =  '/images/clicked_house_pic.png';}
 			else{icon.image =  '/images/clicked_house.png';}
-
-		         icon.shadow =  '/images/house_shadow.png';
-		         icon.iconSize = new GSize(20,20);
-		   icon.iconAnchor = new GPoint(10, 20);
-		   icon.infoWindowAnchor = new GPoint(12, 8);
-		return icon;
+      icon.shadow =  '/images/house_shadow.png';
+		  icon.iconSize = new GSize(20,20);
+		  icon.iconAnchor = new GPoint(10, 20);
+		  icon.infoWindowAnchor = new GPoint(12, 8);
+		  return icon;
 	}
 	
 	function open_window(id){

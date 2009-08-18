@@ -12,15 +12,19 @@ class ApplicationController < ActionController::Base
     Time.now - Time.now.sec - Time.now.min.minutes - Time.now.hour.hours
   end
   
-  # def rescue_action_in_public(exception)
-  #   case exception.class.to_s
-  #     when "ActionController::RoutingError"
-  #       @this = "public/404.html" 
-  #     else
-  #       @this = "public/500.html"
-  #   end
-  #   render :file => @this
-  # end
+  def rescue_action_in_public(exception)
+    notify_hoptoad(exception)
+    case exception.class.to_s
+      when "ActionController::RoutingError"
+        @this = "public/404.html" 
+      else
+        @this = "public/500.html"
+    end    
+    respond_to do |wants|
+      wants.html { render :file => @this }
+      # wants.js{ render :partial => @this.include?("404") ? "#{Dir.pwd}public/404" : "#{Dir.pwd}/public/500"}
+    end
+  end
     
   def local_request?
     false

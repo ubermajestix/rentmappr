@@ -39,6 +39,8 @@ a.logo:hover{background:#6F3; padding-top:50px;}
 a.footer, a.footer:visited {color:#fff; text-decoration:none;}
 a.footer:hover { color: #39FF2A;  }
 
+a.long_list:visited{color:#0094CC;}
+
 div.search{
 	background: #fff;
 	padding-left:10px;

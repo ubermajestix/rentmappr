@@ -1,3 +1,4 @@
+page.replace_html "#{dom_id @house}_long_list", :partial=>"houses/long_list", :locals=>{:home=>@house}
 page << "make_marker_green(#{@house.id}, #{@house.has_images})" unless @house.saved
 puts @house.has_images
 page.delay(0.7){

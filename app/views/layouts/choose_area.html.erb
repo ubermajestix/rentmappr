@@ -88,17 +88,18 @@ var map;
 
 <body onload="initialize(); new Effect.BlindUp('flash', {delay:5.0})" unload="GUnload();">
 
-  <div id="header">
+  <div id="heade" style="background: #fff; padding:10px; margin-bottom:15px">
     <%= image_tag '/images/logo.png' %> Find a place to rent. Craigslist rentals on a map. Easy. 
   </div>
-  <div id="container">
-  	<%= yield  %>
+  <div id="container" style="width: 920px; margin-bottom: -240px">
+    <div style="margin-left: auto; margin-right:auto; height:130px ">
+  	  <%= yield  %>
+  	</div>
+  	
   </div>
   <%= render :partial => 'layouts/footer' %>
-
-
-
-<%= render :partial => 'layouts/google_analytics' %>
+  
+  <%= render :partial => 'layouts/google_analytics' %>
 
 </body>
 </html>

@@ -104,7 +104,7 @@ layout "standard"
         @houses.each { |h| h.has_images=true if h.images_href }
       end
       #session[:houses] = @houses  
-       @map_area = MapArea.find(session[:map_area_id])
+      @map_area = MapArea.find(session[:map_area_id])
       @start = GeoLoc.new(:lat=>@map_area.lat, :lng=> @map_area.lng)
       @houses_collected = House.valid_total_for_area_today(@map_area)
       @zoom=6
@@ -180,7 +180,8 @@ layout "standard"
      session[:clicked_houses] << params[:house_id]
      @house = House.find(params[:house_id])
      @house.has_images = !@house.images_href.nil?
-     @house.saved = logged_in? ? current_user.saved_houses.include?(@house) : session[:saved_houses].include?(@house.id)
+     @house.saved = logged_in? ? current_user.saved_houses.include?(@house) : session[:saved_houses].include?(@house.id.to_s)
+     @house.clicked = session[:clicked_houses].include?(@house.id.to_s)
   end
   
   
@@ -221,12 +222,12 @@ layout "standard"
   
   def trash_it
     user = current_user || User.saved_user 
-    Userhouses.create(:user_id=>current_user.id, :house_id=>params[:id], :trash=>true)
+    Userhouses.create(:user_id=>user.id, :house_id=>params[:id], :trash=>true)
     session[:trashed_houses] << params[:id]
     @house = House.find(params[:id])
     @house.update_attribute(:saved, false)
-    @houses = session[:houses]
-    @houses.delete(@house)
+    session[:saved_houses].delete(params[:id])
+    @houses = session[:saved_houses]
     #update short_list
     #update homes list
     #remove house from map

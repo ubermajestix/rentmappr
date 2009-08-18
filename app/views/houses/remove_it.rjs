@@ -1,4 +1,7 @@
 page.replace_html "short_list", :partial=>"houses/short_list", :locals=>{:home=>@house}
+page.replace_html "#{dom_id @house}_long_list", :partial=>"houses/long_list", :locals=>{:home=>@house}
+
+
 #page.replace_html "home_list",  :partial=>"houses/home_list", :collection=>@houses
 text = escape_javascript(render :partial=>'houses/map_text', :locals=>{:place=>@house})
 page << "make_marker_green(#{@house.id}, #{@house.has_images})"

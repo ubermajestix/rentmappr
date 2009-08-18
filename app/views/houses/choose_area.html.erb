@@ -2,15 +2,18 @@
   <h3>Choose a city to search within:</h3>
   <div id="map" style="width: 700px; height:400px; margin: 0px 0 -10px -10px" ></div>
 </div>
-<div style="float:left; margin-left: 10px;">
+<div style="float:right; margin-left: 10px;">
 	<div id="homes_list_title" style="width:200px; height:50px; background:#fff; padding:5px;">
 		<h3><%= @map_areas.length %> cities to pick from <br/>
 		<span class="little" ><%= House.valid_total_today %> houses collected so far today. <br/><%= House.valid_total %> houses total.</span></h3>
 	</div>
 	<div id="home_list" style="overflow-y: auto; white-space: nowrap; overflow-x:hidden; width:200px; height:353px; background:#fff; padding:5px">
 		<%= render :partial => 'houses/city_list', :locals=>{:map_areas=>@map_areas} %>
+		<%= link_to "request a city to be added!", add_city_path %>
 	</div>
+	
 </div>
+<div class="clear"></div>
 <%#= render :partial => 'houses/banner_ads', :object => (@choose_area = true) %>
 
 

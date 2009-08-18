@@ -85,7 +85,7 @@ houses.each{|house|  house.has_images = true if house.images_href}
                    :offset => opts[:offset],
                    :limit  => opts[:limit], 
                    :order=>"created_at DESC")
-    houses.reject!{|h| opts[:trashed_ids].include?(h.id) || h.matches_center}  
+    houses.reject!{|h| opts[:trashed_ids].include?(h.id.to_s) || h.matches_center}  
     houses.each do |house|
       puts "#{house.id} saved!" if opts[:saved_ids].include?(house.id.to_s)
       puts "#{house.id} clicked!" if opts[:clicked_ids].include?(house.id.to_s)
