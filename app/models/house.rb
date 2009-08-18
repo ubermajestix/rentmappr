@@ -15,6 +15,14 @@ class House < ActiveRecord::Base
      count(:conditions => ["geocoded = ?","s"])
    end
    
+   def self.valid_houses(opts={})
+     if opts[:map_area]
+       find(:conditions => ["geocoded = ? and map_area_id = ?","s", opts[:map_area].id])
+     else
+       find(:conditions => ["geocoded = ?","s"])
+     end
+   end
+   
    def self.valid_total_today
      count(:conditions => ["created_at >= ? and geocoded = ?",midnight, "s"])
    end
