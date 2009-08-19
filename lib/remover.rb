@@ -75,7 +75,7 @@ class Remover
       @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
         for map_area in @map_areas.reverse
           queue = Queue.new
-          houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null"])
+          houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at <= #{Time.now - 3.days}"])
           puts "checking #{houses.length} houses for #{map_area.name}"
           10.times{|n| queue << houses[n*11,houses.length/10]}
           parse_flagged(queue)
