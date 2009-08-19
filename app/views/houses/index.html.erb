@@ -3,20 +3,20 @@
 		<% form_tag search_path do%>
 		<table style="width:100%">
 		  <tr>
-        <td>	min: $<%= text_field_tag :min_price, params[:min_price], :size=>6, :class=>"small_input"%> 
-        max: $<%= text_field_tag :max_price, params[:max_price], :size=>6, :class=>"small_input" %> 
-        <%= check_box_tag :dogs, "1", params[:dogs]=="1" %> dogs
-        <%= check_box_tag :cats, "1", params[:cats]=="1" %> cats </td>
+        <td>	min: $<%= text_field_tag :min_price, session[:min_price], :size=>6, :class=>"small_input"%> 
+        max: $<%= text_field_tag :max_price, session[:max_price], :size=>6, :class=>"small_input" %> 
+        <%= check_box_tag :dogs, "1", session[:dogs]=="1" %> dogs
+        <%= check_box_tag :cats, "1", session[:cats]=="1" %> cats </td>
         <td class="right"><%= submit_tag "filter"%></td>
       </tr>
       <tr>
         <td>
-          <%= select_tag :bedrooms, options_for_select({'all size'=>-1,'studio'=>0, "1"=>1, "2"=> 2 , "3"=>3, "4"=>4, "5"=>5},params[:bedrooms] ? params[:bedrooms].to_i : -1), :class=>"small_input", 
+          <%= select_tag :bedrooms, options_for_select({'all size'=>-1,'studio'=>0, "1"=>1, "2"=> 2 , "3"=>3, "4"=>4, "5"=>5},session[:bedrooms] ? session[:bedrooms].to_i : -1), :class=>"small_input", 
                          :onchange=>"if(this.options[this.selectedIndex].value!=-1){$('bed_options').show();}else{$('bed_options').hide()};if(this.options[this.selectedIndex].value=='1'){$('plural').hide()} else{$('plural').show()}" %>
           bedroom<span id="plural">s</span>
-          <span id="bed_options" style="<%= 'display:none;' if params[:bedrooms].to_i == -1 || params[:bedrooms].nil? %>">
+          <span id="bed_options" style="<%= 'display:none;' if session[:bedrooms].to_i == -1 || session[:bedrooms].nil? %>">
           
-          <%= select_tag :bedroom_operator, options_for_select({"or more"=>"more", "and smaller"=>"less"}, params[:bedroom_operator]) %>
+          <%= select_tag :bedroom_operator, options_for_select({"or more"=>"more", "and smaller"=>"less"}, session[:bedroom_operator]) %>
         </td> 
         
         <td class="right"><%= link_to "clear", clear_search_path%></td>

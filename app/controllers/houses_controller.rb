@@ -13,6 +13,7 @@ layout "standard"
      if session[:map_area_id]
       conds = []
        if params[:search]
+         params.each_pair{|k,v| session[k.to_sym]=v}
          conds << format_query("price <= ?", params[:max_price])
          conds << format_query("price >= ?", params[:min_price])
          if params[:bedrooms].to_i > -1
@@ -24,8 +25,10 @@ layout "standard"
        end
       conds << ["map_area_id  = #{session[:map_area_id]}"] 
       conds = format_conditions(conds)
-  
+      session[:search_conds] = conds unless conds.length == 1 
+      conds = session[:search_conds] if params[:search].nil? and params[:page]
       session[:house_page] = params[:page]
+ 
       if logged_in?
         @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])
         @total = House.count(:conditions => conds)
@@ -57,7 +60,6 @@ layout "standard"
       @start = GeoLoc.new(:lat=>@map_area.lat, :lng=> @map_area.lng)
       @houses_collected = House.valid_total_for_area_today(@map_area)
       @zoom=6
-      @show_saved = true if params[:show_saved]
       @house_count = @houses.length
       render :template => "houses/index"
     else

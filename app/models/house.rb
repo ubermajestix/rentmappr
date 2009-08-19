@@ -99,11 +99,11 @@ houses.each{|house|  house.has_images = true if house.images_href}
   end
   
   def self.find_for_session (opts={})
-    puts "=="*45
-    puts "saved " + opts[:saved_ids].inspect
-    puts "trashed " + opts[:trashed_ids].inspect
-    puts "clicked " + opts[:clicked_ids].inspect
-    puts "=="*45
+    # puts "=="*45
+    # puts "saved " + opts[:saved_ids].inspect
+    # puts "trashed " + opts[:trashed_ids].inspect
+    # puts "clicked " + opts[:clicked_ids].inspect
+    # puts "=="*45
     houses = find( :all, 
                    :conditions=>opts[:conditions],
                    :offset => opts[:offset],
