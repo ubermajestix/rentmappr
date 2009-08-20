@@ -239,7 +239,7 @@ layout "standard"
   def list
     @map_area = MapArea.find(params[:id])
     session[:list_map_id] = @map_area.id
-    @houses = House.paginate(:all, :conditions=>{:map_area_id => @map_area.id}, :order=>"accuracy DESC", :page=>params[:page], :per_page=>30)
+    @houses = House.paginate(:all, :conditions=>{:map_area_id => @map_area.id}, :order=>"created_at DESC", :page=>params[:page], :per_page=>30)
     render :template => "houses/list", :layout => "basic"
   end
   
