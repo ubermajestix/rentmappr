@@ -20,7 +20,7 @@ module Stats
     map_areas.each do |map_area|
       days = {}
       m=houses.select{|h| h.map_area_id == map_area.id}
-      m.collect{|d| d.day}.uniq.reverse.each{|day| days[day]=m.select{|d| d.day==day}} 
+      m.collect{|d| d.time}.uniq.reverse.each{|day| days[day]=m.select{|d| d.time==day}} 
       output << "---#{map_area.name}---"
       days.each_pair{|day, obj| output << "--#{day}--"; obj.each{|set| output << "#{set.geocoded}: #{set.count}"}}
     end
@@ -37,12 +37,12 @@ module Stats
   end
   
   def self.week
-    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS day, count(*) AS count, map_area_id, geocoded FROM houses WHERE created_at > now() - interval '1 week' GROUP BY map_area_id, day, geocoded  ORDER BY map_area_id, day, geocoded")
+    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count, map_area_id, geocoded FROM houses WHERE created_at > now() - interval '1 week' GROUP BY map_area_id, time, geocoded  ORDER BY map_area_id, time, geocoded")
     return time_output(houses)
   end
   
   def self.last_12_hours
-    houses = House.find_by_sql("SELECT date_trunc('hour', created_at) AS hour, count(*) AS count, map_area_id, geocoded FROM houses WHERE created_at > now() - interval '12 hours' GROUP BY map_area_id, hour, geocoded  ORDER BY map_area_id, hour, geocoded")
+    houses = House.find_by_sql("SELECT date_trunc('hour', created_at) AS time, count(*) AS count, map_area_id, geocoded FROM houses WHERE created_at > now() - interval '12 hours' GROUP BY map_area_id, time, geocoded  ORDER BY map_area_id, time, geocoded")
     return time_output(houses)
   end
 end
