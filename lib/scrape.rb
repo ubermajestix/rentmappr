@@ -6,8 +6,6 @@ require 'jabber_logger'
 Dir.glob("app/models/*.rb").sort.each {|rb| require rb}
 require 'open-uri'
 require 'hpricot'
-
-
 require 'rfuzz/client'
 require 'net/http'
 require 'logging'
