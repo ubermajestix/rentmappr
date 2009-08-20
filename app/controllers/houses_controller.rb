@@ -22,6 +22,9 @@ layout "standard"
          end
          conds <<  ["dog is not null"] if params[:dog]
          conds <<  ["cat is not null"] if params[:cat]
+       elsif params[:clear]
+
+         
        end
       conds << ["map_area_id  = #{session[:map_area_id]} and geocoded = 's'"] 
       conds = format_conditions(conds)
@@ -30,7 +33,7 @@ layout "standard"
       session[:house_page] = params[:page]
  
       if logged_in?
-        @houses = House.find_for_user(:conditions=>conds, :user=>current_user, :saved=>params[:show_saved])
+        @houses = House.find_for_user(:conditions=>conds, :user=>current_user)
         @total = House.count(:conditions => conds)
         @houses = House.paginate( 
           :finder        => :find_for_user,
@@ -68,12 +71,9 @@ layout "standard"
   end
   
   def clear_search
-    puts "=="*45
-    puts "=="*45
-    puts "clearing session stuff for searching"
-    puts "=="*45
-    puts "=="*45
-    session[:bedrooms], session[:cat], session[:dog], session[:min_price], session[:max_price] = nil 
+    [:bedrooms, :max_price, :min_price, :bedroom_operator, :dogs,:cats, :search_conds].each do |parameter|
+      session[parameter]=nil
+    end
     redirect_to :action => "index"
   end
   
