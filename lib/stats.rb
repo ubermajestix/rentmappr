@@ -38,11 +38,11 @@ module Stats
   
   def self.week
     houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS day, count(*) AS count, map_area_id, geocoded FROM houses WHERE created_at > now() - interval '1 week' GROUP BY map_area_id, day, geocoded  ORDER BY map_area_id, day, geocoded")
-    return time_format(houses)
+    return time_output(houses)
   end
   
   def self.last_12_hours
     houses = House.find_by_sql("SELECT date_trunc('hour', created_at) AS hour, count(*) AS count, map_area_id, geocoded FROM houses WHERE created_at > now() - interval '12 hours' GROUP BY map_area_id, hour, geocoded  ORDER BY map_area_id, hour, geocoded")
-    return time_format(houses)
+    return time_output(houses)
   end
 end
