@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require 'activerecord'
-require 'actionmailer'
+require 'jabber_logger'
 Dir.glob("app/models/*.rb").sort.each {|rb| require rb}
 require 'open-uri'
 require 'hpricot'
@@ -262,13 +262,12 @@ class Scraper
      for map_area in @map_areas.reverse 
        house_start = Time.now
        house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i 
-       # @houses.each { |house| house.destroy }
-         puts "scraping #{map_area.craigslist}" 
-          queue = scrape_links(map_area)
-          pull_down_page(queue, map_area)
-          new_house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i
-          puts "took: #{Time.now - house_start}"
-          LoggerMail.deliver_mail "#{Time.now}: Added #{new_house_count - house_count} houses for #{map_area.name}"
+       JabberLogger.send "scraping #{map_area.craigslist}" 
+       queue = scrape_links(map_area)
+       pull_down_page(queue, map_area)
+       new_house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i
+       JabberLogger.send "took: #{Time.now - house_start}"
+       JabberLogger.send "#{Time.now}: Added #{new_house_count - house_count} houses for #{map_area.name}"
      end
   end
 end
