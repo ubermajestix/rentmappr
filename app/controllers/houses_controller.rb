@@ -243,7 +243,7 @@ layout "standard"
     @houses = House.paginate(:all, :conditions=>{:map_area_id => @map_area.id}, :order=>"created_at DESC", :page=>params[:page], :per_page=>30)
     raise "boom!"
   rescue StandardError => e
-    LoggerMail.deliver_mail(e.inspect)
+    # LoggerMail.deliver_mail("<h2>#{e.class}</h2> <p>#{e.message} </p> #{e.backtrace.join("<br/>")}")
   end
     render :template => "houses/list", :layout => "basic"
   end
