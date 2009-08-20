@@ -49,7 +49,7 @@ class Remover
       expiration = Time.now - map_area.expires_in.days
       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
       puts "removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}"   
-      @houses.each{|h| h.destroy}
+      House.delete(@houses.map(&:id))
     end   
   end
   
@@ -88,7 +88,12 @@ class Remover
      	    begin
      	      puts "#{t_links.index(house)} / #{num} / #{removed}"
        	    cl = open(house.href)
-            cl_string = cl.read        
+            cl_string = cl.read
+            if cl.status == "403"
+              #we've been blocked!
+              #notify and sleep 5 minutes
+              sleep 300
+            end        
             if flagged?(cl_string) or removed?(cl_string)
               # see if house is saved... if not delete : if so update 
               removed += 1

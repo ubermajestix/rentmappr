@@ -17,3 +17,13 @@ config.action_view.cache_template_loading            = true
 
 # Disable delivery errors, bad email addresses will be ignored
 # config.action_mailer.raise_delivery_errors = false
+
+ActionMailer::Base.smtp_settings = {
+  :enable_starttls_auto => true,
+  :address        => 'smtp.gmail.com',
+  :port           => 587,
+  :domain         => 'rentmappr.com',
+  :authentication => :plain,
+  :user_name      => 'logger@rentmappr.com',
+  :password       => 'logger1!'
+}
