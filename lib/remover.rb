@@ -58,9 +58,8 @@ class Remover
     #remove houses that match the city center
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
     for map_area in @map_areas.reverse
-      destroyed = []
       count = House.count(:conditions=>["lat = ? and lng = ? and map_area_id = ?", map_area.center_lat, map_area.center_lng, map_area.id])
-      @houses = House.delete_all(:conditions=>["lat = ? and lng = ? and map_area_id = ?", map_area.center_lat, map_area.center_lng, map_area.id])
+      House.delete_all("lat = #{map_area.center_lat} and lng = #{map_area.lng} and map_area_id =#{map_area.id}")
       self.logger.info "deleted #{count} houses matching the center of #{map_area.name}"
     end
   end
