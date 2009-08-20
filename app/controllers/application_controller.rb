@@ -13,8 +13,8 @@ class ApplicationController < ActionController::Base
     Time.now - Time.now.sec - Time.now.min.minutes - Time.now.hour.hours
   end
   
-  def rescue_action_in_public(exception)
-    notify_hoptoad(exception)
+  def rescue_action_in_public(e)
+    notify_hoptoad(e)
     JabberLogger.send("#{e.class}\n\n#{e.message}\n\n#{e.backtrace.first}")
     case exception.class.to_s
       when "ActionController::RoutingError"
