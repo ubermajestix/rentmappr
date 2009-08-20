@@ -30,7 +30,7 @@ module Stats
   def self.areas
     areas = {}
     output = []
-    houses=House.find_by_sql("select count(*) as count, map_area_id, geocoded from houses group by map_area_id,geocoded")
+    houses=House.find_by_sql("select count(*) as count, map_area_id from houses group by map_area_id")
     houses.collect{|h| h.map_area.name}.uniq.each{|area| areas[area]=houses.select{|a| a.map_area.name == area }}
     areas.each_pair{|area, obj| obj.each{|set| output << "#{set.map_area.name}: #{set.count}" }}
     return output
@@ -42,7 +42,7 @@ module Stats
   end
   
   def self.last_12_hours
-    houses = House.find_by_sql("SELECT date_trunc('hour', created_at) AS time, count(*) AS count, map_area_id FROM houses WHERE created_at > now() - interval '12 hours' GROUP BY map_area_id, time,  ORDER BY map_area_id, time")
+    houses = House.find_by_sql("SELECT date_trunc('hour', created_at) AS time, count(*) AS count, map_area_id FROM houses WHERE created_at > now() - interval '12 hours' GROUP BY map_area_id, time  ORDER BY map_area_id, time")
     return time_output(houses)
   end
 end
