@@ -115,7 +115,8 @@ def geocodr(address_str)
      @start.accuracy = res.search("AddressDetails").first.get_attribute("Accuracy")
      @start.success = true
     elsif status == "403"
-      logger.warn "Looks like we've been shut off."
+      JabberLogger.send "Looks like google shut us off."
+      sleep 300
       # TODO kill and further geocoding attempts
       @start.success = "403"
     end
