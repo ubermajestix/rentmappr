@@ -22,7 +22,7 @@ module Stats
       m=houses.select{|h| h.map_area_id == map_area.id}
       m.collect{|d| d.time}.uniq.each{|day| days[day]=m.select{|d| d.time==day}} 
       output << "---#{map_area.name}---"
-      days.each_pair{|day, obj| obj.each{|set| output << "#{set.day}: #{set.count}"}}
+      days.each_pair{|day, obj| obj.each{|set| output << "#{set.time}: #{set.count}"}}
     end
     return output
   end
