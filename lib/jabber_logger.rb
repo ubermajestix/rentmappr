@@ -19,4 +19,8 @@ module JabberLogger
     @client.send m
   end
   
+  def self.send_error(e)
+    self.send("#{e.class}\n\n#{e.message}\n\n#{e.backtrace.first}")
+  end
+  
 end

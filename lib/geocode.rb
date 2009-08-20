@@ -92,6 +92,7 @@ def geocode(houses)
                house.update_attribute(:geocoded, "f")
              end      
              rescue StandardError => e
+               JabberLogger.send_error(e)
                logger.fatal e.inspect
              end                        
           end #loc.succes 1st time
