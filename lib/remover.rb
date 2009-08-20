@@ -2,8 +2,7 @@
 
 require 'rubygems'
 require 'activerecord'
-require 'actionmailer'
-require 'actionpack'
+require 'jabber_logger'
 Dir.glob("app/models/*.rb").sort.each {|rb| require rb}
 require 'open-uri'
 require 'hpricot'
@@ -44,6 +43,11 @@ class Remover
     match = cl_string.match "This posting has been deleted by its author."
     !!match
   end
+  
+  def timestamp(time=Time.now)
+    # time||=Time.now
+    time.strftime("%H:%M:%S %m/%d/%y")
+  end
  
   def remove_old(opts={})
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
@@ -53,9 +57,9 @@ class Remover
       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
       puts "removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}"   
       House.delete(@houses.map(&:id))
-       mail << "#{Time.now}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}<br/>"   
+       mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}\n"   
     end  
-    LoggerMail.deliver_mail mail 
+    JabberLogger.send mail 
   end
   
   def remove_matches_center(opts={})
@@ -64,12 +68,19 @@ class Remover
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
     mail = ""
     for map_area in @map_areas.reverse
-      count = House.count(:conditions=>["lat = ? and lng = ? and map_area_id = ?", map_area.center_lat, map_area.center_lng, map_area.id])
-      House.delete_all("lat = #{map_area.center_lat} and lng = #{map_area.lng} and map_area_id =#{map_area.id}")
-      self.logger.info "deleted #{count} houses matching the center of #{map_area.name}"
-      mail << "#{Time.now}: deleted #{count} houses matching the center of #{map_area.name}<br/>"
+      if map_area.center_lat and map_area.center_lng
+        count = House.count(:conditions=>["lat = ? and lng = ? and map_area_id = ?", map_area.center_lat, map_area.center_lng, map_area.id])
+        House.delete_all("lat = #{map_area.center_lat} and lng = #{map_area.center_lng} and map_area_id =#{map_area.id}")
+        self.logger.info "deleted #{count} houses matching the center of #{map_area.name}"
+        mail << "#{timestamp}: deleted #{count} houses matching the center of #{map_area.name}\n"
+      else
+        self.logger.error "no center coords for #{map_area.name}"
+        mail << "#{timestamp} no center coords for #{map_area.name}\n"
+      end
     end
-    LoggerMail.deliver_mail mail
+    JabberLogger.send mail
+    puts "=="*45
+    puts mail
   end
   
   def remove_flagged(opts={})
@@ -79,11 +90,11 @@ class Remover
         for map_area in @map_areas.reverse
           queue = Queue.new
           houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at <= #{Time.now - 3.days}"])
-          puts "checking #{houses.length} houses for #{map_area.name}"
+          JabberLogger.send "checking #{houses.length} houses for #{map_area.name}"
           10.times{|n| queue << houses[n*11,houses.length/10]}
           parse_flagged(queue)
       end    
-      LoggerMail.deliver_mail "#{Time.now}: finished removed/flagged succesfully"
+      JabberLogger.send "#{timestamp}: finished removed/flagged succesfully"
   end
   
   def parse_flagged(links)#pass queue
@@ -100,7 +111,7 @@ class Remover
             cl_string = cl.read
             if cl.status == "403"
               #we've been blocked!
-              LoggerMail.deliver_mail "#{Time.now}: Craigslist blocked us! record: #{t_links.index(house)} / Thread: #{num} / Removed: #{removed}"
+              LoggerMail.deliver_mail "#{timestamp}: Craigslist blocked us! record: #{t_links.index(house)} / Thread: #{num} / Removed: #{removed}"
               #notify and sleep 5 minutes
               sleep 300
             end        

@@ -150,26 +150,12 @@ end
     @map_areas = MapArea.find(:all)
     mail = ""
     for map_area in @map_areas 
-      puts "---Geocoding for #{map_area.name} ---"
+      JabberLogger.send "---Geocoding for #{map_area.name} ---"
       @houses = House.find(:all, :conditions => ["map_area_id = ? and geocoded = ?", map_area.id, 'n' ])
       geocode(@houses)  
       mail << "#{Time.now}: Geocoded #{@houses.length} houses for #{map_area.name}<br/>"
     end  
-    LoggerMail.deliver_mail mail
+    JabberLogger.send mail
   end
   
-  def stats
-    @houses = House.find(:all)
-    s = f = n = 0
-    @houses.each { |house| 
-    n +=1  if house.geocoded == 'n' 
-    s +=1  if house.geocoded == 's' 
-    f +=1  if house.geocoded == 'f'  }
-    logger.info "failed: #{f}"
-    logger.info "success: #{s}"
-    logger.info "not yet: #{n}"
-    logger.info
-    logger.info "took: #{Time.now - self.start_run}"
-    logger.info Time.now.strftime("%m/%d/%Y %H:%M")
-  end
 end
