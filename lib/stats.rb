@@ -20,7 +20,8 @@ module Stats
     map_areas.each do |map_area|
       m=houses.select{|h| h.map_area_id == map_area.id}
       output << "---#{map_area.name}---"
-      m.sort{|a,b| DateTime.parse(a)<=>DateTime.parse(b)}.each{|set| output << "#{set.time}: #{set.count}"} 
+      db_time_format = "%Y-%m-%d %H:%M:%S"
+      m.sort{|a,b| DateTime.strptime(a.time, db_time_format)<=>DateTime.strptime(b.time, db_time_format)}.reverse.each{|set| output << "#{set.time}: #{set.count}"} 
     end
     return output
   end
