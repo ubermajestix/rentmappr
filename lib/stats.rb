@@ -1,3 +1,4 @@
+require 'time'
 module Stats
   def self.initialize
   end
@@ -20,7 +21,7 @@ module Stats
     map_areas.each do |map_area|
       days = {}
       m=houses.select{|h| h.map_area_id == map_area.id}
-      m.collect{|d| d.time}.uniq.sort{|a,b| a<=>b }.each{|day| days[day]=m.select{|d| d.time==day}} 
+      m.collect{|d| d.time}.uniq.sort{|a,b| Time.parse(a)<=>Time.parse(b)}.each{|day| days[day]=m.select{|d| d.time==day}} 
       output << "---#{map_area.name}---"
       days.each_pair{|day, obj| obj.each{|set| output << "#{set.time}: #{set.count}"}}
     end
