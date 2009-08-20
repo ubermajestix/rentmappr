@@ -252,47 +252,22 @@ class Scraper
    parser_threads.each { |t| t.join }
   end#of pull down page 
  
-def start_scraper(opts={})
-  logger.info ActiveRecord::Base.connection.instance_values["config"].inspect
-  sleep 3
-  @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
-  self.logger.info "scraping for #{@map_areas.length} cities"
+  def start_scraper(opts={})
+    logger.info ActiveRecord::Base.connection.instance_values["config"].inspect
+    sleep 3
+    @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
+    self.logger.info "scraping for #{@map_areas.length} cities"
   
-   for map_area in @map_areas.reverse 
-     house_start = Time.now
-     @houses = map_area.houses
-     puts "#{@houses.length} in #{map_area.name}"
-     # @houses.each { |house| house.destroy }
-       puts "scraping #{map_area.craigslist}" 
-        queue = scrape_links(map_area)
-        pull_down_page(queue, map_area)
-        puts map_area.houses.length
-        puts "took: #{Time.now - house_start}"
-        puts "=="*45
-        puts "=="*45
-        puts "=="*45
-        puts "=="*45
-        puts "=="*45
-   end
-   
-   stats
-  
-end
-
-
-
-  def stats
-    @houses = House.find(:all)
-    s = f = n = 0
-    @houses.each { |house| 
-    n +=1  if house.geocoded == 'n' 
-    s +=1  if house.geocoded == 's' 
-    f +=1  if house.geocoded == 'f'  }
-    puts "failed: #{f}"
-    puts "success: #{s}"
-    puts "not yet: #{n}"
-    puts
-    puts "took: #{Time.now - self.start_run}"
-    puts Time.now.strftime("%m/%d/%Y %H:%M")
+     for map_area in @map_areas.reverse 
+       house_start = Time.now
+       house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i 
+       # @houses.each { |house| house.destroy }
+         puts "scraping #{map_area.craigslist}" 
+          queue = scrape_links(map_area)
+          pull_down_page(queue, map_area)
+          new_house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i
+          puts "took: #{Time.now - house_start}"
+          LoggerMail.deliver_mail "#{Time.now}: Added #{new_house_count - house_count} houses for #{map_area.name}"
+     end
   end
 end

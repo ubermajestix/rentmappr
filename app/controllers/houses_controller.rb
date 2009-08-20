@@ -239,7 +239,12 @@ layout "standard"
   def list
     @map_area = MapArea.find(params[:id])
     session[:list_map_id] = @map_area.id
+    begin
     @houses = House.paginate(:all, :conditions=>{:map_area_id => @map_area.id}, :order=>"created_at DESC", :page=>params[:page], :per_page=>30)
+    raise "boom!"
+  rescue StandardError => e
+    LoggerMail.deliver_mail(e.inspect)
+  end
     render :template => "houses/list", :layout => "basic"
   end
   

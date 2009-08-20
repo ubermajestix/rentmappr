@@ -148,11 +148,14 @@ end
   
   def start_geocoding  
     @map_areas = MapArea.find(:all)
+    mail = ""
     for map_area in @map_areas 
       puts "---Geocoding for #{map_area.name} ---"
       @houses = House.find(:all, :conditions => ["map_area_id = ? and geocoded = ?", map_area.id, 'n' ])
       geocode(@houses)  
+      mail << "#{Time.now}: Geocoded #{@houses.length} houses for #{map_area.name}<br/>"
     end  
+    LoggerMail.deliver_mail mail
   end
   
   def stats

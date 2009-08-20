@@ -25,3 +25,7 @@ ActionMailer::Base.smtp_settings = {
   :user_name      => 'logger@rentmappr.com',
   :password       => 'logger1!'
 }
+
+# ActionMailer::Base.smtp_settings = {
+#   :address         => "localhost",
+#   :port            => 25}

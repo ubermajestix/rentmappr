@@ -45,23 +45,29 @@ class Remover
  
   def remove_old(opts={})
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
+    mail = ""
     for map_area in @map_areas.reverse 
       expiration = Time.now - map_area.expires_in.days
       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
       puts "removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}"   
       House.delete(@houses.map(&:id))
-    end   
+       mail << "#{Time.now}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}<br/>"   
+    end  
+    LoggerMail.deliver_mail mail 
   end
   
   def remove_matches_center(opts={})
     self.logger.info "Removing houses that match city center"
     #remove houses that match the city center
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
+    mail = ""
     for map_area in @map_areas.reverse
       count = House.count(:conditions=>["lat = ? and lng = ? and map_area_id = ?", map_area.center_lat, map_area.center_lng, map_area.id])
       House.delete_all("lat = #{map_area.center_lat} and lng = #{map_area.lng} and map_area_id =#{map_area.id}")
       self.logger.info "deleted #{count} houses matching the center of #{map_area.name}"
+      mail << "#{Time.now}: deleted #{count} houses matching the center of #{map_area.name}<br/>"
     end
+    LoggerMail.deliver_mail mail
   end
   
   def remove_flagged(opts={})
@@ -75,6 +81,7 @@ class Remover
           10.times{|n| queue << houses[n*11,houses.length/10]}
           parse_flagged(queue)
       end    
+      LoggerMail.deliver_mail "#{Time.now}: finished removed/flagged succesfully"
   end
   
   def parse_flagged(links)#pass queue
@@ -91,6 +98,7 @@ class Remover
             cl_string = cl.read
             if cl.status == "403"
               #we've been blocked!
+              LoggerMail.deliver_mail "#{Time.now}: Craigslist blocked us! record: #{t_links.index(house)} / Thread: #{num} / Removed: #{removed}"
               #notify and sleep 5 minutes
               sleep 300
             end        
