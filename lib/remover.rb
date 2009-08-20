@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'activerecord'
 require 'actionmailer'
+require 'actionpack'
 Dir.glob("app/models/*.rb").sort.each {|rb| require rb}
 require 'open-uri'
 require 'hpricot'
