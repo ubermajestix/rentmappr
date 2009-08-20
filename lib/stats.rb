@@ -20,7 +20,7 @@ module Stats
     map_areas.each do |map_area|
       days = {}
       m=houses.select{|h| h.map_area_id == map_area.id}
-      m.collect{|d| d.time}.uniq.each{|day| days[day]=m.select{|d| d.time==day}} 
+      m.collect{|d| d.time}.uniq.sort{|a,b| a<=>b }.each{|day| days[day]=m.select{|d| d.time==day}} 
       output << "---#{map_area.name}---"
       days.each_pair{|day, obj| obj.each{|set| output << "#{set.time}: #{set.count}"}}
     end
@@ -37,7 +37,7 @@ module Stats
   end
   
   def self.week
-    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count, map_area_id FROM houses WHERE created_at > now() - interval '1 week' GROUP BY map_area_id, time  ORDER BY time desc")
+    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count, map_area_id FROM houses WHERE created_at > now() - interval '1 week' GROUP BY map_area_id, time  ORDER BY time asc")
     return time_output(houses)
   end
   
