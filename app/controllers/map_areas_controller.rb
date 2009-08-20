@@ -64,7 +64,7 @@ before_filter :admin_only, :except=>:st
   # POST /map_areas.xml
   def create
     @map_area = MapArea.new(params[:map_area])
-    @map_area.craigslist = params[:craigslist] + ".craigslist.org"
+    @map_area.craigslist = params[:map_area][:craigslist] + ".craigslist.org"
     respond_to do |format|
       if @map_area.save
         flash[:notice] = 'MapArea was successfully created.'

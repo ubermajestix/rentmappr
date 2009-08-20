@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   def rescue_action_in_public(e)
     notify_hoptoad(e)
     JabberLogger.send("#{e.class}\n\n#{e.message}\n\n#{e.backtrace.first}")
-    case exception.class.to_s
+    case e.class.to_s
       when "ActionController::RoutingError"
         @this = "public/404.html" 
       else
