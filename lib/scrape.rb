@@ -128,7 +128,7 @@ class Scraper
             end      
             # here we want to only push urls onto the "links" Queue that we haven't seen
             logger.info "#{cl_page} tlinks before: " + t_links.length.to_s
-            t_links.collect!{|t| "http://#{map_area.url}#{t}"}
+            t_links.collect!{|t| "http://#{map_area.craigslist}#{t}"}
             seen_these_hrefs = House.all(:select=>"href", :conditions=>["href in (#{t_links.collect{|h| "'#{h}'"}.join(',')})"]).map(&:href)
             logger.info "seen em: " + seen_these_hrefs.length.to_s
             t_links = t_links - seen_these_hrefs
