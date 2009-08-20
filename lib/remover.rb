@@ -59,13 +59,9 @@ class Remover
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
     for map_area in @map_areas.reverse
       destroyed = []
-      @houses = map_area.houses
-      self.logger.info "#{@houses.length} for #{map_area.name}"
-      @houses.each{|h| if h.matches_center
-        destroyed << h
-        h.destroy 
-        end}
-      self.logger.info "removed #{destroyed.length} matching center for #{map_area.name}"
+      count = House.count(:conditions=>["lat = ? and lng = ? and map_area_id = ?", map_area.center_lat, map_area.center_lng, map_area.id])
+      @houses = House.delete_all(:conditions=>["lat = ? and lng = ? and map_area_id = ?", map_area.center_lat, map_area.center_lng, map_area.id])
+      self.logger.info "deleted #{count} houses matching the center of #{map_area.name}"
     end
   end
   
