@@ -10,6 +10,7 @@ module JabberLogger
     @client.connect('talk.google.com', 5222)
     @client.auth(password)
     @client.allow_tls = true
+    @client.send(Jabber::Presence.new.set_status("rentmappr logging say what?"))
     to = JID::new("tyler.a.montgomery@gmail.com")
     subject = "Logging Output"
     body = message.to_s

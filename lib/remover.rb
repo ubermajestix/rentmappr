@@ -114,7 +114,7 @@ class Remover
             cl_string = cl.read
             if cl.status == "403"
               #we've been blocked!
-              LoggerMail.deliver_mail "#{timestamp}: Craigslist blocked us! record: #{t_links.index(house)} / Thread: #{num} / Removed: #{removed}"
+              JabberLogger.send "#{timestamp}: Craigslist blocked us! record: #{t_links.index(house)} / Thread: #{num} / Removed: #{removed}"
               #notify and sleep 5 minutes
               sleep 300
             end        
