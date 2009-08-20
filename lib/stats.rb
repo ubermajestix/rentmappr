@@ -2,7 +2,7 @@ module Stats
   def self.initialize
   end
   def self.get_stats(opts={})
-    @houses = House.find_by_sql("select count(*) as count geocoded from houses group by geocoded")
+    @houses = House.find_by_sql("select count(*) as count, geocoded from houses group by geocoded")
     output = []
     output << Time.now.to_s 
     @houses.each{|set| output << "#{set.geocoded}: #{set.count}"}
