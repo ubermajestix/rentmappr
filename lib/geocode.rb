@@ -66,7 +66,7 @@ def geocode(houses)
      #  begin
         for house in @houses #t_houses
           sleep 2 if @houses.index(house) % 10 == 0
-          loc = house.address ? geocodr(house.address) : GeoLoc.new()
+          loc = house.address and not house.address.blank? ? geocodr(house.address) : GeoLoc.new(:success=>false)
           logger.info "   #{@houses.index(house)}/#{@houses.length}".rjust(10) if @houses.index(house)%5==0
           if loc.success
             print "."
@@ -74,19 +74,21 @@ def geocode(houses)
            # sleep 1
           elsif loc.success == "403"
             logger.fatal "X"*25
+            JabberLogger.send "Looks like google shut us off."
             logger.fatal "Over geocoding limit"
             logger.fatal "X"*25
-            break #means we've been shut off don't do anymore geocoding
+            # break #means we've been shut off don't do anymore geocoding
           else
             print "X"
             #retry geocoding with at+some+street stripped out
             begin
-            house.address = retry_address(house.address)
-            loc = house.address ? geocodr(house.address) : GeoLoc.new()
+            house.address = retry_address(house.address) unless house.address.blank?
+            loc = house.address and not house.address.blank? ? geocodr(house.address) : GeoLoc.new(:success=>false)
              if loc.success
                 print "+"
                 house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address, :geocoded=>"s", :accuracy=>loc.accuracy)
              else
+               print "f"
                house.update_attribute(:geocoded, "f")
              end      
              rescue StandardError => e
