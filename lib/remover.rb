@@ -55,9 +55,12 @@ class Remover
     for map_area in @map_areas.reverse 
       expiration = Time.now - map_area.expires_in.days
       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
-      puts "removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}"   
       House.delete(@houses.map(&:id))
-       mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}\n"   
+      mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}\n"   
+      @houses = House.find(:all, :conditions=>["map_area_id = #{map_area.id} and geocoded = 'f'"])
+      House.delete(@houses.map(&:id))
+      mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} that didn't geocode\n"   
+      
     end  
     JabberLogger.send mail 
   end
@@ -89,7 +92,7 @@ class Remover
       @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
         for map_area in @map_areas.reverse
           queue = Queue.new
-          houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at <= #{Time.now - 3.days}"])
+          houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at <= #{Time.now - 3.days} and geocoded ='s'"])
           JabberLogger.send "checking #{houses.length} houses for #{map_area.name}"
           10.times{|n| queue << houses[n*11,houses.length/10]}
           parse_flagged(queue)
