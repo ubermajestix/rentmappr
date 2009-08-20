@@ -14,7 +14,7 @@
 <div style="position:absolute; left:310px">
 	lat:<%= a.text_field :lat, :size=>15, :class=>"large_input" %> <br/>
 	lng:<%= a.text_field :lng, :size=>15, :class=>"large_input" %> <br/>
-	center: (<%= a.center_lat %>, <%= a.center_lng %>)
+	center: (<%= @map_area.center_lat %>, <%= @map_area.center_lng %>)
 </div>
 
 <div id="map" style="width: 300px; height: 300px; cursor:crosshair"></div>
