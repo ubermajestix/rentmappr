@@ -1,15 +1,8 @@
-# require 'rubygems'
-# require 'activerecord'
-# require ''
-# Dir.glob("app/models/*.rb").sort.each {|rb| require rb}
-# 
-require 'jabber_logger'
-
 module Stats
   def self.initialize
   end
   def self.get_stats(opts={})
-    @houses = House.find_by_sql("select count(*) geocoded from houses group by geocoded")
+    @houses = House.find_by_sql("select count(*) as count geocoded from houses group by geocoded")
     output = []
     output << Time.now.to_s 
     @houses.each{|set| output << "#{set.geocoded}: #{set.count}"}
@@ -24,8 +17,8 @@ module Stats
   def self.time_output(houses)
     output = []
     map_areas = MapArea.all
-    map_area for map_areas 
-      days = {};
+    map_areas.each do |map_area|
+      days = {}
       m=houses.select{|h| h.map_area_id == map_area.id}
       m.collect{|d| d.day}.uniq.reverse.each{|day| days[day]=m.select{|d| d.day==day}} 
       output << "---#{map_area.name}---"
