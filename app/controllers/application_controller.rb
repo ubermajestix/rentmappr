@@ -6,7 +6,8 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   include HoptoadNotifier::Catcher
   include Stats
-  require 'open-uri'  
+  require 'open-uri'
+  include JabberLogger  
 
   def midnight
     Time.now - Time.now.sec - Time.now.min.minutes - Time.now.hour.hours
@@ -14,6 +15,7 @@ class ApplicationController < ActionController::Base
   
   def rescue_action_in_public(exception)
     notify_hoptoad(exception)
+    JabberLogger.send("#{e.class}\n\n#{e.message}\n\n#{e.backtrace.first}")
     case exception.class.to_s
       when "ActionController::RoutingError"
         @this = "public/404.html" 
