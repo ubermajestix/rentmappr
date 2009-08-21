@@ -94,8 +94,10 @@ class Remover
           queue = Queue.new
           houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at <= ? and geocoded ='s'", Time.now - 3.days])
           JabberLogger.send "checking #{houses.length} houses for #{map_area.name}"
-          10.times{|n| queue << houses[n*11,houses.length/10]}
-          parse_flagged(queue)
+          if houses.length > 0
+            10.times{|n| queue << houses[n*11,houses.length/10]}
+            parse_flagged(queue)
+          end
       end    
       JabberLogger.send "#{timestamp}: finished removed/flagged succesfully"
   end

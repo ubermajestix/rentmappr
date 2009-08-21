@@ -10,6 +10,7 @@ require 'rfuzz/client'
 require 'net/http'
 require 'logging'
 require 'geo_loc'
+require 'stats'
 
 class Scraper
 
@@ -261,8 +262,7 @@ class Scraper
        queue = scrape_links(map_area)
        pull_down_page(queue, map_area)
        new_house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i
-       JabberLogger.send "took: #{Time.now - house_start}"
-       JabberLogger.send "#{Time.now}: Added #{new_house_count - house_count} houses for #{map_area.name}"
+       JabberLogger.send "#{Time.now}: Added #{new_house_count - house_count} houses for #{map_area.name} took: #{Time.now - house_start}"
      end
   end
 end
