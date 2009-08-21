@@ -9,6 +9,7 @@ require 'hpricot'
 require 'rfuzz/client'
 require 'net/http'
 require 'logging'
+require 'geo_loc'
 
 class Scraper
 
@@ -45,11 +46,7 @@ class Scraper
 
 
 
-  class GeoLoc
-    attr_accessor :lat
-    attr_accessor :lng
-    attr_accessor :success
-  end
+
 
 
 

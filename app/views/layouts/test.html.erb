@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:v="urn:schemas-microsoft-com:vml" >
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <title><%= global_page_title %></title>
@@ -8,10 +8,12 @@
     <%= javascript_include_tag :defaults %>
     <%= stylesheet_link_tag 'lightbox' %>
     <%= javascript_include_tag 'lightbox', 'builder' %>
-    <script>
+    <%= javascript_include_tag 'dragzoom' %>
+    
+    <!-- <script>
       var $j = jQuery.noConflict();
       $j(document).ready(function(){});
-    </script>
+    </script> -->
    <%if online? %>
      <% @key =request.host =~ /rentmappr/ ? "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTFe1RIeuOf__AvzqPPVl3e_BFy2xR4LYWw1t-nh0FUMH7k3OkjcJU9ww" : "ABQIAAAA5KBnIbKAbVGi_wO_Q2EAghTkn2cjlmPPsTmxGpadsO7XL1l5cxQRHnXCjbHxd4a9uQicYTUQkTi-8w" %>
      <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= @key %>" type="text/javascript"></script>
@@ -28,10 +30,12 @@
        var map;
        function initialize() {
     	  map = new GMap($("map"));
-    	  var start = new GPoint(<%=@start.lng %>,<%=@start.lat %>);
+        var start = new GPoint(<%=@start.lng %>,<%=@start.lat %>);
+        // map.setCenter(new GLatLng(<%=@start.lng %>,<%=@start.lat %>), <%= @zoom %>);
+        map.centerAndZoom(start, <%= @zoom %>);    	 
     	  map.addControl(new GSmallMapControl());
     	  map.addControl(new GMapTypeControl());
-    	  map.centerAndZoom(start, <%= @zoom %>);
+         map.addControl(new DragZoomControl());
         <% if @map_areas %>
           <% for place in @map_areas %>
             <% if place.lat and place.lng %>
@@ -62,8 +66,8 @@
 
   <body onload="initialize();" unload="GUnload();">
     <div id='map'></div>
-    <div id="container">
+    <!-- <div id="container">
        <%= yield %>
-    </div>
+    </div> -->
   </body>
 </html>

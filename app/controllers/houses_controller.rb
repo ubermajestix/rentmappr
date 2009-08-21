@@ -7,6 +7,7 @@ layout "standard"
   def test
     @start = GeoLoc.new(:lat=>40.08058466412761, :lng=>  -95.9765625)
     @zoom=13
+    @houses = House.all(:conditions=>["map_area_id =1"], :limit=>10)
     render :template => "houses/test", :layout => "test"
   end
   def index

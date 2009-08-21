@@ -8,6 +8,7 @@ require 'rfuzz/client'
 require 'net/http'
 require 'logger'
 require 'rack'
+require 'geo_loc'
 class Geocode
   def initialize
     # @logger = logger
@@ -38,12 +39,7 @@ class Geocode
     					:pool => 20, :wait_timeout => 15)
   end
 
-class GeoLoc
-  attr_accessor :lat
-  attr_accessor :lng
-  attr_accessor :success
-  attr_accessor :accuracy
-end
+
 
 
 # TODO add city specific lookup - get from command line
@@ -66,8 +62,9 @@ def geocode(houses)
      #  begin
         for house in @houses #t_houses
           sleep 2 if @houses.index(house) % 10 == 0
-          loc = house.address and not house.address.blank? ? geocodr(house.address) : GeoLoc.new(:success=>false)
+          loc = (house.address and not house.address.blank?) ? geocodr(house.address) : GeoLoc.new()
           logger.info "   #{@houses.index(house)}/#{@houses.length}".rjust(10) if @houses.index(house)%5==0
+          # puts loc.inspect
           if loc.success
             print "."
             house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :geocoded=>"s", :accuracy=>loc.accuracy)
@@ -83,7 +80,7 @@ def geocode(houses)
             #retry geocoding with at+some+street stripped out
             begin
             house.address = retry_address(house.address) unless house.address.blank?
-            loc = house.address and not house.address.blank? ? geocodr(house.address) : GeoLoc.new(:success=>false)
+            loc = (house.address and not house.address.blank?) ? geocodr(house.address) : GeoLoc.new()
              if loc.success
                 print "+"
                 house.update_attributes(:lat=>loc.lat, :lng=>loc.lng, :address=>house.address, :geocoded=>"s", :accuracy=>loc.accuracy)
