@@ -55,7 +55,7 @@ class Remover
     for map_area in @map_areas.reverse 
       expiration = Time.now - map_area.expires_in.days
       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
-      House.delete(@houses.map(&:id))
+      House.update(@houses.map(&:id), {:geocoded=>'old'})
       mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}\n"   
       # Don't remove these! We're re-geocoding these every hour!
       # @houses = House.find(:all, :conditions=>["map_area_id = #{map_area.id} and geocoded = 'f'"])
@@ -74,7 +74,7 @@ class Remover
     for map_area in @map_areas.reverse
       if map_area.center_lat and map_area.center_lng
         count = House.count(:conditions=>["lat = ? and lng = ? and map_area_id = ?", map_area.center_lat, map_area.center_lng, map_area.id])
-        House.delete_all("lat = #{map_area.center_lat} and lng = #{map_area.center_lng} and map_area_id =#{map_area.id}")
+        House.update_all("geocoded = 'center'", "lat = #{map_area.center_lat} and lng = #{map_area.center_lng} and map_area_id =#{map_area.id}")
         self.logger.info "deleted #{count} houses matching the center of #{map_area.name}"
         mail << "#{timestamp}: deleted #{count} houses matching the center of #{map_area.name}\n"
       else
@@ -121,7 +121,7 @@ class Remover
               # see if house is saved... if not delete : if so update 
               removed += 1
                puts "#{house.href}"
-               house.saved? ? house.update_attributes(:cl_removed=>true) : house.destroy
+               house.saved? ? house.update_attributes(:cl_removed=>true) : house.update_attributes(:geocoded=>'flagged')
                ActiveRecord::Base.clear_active_connections!
               # house.update_attributes(:cl_removed=>true)
             end 
