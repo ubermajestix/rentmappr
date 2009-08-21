@@ -57,9 +57,10 @@ class Remover
       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
       House.delete(@houses.map(&:id))
       mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}\n"   
-      @houses = House.find(:all, :conditions=>["map_area_id = #{map_area.id} and geocoded = 'f'"])
-      House.delete(@houses.map(&:id))
-      mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} that didn't geocode\n"   
+      # Don't remove these! We're re-geocoding these every hour!
+      # @houses = House.find(:all, :conditions=>["map_area_id = #{map_area.id} and geocoded = 'f'"])
+      #      House.delete(@houses.map(&:id))
+      #      mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} that didn't geocode\n"   
       
     end  
     JabberLogger.send mail 
