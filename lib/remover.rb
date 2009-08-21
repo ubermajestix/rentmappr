@@ -92,7 +92,7 @@ class Remover
       @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
         for map_area in @map_areas.reverse
           queue = Queue.new
-          houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at <= #{Time.now - 3.days} and geocoded ='s'"])
+          houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at <= ? and geocoded ='s'", Time.now - 3.days])
           JabberLogger.send "checking #{houses.length} houses for #{map_area.name}"
           10.times{|n| queue << houses[n*11,houses.length/10]}
           parse_flagged(queue)
@@ -128,6 +128,7 @@ class Remover
             end 
           rescue StandardError => e
             logger.error e.inspect
+            logger.error house.href
           rescue Timeout::Error => e
             logger.error "Timeout! " + e.inspect
           end    
