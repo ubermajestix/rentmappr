@@ -136,6 +136,17 @@ class Scraper
             puts "queue length: #{links.length}"
             ActiveRecord::Base.clear_active_connections!
           end # status == 200
+        rescue OpenURI::HTTPError => e
+          #we've been blocked!
+          if e.message == "404 Not Found: #{house.href}"
+            logger.error e.inspect
+          elsif e.message. == "403 Forbidden"
+             JabberLogger.send "Looks like cl shut us off."
+              sleep 20
+          else
+            JabberLogger.send "Looks like cl shut us off? #{e.class}: #{e.message}"
+            sleep 20
+          end
         rescue StandardError => e
           logger.error e.inspect
         rescue Timeout::Error => e

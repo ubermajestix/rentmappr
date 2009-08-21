@@ -120,6 +120,19 @@ def geocodr(address_str)
       # TODO kill and further geocoding attempts
       @start.success = "403"
     end
+  rescue OpenURI::HTTPError => e
+    #we've been blocked!
+    if e.message == "404 Not Found"
+      logger.error e.inspect
+    elsif e.message. == "403 Forbidden"
+       JabberLogger.send "Looks like google shut us off."
+        sleep 300
+        # TODO kill and further geocoding attempts
+        @start.success = "403"
+    else
+      JabberLogger.send "Looks like google shut us off? #{e.class}: #{e.message}"
+      sleep 300
+    end
   rescue StandardError => e
     logger.info e    
   rescue Timeout::Error => e

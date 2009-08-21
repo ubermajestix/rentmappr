@@ -110,16 +110,12 @@ class Remover
      	parser_threads << Thread.new(cl_links, batch_num){|t_links, num|
      	  removed = 0
      	  for house in t_links
+     	    sleep 2 if t_links.index(house) % 10 == 0
      	    begin
-     	      puts "#{t_links.index(house)} / #{num} / #{removed}"
+     	      puts "#{t_links.index(house)} / #{num}:#{t_links.length} / #{removed}"
        	    cl = open(house.href)
             cl_string = cl.read
-            if cl.status == "403"
-              #we've been blocked!
-              JabberLogger.send "#{timestamp}: Craigslist blocked us! record: #{t_links.index(house)} / Thread: #{num} / Removed: #{removed}"
-              #notify and sleep 5 minutes
-              sleep 300
-            end        
+           
             if flagged?(cl_string) or removed?(cl_string)
               # see if house is saved... if not delete : if so update 
               removed += 1
@@ -128,6 +124,15 @@ class Remover
                ActiveRecord::Base.clear_active_connections!
               # house.update_attributes(:cl_removed=>true)
             end 
+          rescue OpenURI::HTTPError => e
+            #we've been blocked!
+            if e.message == "404 Not Found"
+              logger.error "404 error: #{house.href}"
+            elsif e.message == "403 Forbidden"
+              #notify and sleep 5 minutes
+              JabberLogger.send "#{timestamp}: Craigslist blocked us! record: #{t_links.index(house)} / Thread: #{num} / Removed: #{removed}"
+              sleep 300
+            end
           rescue StandardError => e
             logger.error e.inspect
             logger.error house.href
