@@ -52,7 +52,7 @@ namespace :cl do
   namespace :stats do
     desc "collection stats"
     task :all => :environment do
-      puts Stats.get_stats(:week=>true, :last_12=>true, :area=>true)
+      puts Stats.get_stats(:week=>true, :last_12=>true, :area=>true, :total=>true)
     end
     desc "collection stats for the week"
     task :week => :environment do
@@ -65,6 +65,10 @@ namespace :cl do
     desc "collection stats for areas"
     task :areas => :environment do
       puts Stats.get_stats(:areas=>true)
+    end
+    desc "collection stats totals by day"
+    task :total => :environment do
+      puts Stats.get_stats(:total=>true)
     end
   
   end

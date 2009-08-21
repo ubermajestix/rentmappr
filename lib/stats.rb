@@ -10,6 +10,7 @@ module Stats
     output << areas if opts[:areas]
     output << last_12_hours if opts[:last_12]
     output << week  if opts[:week]
+    output << total_by_day if opts[:total]
     
     return output.flatten.join(opts[:format] || "\n")
   end
@@ -43,5 +44,13 @@ module Stats
   def self.last_12_hours
     houses = House.find_by_sql("SELECT date_trunc('hour', created_at) AS time, count(*) AS count, map_area_id FROM houses WHERE created_at > now() - interval '12 hours' GROUP BY map_area_id, time  ORDER BY time desc")
     return time_output(houses)
+  end
+  
+  def self.total_by_day
+    output = []
+    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count FROM houses WHERE created_at > now() - interval '1 week' GROUP BY time  ORDER BY time asc")
+    output << "=====Total by day====="
+    houses.each{|h| output << "#{h.time}: #{h.count}"}
+    return output
   end
 end
