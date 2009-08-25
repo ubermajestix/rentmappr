@@ -21,17 +21,15 @@ layout "standard"
            conds << format_query("bedrooms <= ?", params[:bedrooms]) if params[:bedroom_operator] == "less"
            conds << format_query("bedrooms >= ?", params[:bedrooms]) if params[:bedroom_operator] == "more"
          end
-         conds <<  ["dog is not null"] if params[:dog]
-         conds <<  ["cat is not null"] if params[:cat]
-       elsif params[:clear]
-
-         
+         conds <<  ["dog is not null"] if params[:dogs]
+         conds <<  ["cat is not null"] if params[:cats]
        end
       conds << ["map_area_id  = #{session[:map_area_id]} and geocoded = 's'"] 
       conds = format_conditions(conds)
-      session[:search_conds] = conds unless conds.length == 1 
+      session[:search_conds] = conds
       conds = session[:search_conds] if params[:search].nil? and params[:page]
       session[:house_page] = params[:page]
+      JabberLogger.send("searched for: #{conds} from #{request.remote_ip}")
  
       if logged_in?
         @houses = House.find_for_user(:conditions=>conds, :user=>current_user)
