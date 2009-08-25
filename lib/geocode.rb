@@ -74,6 +74,7 @@ def geocode(houses)
             JabberLogger.send "Looks like google shut us off."
             logger.fatal "Over geocoding limit"
             logger.fatal "X"*25
+            break
             # break #means we've been shut off don't do anymore geocoding
           else
             print "X"
@@ -116,7 +117,7 @@ def geocodr(address_str)
      @start.success = true
     elsif status == "403"
       JabberLogger.send "Looks like google shut us off."
-      sleep 300
+      break
       # TODO kill and further geocoding attempts
       @start.success = "403"
     end
@@ -126,7 +127,7 @@ def geocodr(address_str)
       logger.error e.inspect
     elsif e.message. == "403 Forbidden"
        JabberLogger.send "Looks like google shut us off."
-        sleep 300
+        break
         # TODO kill and further geocoding attempts
         @start.success = "403"
     else

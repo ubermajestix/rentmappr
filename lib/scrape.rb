@@ -142,10 +142,10 @@ class Scraper
             logger.error e.inspect
           elsif e.message. == "403 Forbidden"
              JabberLogger.send "Looks like cl shut us off."
-              sleep 20
+              break
           else
             JabberLogger.send "Looks like cl shut us off? #{e.class}: #{e.message}"
-            sleep 20
+            break
           end
         rescue StandardError => e
           logger.error e.inspect

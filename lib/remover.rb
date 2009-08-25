@@ -132,7 +132,7 @@ class Remover
             elsif e.message == "403 Forbidden"
               #notify and sleep 5 minutes
               JabberLogger.send "#{timestamp}: Craigslist blocked us! record: #{t_links.index(house)} / Thread: #{num} / Removed: #{removed}"
-              sleep 300
+              break
             end
           rescue StandardError => e
             logger.error e.inspect
