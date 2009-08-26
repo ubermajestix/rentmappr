@@ -22,7 +22,7 @@ module Stats
       m=houses.select{|h| h.map_area_id == map_area.id}
       output << "---#{map_area.name}---"
       db_time_format = "%Y-%m-%d %H:%M:%S"
-      m.sort{|a,b| DateTime.strptime(a.time, db_time_format)<=>DateTime.strptime(b.time, db_time_format)}.reverse.each{|set| output << "#{set.time}: #{set.count}"} 
+      m.sort{|a,b| DateTime.strptime(a.time, db_time_format)<=>DateTime.strptime(b.time, db_time_format)}.reverse.each{|set| output << "#{set.time} #{set.geocoded}: #{set.count.rjust(10)}"} 
     end
     return output
   end
@@ -37,18 +37,18 @@ module Stats
   end
   
   def self.week
-    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count, map_area_id FROM houses WHERE created_at > now() - interval '1 week' GROUP BY map_area_id, time  ORDER BY time asc")
+    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count, geocoded, map_area_id FROM houses WHERE created_at > now() - interval '1 week' GROUP BY geocoded, map_area_id, time  ORDER BY time asc")
     return time_output(houses)
   end
   
   def self.last_12_hours
-    houses = House.find_by_sql("SELECT date_trunc('hour', created_at) AS time, count(*) AS count, map_area_id FROM houses WHERE created_at > now() - interval '12 hours' GROUP BY map_area_id, time  ORDER BY time desc")
+    houses = House.find_by_sql("SELECT date_trunc('hour', created_at) AS time, count(*) AS count, geocoded, map_area_id FROM houses WHERE created_at > now() - interval '12 hours' GROUP BY geocoded, map_area_id, time  ORDER BY time desc")
     return time_output(houses)
   end
   
   def self.total_by_day
     output = []
-    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count FROM houses WHERE created_at > now() - interval '1 week' GROUP BY time  ORDER BY time asc")
+    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count, geocoded FROM houses WHERE created_at > now() - interval '1 week' GROUP BY geocoded, time  ORDER BY time asc")
     output << "=====Total by day====="
     houses.each{|h| output << "#{h.time}: #{h.count}"}
     return output
