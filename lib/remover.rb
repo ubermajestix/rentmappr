@@ -73,8 +73,8 @@ class Remover
     mail = ""
     for map_area in @map_areas.reverse
       if map_area.center_lat and map_area.center_lng
-        count = House.count(:conditions=>["lat = ? and lng = ? and map_area_id = ?", map_area.center_lat, map_area.center_lng, map_area.id])
-        House.update_all("geocoded = 'center'", "lat = #{map_area.center_lat} and lng = #{map_area.center_lng} and map_area_id =#{map_area.id}")
+        count = House.count(:conditions=>["lat = ? and lng = ? and map_area_id = ? and geocoded='s'", map_area.center_lat, map_area.center_lng, map_area.id])
+        House.update_all("geocoded = 'center'", "lat = #{map_area.center_lat} and lng = #{map_area.center_lng} and map_area_id =#{map_area.id} and geocoded='s'")
         self.logger.info "deleted #{count} houses matching the center of #{map_area.name}"
         mail << "#{timestamp}: deleted #{count} houses matching the center of #{map_area.name}\n"
       else
@@ -93,7 +93,7 @@ class Remover
       @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
         for map_area in @map_areas.reverse
           queue = Queue.new
-          houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at <= ? and geocoded ='s'", Time.now - 3.days])
+          houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at >= ? and geocoded ='s'", Time.now - 1.days])
           JabberLogger.send "checking #{houses.length} houses for #{map_area.name}"
           if houses.length > 0
             10.times{|n| queue << houses[n*11,houses.length/10]}
