@@ -48,7 +48,7 @@ module Stats
   
   def self.total_by_day
     output = []
-    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count, geocoded FROM houses WHERE created_at > now() - interval '1 week' GROUP BY geocoded, time  ORDER BY time asc")
+    houses = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count, geocoded FROM houses WHERE created_at > now() - interval '1 week' GROUP BY geocoded, time  ORDER BY time desc")
     output << "=====Total by day====="
     houses.each{|set| output << "#{set.time} #{set.geocoded}: #{set.count.rjust(10 - set.geocoded.length)}"}
     return output
