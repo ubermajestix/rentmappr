@@ -22,7 +22,7 @@ module Stats
       m=houses.select{|h| h.map_area_id == map_area.id}
       output << "---#{map_area.name}---"
       db_time_format = "%Y-%m-%d %H:%M:%S"
-      m.sort{|a,b| DateTime.strptime(a.time, db_time_format)<=>DateTime.strptime(b.time, db_time_format)}.reverse.each{|set| output << "#{set.time} #{set.geocoded}: #{set.count.rjust(10)}"} 
+      m.sort{|a,b| DateTime.strptime(a.time, db_time_format)<=>DateTime.strptime(b.time, db_time_format)}.reverse.each{|set| output << "#{set.time} #{set.geocoded}: #{set.count.rjust(10 - set.geocoded.length)}"} 
     end
     return output
   end
