@@ -58,7 +58,7 @@ class Remover
   def remove_matching_titles(opts={})
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all)
     for map_area in @map_areas
-      h = House.find_by_sql("select count(id) as count, array_to_string( array_agg(id), ',' ) as ids, title from houses where map_area_id=#{map_area.id} group by title having count(id) > 1")
+      h = House.find_by_sql("select count(id) as count, array_to_string( array_agg(id), ',' ) as ids, title from houses where map_area_id=#{map_area.id} and geocoded != 'duplicate' group by title having count(id) > 1")
       removal_ids = []
       h.each do |set|
         ids = set.ids.split(",")
@@ -69,7 +69,9 @@ class Remover
       end
       removal_ids.flatten!
       JabberLogger.send("marking #{removal_ids.length} as duplicate for #{map_area.name}")
-      House.update(removal_ids, { :geocoded=>"duplicate title" })
+      update_statement = []
+      removal_ids.length.times{|d| update_statement << {:geocoded=>'old'}}
+      House.update(removal_ids, update_statement)
     end
   end
  
@@ -79,7 +81,10 @@ class Remover
     for map_area in @map_areas.reverse 
       expiration = Time.now - map_area.expires_in.days
       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
-      House.update(@houses.map(&:id), {:geocoded=>'old'})
+      ids = @houses.map(&:id)
+      update_statement = []
+      ids.length.times{|d| update_statement << {:geocoded=>'old'}}
+      House.update(ids, update_statement)
       mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}\n"   
       # Don't remove these! We're re-geocoding these every hour!
       # @houses = House.find(:all, :conditions=>["map_area_id = #{map_area.id} and geocoded = 'f'"])
