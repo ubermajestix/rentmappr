@@ -70,7 +70,7 @@ class Remover
       removal_ids.flatten!
       JabberLogger.send("marking #{removal_ids.length} as duplicate for #{map_area.name}")
       update_statement = []
-      removal_ids.length.times{|d| update_statement << {:geocoded=>'old'}}
+      removal_ids.length.times{|d| update_statement << {:geocoded=>'duplicate'}}
       House.update(removal_ids, update_statement)
     end
   end
