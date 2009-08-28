@@ -111,7 +111,7 @@ class Scraper
     pages = []
     date = Time.now
     puts "hitting #{map_area.scrape_url}"
-    10.times do |page|
+    15.times do |page|
     # while date > Time.now-7.days do |page|
       scraper_threads << Thread.new("#{page}00.html", map_area) {|cl_page, map_area|
         begin
