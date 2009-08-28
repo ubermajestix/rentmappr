@@ -49,6 +49,12 @@ namespace :cl do
     puts "not running this its not between midnight and 1am" unless Time.now < (Time.now.midnight + 1.hour)
   end
   
+  desc "mark houses with matching titles as duplicates"
+  task :remove_duplicates => :environment do 
+    @remover = Remover.new
+    @remover.remove_matching_titles
+  end
+  
   namespace :stats do
     desc "collection stats"
     task :all => :environment do
