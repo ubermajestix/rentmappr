@@ -154,6 +154,8 @@ class Scraper
         end
       }
     end
+    
+    
 
     scraper_threads.each{|t| t.join}
     puts links.length

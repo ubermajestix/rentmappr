@@ -19,6 +19,8 @@ class Remover
     logger.info "Remover now ready to remove"
     # establish_database_connection
     @start_run = Time.now
+    # Make Postgres 8.3 have array_agg:
+    ActiveRecord::Base.connection.execute("CREATE AGGREGATE array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND='{}');")
     nil
   end
   attr_reader :start_run
@@ -47,6 +49,24 @@ class Remover
   def timestamp(time=Time.now)
     # time||=Time.now
     time.strftime("%H:%M:%S %m/%d/%y")
+  end
+  
+  def remove_matching_titles(opts={})
+    @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all)
+    for map_area in @map_areas
+      h = House.find_by_sql("select count(id) as count, array_to_string( array_agg(id), ',' ) as ids, title from houses where map_area_id=#{map_area.id} group by title having count(id) > 1")
+      removal_ids = []
+      h.each do |set|
+        ids = set.ids.split(",")
+        ids.collect!{|id| id.to_i}
+        max = ids.inject{|r,v| r<v ? r=v : r=r}
+        ids.delete(max)
+        removal_ids << ids
+      end
+      removal_ids.flatten!
+      JabberLogger.send("marking #{removal.ids} as duplicate for #{map_area.name}")
+      # House.update(removal_ids, { :geocoded=>"duplicate title" })
+    end
   end
  
   def remove_old(opts={})
