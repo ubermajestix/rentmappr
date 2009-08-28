@@ -20,7 +20,7 @@ class Remover
     # establish_database_connection
     @start_run = Time.now
     # Make Postgres 8.3 have array_agg:
-    ActiveRecord::Base.connection.execute("CREATE AGGREGATE array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND='{}');")
+    # ActiveRecord::Base.connection.execute("CREATE AGGREGATE array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND='{}');")
     nil
   end
   attr_reader :start_run
