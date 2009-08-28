@@ -20,7 +20,11 @@ class Remover
     # establish_database_connection
     @start_run = Time.now
     # Make Postgres 8.3 have array_agg:
-    # ActiveRecord::Base.connection.execute("CREATE AGGREGATE array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND='{}');")
+    begin
+      ActiveRecord::Base.connection.execute("CREATE AGGREGATE array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND='{}');")
+    rescue StandardError => e
+      puts "array_agg already defined"
+    end
     nil
   end
   attr_reader :start_run
@@ -64,7 +68,7 @@ class Remover
         removal_ids << ids
       end
       removal_ids.flatten!
-      JabberLogger.send("marking #{removal.ids} as duplicate for #{map_area.name}")
+      JabberLogger.send("marking #{removal_ids} as duplicate for #{map_area.name}")
       # House.update(removal_ids, { :geocoded=>"duplicate title" })
     end
   end
