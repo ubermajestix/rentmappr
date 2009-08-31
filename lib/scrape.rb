@@ -175,16 +175,15 @@ class Scraper
            puts  house.address = glink[glink.index("?q=loc")+10...glink.length] if glink.index("?q=loc")
          end
        end
-       hdoc.search("h2") do |title|
-         puts title = title.inner_html.to_s
-         title_end = title.index("(") ? title.index("(") : title.length
-         puts house.title = title[0...title_end] unless flagged(title)
-         house.title = house.title[0,255]
-         puts house.price = house.title.match(/([\$])([0-9]{3,})/).to_s.gsub("$", "") if house.title && house.title.match(/([\$])([0-9]{3,})/)
-         #find price in title $number 
-       end
-
-
+       # Find the title
+       title = hdoc.search("h2").first
+       puts title = title.inner_html.to_s
+       title_end = title.index("(") ? title.index("(") : title.length
+       puts house.title = title[0...title_end] unless flagged(title)
+       house.title = house.title[0,255]
+       puts house.price = house.title.match(/([\$])([0-9]{3,})/).to_s.gsub("$", "") if house.title && house.title.match(/([\$])([0-9]{3,})/)
+       #find price in title $number 
+       
        if house.valid?
            hdoc.search("table") do |table|
             images = []
