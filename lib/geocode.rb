@@ -165,10 +165,10 @@ end
   def start_geocoding  
     @map_areas = MapArea.find(:all)
     for map_area in @map_areas 
-      @the_log << "---Geocoding for #{map_area.name} - #{timestamp} ---"
+      @the_log << "---#{timestamp} Geocoding for #{map_area.name} ---"
       @houses = House.find(:all, :conditions => ["map_area_id = ? and geocoded = ?", map_area.id, 'n' ])
       geocode(@houses)  
-      @the_log << "#{timestamp}: Geocoded #{@houses.length} houses for #{map_area.name}<br/>"
+      @the_log << "#{timestamp}: Geocoded #{@houses.length} houses for #{map_area.name}"
     end  
     JabberLogger.send @the_log.join("\n")
   end
