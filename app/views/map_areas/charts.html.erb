@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery-ui-1.7.2.custom.js"></script>
+    <script language="javascript" type="text/javascript" src="js/jquery.flot.js"></script>
+    <link type="text/css" rel="stylesheet" href="stylesheets/chart.css"/>
+  </head>
+  <body>
+    <div id="wrapper">
+      <div class="right" style="border: 1px solid #853b87; padding:2px 5px 5px 5px; margin-top:1px; font-size:10pt">
+        <%= link_to image_tag( '/images/logo.png', :size=>"120x20"), root_path, :class=>"logo" %>
+      </div>
+     
+      <h2>Graphing Test</h2>
+      <div class ="left" style="width:150px; height: 480px; padding:10px; border: 1px solid #3cadc1;">
+        <h3>choose city</h3>
+        <form action="/" method="post">
+          <%= select_tag :city, options_for_select(MapArea.all.collect{|m| [m.name, m.id]}) %>
+          <input type="submit" value="graph it"/>
+        </form>
+      </div>
+          <div class="right" style="width:150px; height: 480px; padding:10px; border: 1px solid #96db2f; ">
+            <h3>data:</h3>
+            <%if @data %>
+                              <% @data.each do |point| %>
+                                                      <%#= debug point %>
+                                  <pre><%= Time.at(point.first/1000).strftime("%m/%d/%y") %> <%= point.last %></pre>
+                                
+                              <% end %>
+                            <% else %>
+                              No data.
+                            <% end %>
+            <p id="hoverdata">Mouse hovers at
+            (<span id="x">0</span>, <span id="y">0</span>). <span id="clickdata"></span></p>
+
+            
+          </div>
+      <div id="placeholder">stuff!</div>
+      <script id="source" language="javascript" type="text/javascript">
+      
+      $(function () {
+        //build dataset
+            
+          <%if @data %>
+            <% @data.each do |point| %>
+              var s = [];
+              s.push([<%= point.join(', ')%>]);
+           <% end %>
+          <% end %>
+        
+        //build graph
+          var plot = $.plot(
+                            $("#placeholder"), 
+                            [{data: s, label: "s", color:"#80DE12"}], 
+                            { xaxis: { mode: "time" } ,
+                            lines: { show: true, fill: true },
+                            points: { show: true },
+                            selection: { mode: "xy" },
+                            grid: { hoverable: true, clickable: true }
+                            }
+                          );
+        }):
+     </script>
+     
+     
+  </body>
+</html>
