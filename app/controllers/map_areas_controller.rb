@@ -1,6 +1,6 @@
 class MapAreasController < ApplicationController
 layout "map_area"
-before_filter :admin_only, :except=>:st
+before_filter :admin_only, :except=> [:st, :chart]
   def index
     @map_areas = MapArea.find(:all)
     @start = GeoLoc.new(:lat=>40.010492, :lng=> -105.276843)
@@ -104,4 +104,29 @@ before_filter :admin_only, :except=>:st
       format.xml  { head :ok }
     end
   end
+  
+  def charts
+    @map_area = params[:id] ? MapArea.find(params[:id]): MapArea.first
+    geocodes = House.find_by_sql("select distinct(geocoded) from houses where map_area_id = #{@map_area.id}").map(&:geocoded)
+    data = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count FROM houses WHERE map_area_id = #{@map_area.id} and created_at > now() - interval '1 week' and geocoded = 's' group by time  ORDER BY time asc")
+    # data = House.find_by_sql("SELECT date_trunc('day', created_at) AS time, count(*) AS count, geocoded FROM houses WHERE map_area_id = #{@map_area.id} and created_at > now() - interval '1 week' GROUP BY geocoded, time  ORDER BY time asc")
+    
+    # puts "=="*45
+    #    puts data.inspect
+    #    puts geocodes.inspect
+    #    @data = {}
+    #    geocodes.each do |geocode|
+    #      set = data.select{|d| d.geocoded == geocode}
+    #      @data[geocode] = set.collect{|s| [Time.parse(s.time).to_i*1000, s.count]}
+    #    end
+    #    puts "=="*45
+    #    puts @data.inspect
+    #    puts "=="*45
+    @data = data.collect{|s| [Time.parse(s.time).to_i*1000, s.count]}
+
+    render :template => "map_areas/charts", :layout=>false
+  end
+  
+  
+  
 end

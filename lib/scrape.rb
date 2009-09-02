@@ -19,6 +19,7 @@ class Scraper
     logger.info "Craigslist Scraping"
     # establish_database_connection
     @start_run = Time.now
+    @the_log = []
     nil
   end
   attr_reader :start_run
@@ -268,11 +269,16 @@ class Scraper
      for map_area in @map_areas.reverse 
        house_start = Time.now
        house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i 
-       JabberLogger.send "scraping #{map_area.craigslist}" 
+       @the_log << "#{timestamp} scraping #{map_area.craigslist}" 
        queue = scrape_links(map_area)
        pull_down_page(queue, map_area)
        new_house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i
-       JabberLogger.send "#{Time.now}: Added #{new_house_count - house_count} houses for #{map_area.name} took: #{Time.now - house_start}"
+       @the_log << "#{timestamp}: Added #{new_house_count - house_count} houses for #{map_area.name} took: #{Time.now - house_start}"
      end
+     JabberLogger.send @the_log.join("\n")
+  end
+  
+  def timestamp
+    Time.now.strftime("%H:%M:%S")
   end
 end

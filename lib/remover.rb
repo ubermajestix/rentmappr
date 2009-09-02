@@ -19,6 +19,7 @@ class Remover
     logger.info "Remover now ready to remove"
     # establish_database_connection
     @start_run = Time.now
+    @the_log = []
     # Make Postgres 8.3 have array_agg:
     begin
       ActiveRecord::Base.connection.execute("CREATE AGGREGATE array_agg(anyelement) (SFUNC=array_append, STYPE=anyarray, INITCOND='{}');")
@@ -68,7 +69,7 @@ class Remover
         removal_ids << ids
       end
       removal_ids.flatten!
-      JabberLogger.send("marking #{removal_ids.length} as duplicate for #{map_area.name}")
+      @the_log << "marking #{removal_ids.length} as duplicate for #{map_area.name}"
       update_statement = []
       removal_ids.length.times{|d| update_statement << {:geocoded=>'duplicate'}}
       House.update(removal_ids, update_statement)
@@ -77,7 +78,6 @@ class Remover
  
   def remove_old(opts={})
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
-    mail = ""
     for map_area in @map_areas.reverse 
       expiration = Time.now - map_area.expires_in.days
       @houses = House.find(:all, :joins=>"left outer join userhouses on userhouses.house_id = houses.id", :conditions=>["map_area_id = #{map_area.id} and houses.updated_at <= ? and userhouses.saved is null", expiration])
@@ -85,35 +85,30 @@ class Remover
       update_statement = []
       ids.length.times{|d| update_statement << {:geocoded=>'old'}}
       House.update(ids, update_statement)
-      mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}\n"   
+      @the_log << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} older than #{expiration}\n"   
       # Don't remove these! We're re-geocoding these every hour!
       # @houses = House.find(:all, :conditions=>["map_area_id = #{map_area.id} and geocoded = 'f'"])
       #      House.delete(@houses.map(&:id))
       #      mail << "#{timestamp}: removing #{@houses.length} houses #{map_area.craigslist} that didn't geocode\n"   
       
     end  
-    JabberLogger.send mail 
   end
   
   def remove_matches_center(opts={})
     self.logger.info "Removing houses that match city center"
     #remove houses that match the city center
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
-    mail = ""
     for map_area in @map_areas.reverse
       if map_area.center_lat and map_area.center_lng
         count = House.count(:conditions=>["lat = ? and lng = ? and map_area_id = ? and geocoded='s'", map_area.center_lat, map_area.center_lng, map_area.id])
         House.update_all("geocoded = 'center'", "lat = #{map_area.center_lat} and lng = #{map_area.center_lng} and map_area_id =#{map_area.id} and geocoded='s'")
         self.logger.info "deleted #{count} houses matching the center of #{map_area.name}"
-        mail << "#{timestamp}: deleted #{count} houses matching the center of #{map_area.name}\n"
+        @the_log << "#{timestamp}: deleted #{count} houses matching the center of #{map_area.name}\n"
       else
         self.logger.error "no center coords for #{map_area.name}"
-        mail << "#{timestamp} no center coords for #{map_area.name}\n"
+        @the_log << "#{timestamp} no center coords for #{map_area.name}\n"
       end
     end
-    JabberLogger.send mail
-    puts "=="*45
-    puts mail
   end
   
   def remove_flagged(opts={})
@@ -123,13 +118,13 @@ class Remover
         for map_area in @map_areas.reverse
           queue = Queue.new
           houses = House.all(:conditions=>["map_area_id = #{map_area.id} and cl_removed is null and created_at >= ? and geocoded ='s'", Time.now - 1.days])
-          JabberLogger.send "checking #{houses.length} houses for #{map_area.name}"
+          @the_log << "checking #{houses.length} houses for #{map_area.name}"
           if houses.length > 0
             10.times{|n| queue << houses[n*11,houses.length/10]}
             parse_flagged(queue)
           end
       end    
-      JabberLogger.send "#{timestamp}: finished removed/flagged succesfully"
+      @the_log << "#{timestamp}: finished removed/flagged succesfully"
   end
   
   def parse_flagged(links)#pass queue
@@ -175,5 +170,8 @@ class Remover
    parser_threads.each { |t| t.join }
   end#parse_flagged
     
+  def send_log
+    JabberLogger.send @the_log.join("\n")
+  end
 
 end

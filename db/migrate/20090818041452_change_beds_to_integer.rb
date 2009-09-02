@@ -11,8 +11,8 @@ class ChangeBedsToInteger < ActiveRecord::Migration
    #    house_beds.each_pair{|key,value| House.find(key).update_attributes(:bedrooms=>value.to_i)}
    #    
    #    
-    end
-   end
+   # end
+   # end
   end
 
   def self.down

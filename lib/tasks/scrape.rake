@@ -27,18 +27,21 @@ namespace :cl do
   task :remove_old => :environment do 
     @remover = Remover.new
     @remover.remove_old
+    @remover.send_log
   end
   
   desc "removes houses that match city center"
   task :remove_center => :environment do 
     @remover = Remover.new
     @remover.remove_matches_center()
+    @remover.send_log
   end
   
   desc "remove old houses and check if remaining are flagged/removed"
   task :remove_flagged_one_off => :environment do 
     @remover = Remover.new
     @remover.remove_flagged
+    @remover.send_log
     # @remover.remove_flagged if Time.now < (Time.now.midnight + 1.hour)
   end
   
@@ -46,6 +49,7 @@ namespace :cl do
   task :remove_flagged => :environment do 
     @remover = Remover.new
     @remover.remove_flagged if Time.now < (Time.now.midnight + 1.hour)
+    @remover.send_log if Time.now < (Time.now.midnight + 1.hour)
     puts "not running this its not between midnight and 1am" unless Time.now < (Time.now.midnight + 1.hour)
   end
   
@@ -53,6 +57,7 @@ namespace :cl do
   task :remove_duplicates => :environment do 
     @remover = Remover.new
     @remover.remove_matching_titles
+    @remover.send_log
   end
   
   namespace :stats do

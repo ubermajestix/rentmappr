@@ -15,6 +15,7 @@ class Geocode
     logger.info "Craigslist Geocoding"
     # establish_database_connection
     @start_run = Time.now
+    @the_log = []
     nil
   end
   attr_reader :start_run
@@ -164,11 +165,16 @@ end
   def start_geocoding  
     @map_areas = MapArea.find(:all)
     for map_area in @map_areas 
-      JabberLogger.send "---Geocoding for #{map_area.name} ---"
+      @the_log << "---Geocoding for #{map_area.name} - #{timestamp} ---"
       @houses = House.find(:all, :conditions => ["map_area_id = ? and geocoded = ?", map_area.id, 'n' ])
       geocode(@houses)  
-      JabberLogger.send "#{Time.now}: Geocoded #{@houses.length} houses for #{map_area.name}<br/>"
+      @the_log << "#{timestamp}: Geocoded #{@houses.length} houses for #{map_area.name}<br/>"
     end  
+    JabberLogger.send @the_log.join("\n")
+  end
+  
+  def timestamp
+    Time.now.strftime("%H:%M:%S")
   end
   
 end

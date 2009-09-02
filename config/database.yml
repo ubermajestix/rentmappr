@@ -1,17 +1,10 @@
 #   http://dev.mysql.com/doc/refman/5.0/en/old-client.html
 development:
-  adapter: mysql
+  adapter: postgresql
   database: bldrcl
-  username: root
-  password:
-  host: localhost
-  pool: 20
-  wait_timeout: 15
+  username: postgres
+
 production:
-  adapter: mysql
+  adapter: postgresql
   database: bldrcl
-  username: root
-  password:
-  host: localhost
-  pool: 20
-  wait_timeout: 15
+  username: postgres
