@@ -138,7 +138,7 @@ class Remover
      	    sleep 2 if t_links.index(house) % 10 == 0
      	    begin
      	      puts "#{t_links.index(house)} / #{num}:#{t_links.length} / #{removed}"
-       	    cl = open(house.href)
+       	    cl = open(house.href, "User-Agent" => "Rentmappr.com/Ruby/#{RUBY_VERSION}")
             cl_string = cl.read
            
             if flagged?(cl_string) or removed?(cl_string)

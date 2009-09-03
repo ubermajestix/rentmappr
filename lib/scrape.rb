@@ -66,7 +66,7 @@ class Scraper
   
     def pet_threads(map_area, pet_type)
         puts "going to http://#{map_area.search_url}#{pet_type}"
-        main_page = Hpricot(open("http://#{map_area.search_url}#{pet_type}")) 
+        main_page = Hpricot(open("http://#{map_area.search_url}#{pet_type}", "User-Agent" => "Rentmappr.com/Ruby/#{RUBY_VERSION}")) 
         items = main_page.search("div.sh")
         bold_items = items.first.search("b")
         found = bold_items[1].inner_html.to_s
@@ -78,7 +78,7 @@ class Scraper
         pages.times do |page|
           pet_threads << Thread.new("#{pet_type}&s=#{page}00", map_area) {|cl_page, map_area|
             puts "scraping #{page} on #{map_area.search_url}#{cl_page}"
-            doc = Hpricot(open("http://#{map_area.search_url}#{cl_page}"))
+            doc = Hpricot(open("http://#{map_area.search_url}#{cl_page}", "User-Agent" => "Rentmappr.com/Ruby/#{RUBY_VERSION}"))
             #return all /apa/#{a number} formatted links
             doc.search("a") do |link|
               urls << "http://#{map_area.url}#{link.get_attribute("href")}" if link.get_attribute("href").to_s.match(/([a-z]{3})([\/apa\/])([0-9])/)
@@ -117,7 +117,7 @@ class Scraper
       scraper_threads << Thread.new("#{page}00.html", map_area) {|cl_page, map_area|
         begin
           puts "scraping page #{page} on #{map_area.scrape_url}#{cl_page}"
-          cl = open("http://#{map_area.scrape_url}#{cl_page}")
+          cl = open("http://#{map_area.scrape_url}#{cl_page}", "User-Agent" => "Rentmappr.com/Ruby/#{RUBY_VERSION}")
           cl_string = cl.read
           if cl.status.first == "200" and not flagged?(cl_string) and not removed?(cl_string)
             doc = Hpricot(cl_string)
@@ -166,7 +166,7 @@ class Scraper
      house = House.new
      house.href = link
      logger.info house.href
-     cl = open("#{link}")
+     cl = open("#{link}", "User-Agent" => "Rentmappr.com/Ruby/#{RUBY_VERSION}")
      cl_string = cl.read
      if cl.status.first == "200" and not flagged?(cl_string) and not removed?(cl_string)
        hdoc = Hpricot(cl_string)
@@ -265,16 +265,20 @@ class Scraper
     sleep 3
     @map_areas = opts[:city] ? MapArea.find_all_by_name(opts[:city]) : MapArea.find(:all) 
     self.logger.info "scraping for #{@map_areas.length} cities"
-  
+    # map_threads = []
+    puts RUBY_VERSION
      for map_area in @map_areas.reverse 
-       house_start = Time.now
-       house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i 
-       @the_log << "#{timestamp} scraping #{map_area.craigslist}" 
-       queue = scrape_links(map_area)
-       pull_down_page(queue, map_area)
-       new_house_count = House.count(:conditions=>{:map_area_id=>map_area.id}).to_i
-       @the_log << "#{timestamp}: Added #{new_house_count - house_count} houses for #{map_area.name} took: #{Time.now - house_start}"
+       # map_threads << Thread.new(map_area){|tmap_area|
+        tmap_area = map_area
+        house_start = Time.now
+        house_count = House.count(:conditions=>{:map_area_id=>tmap_area.id}).to_i 
+        queue = scrape_links(tmap_area)
+        pull_down_page(queue, tmap_area)
+        new_house_count = House.count(:conditions=>{:map_area_id=>tmap_area.id}).to_i
+        @the_log << "#{timestamp}: Added #{new_house_count - house_count} houses for #{tmap_area.name} took: #{Time.now - house_start}"
+      # }
      end
+     # map_threads.each{|t| t.join}
      JabberLogger.send @the_log.join("\n")
   end
   
