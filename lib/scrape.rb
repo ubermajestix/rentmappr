@@ -20,6 +20,7 @@ class Scraper
     # establish_database_connection
     @start_run = Time.now
     @the_log = []
+    @hrefs_in_search = []
     nil
   end
   attr_reader :start_run
@@ -129,6 +130,7 @@ class Scraper
             logger.info "#{cl_page} tlinks before: " + t_links.length.to_s
             t_links.collect!{|t| "http://#{map_area.craigslist}#{t}"}
             seen_these_hrefs = House.all(:select=>"href", :conditions=>["href in (#{t_links.collect{|h| "'#{h}'"}.join(',')})"]).map(&:href)
+            @hrefs_in_search << seen_these_hrefs          
             logger.info "seen em: " + seen_these_hrefs.length.to_s
             t_links = t_links - seen_these_hrefs
             logger.info "#{cl_page} tlinks after: " + t_links.length.to_s
@@ -275,6 +277,8 @@ class Scraper
         queue = scrape_links(tmap_area)
         pull_down_page(queue, tmap_area)
         new_house_count = House.count(:conditions=>{:map_area_id=>tmap_area.id}).to_i
+        # we only really want to delete houses that aren't coming up in cl search results
+        mark_old_houses_for_delete
         @the_log << "#{timestamp}: Added #{new_house_count - house_count} houses for #{tmap_area.name} took: #{Time.now - house_start}"
       # }
      end
@@ -284,5 +288,15 @@ class Scraper
   
   def timestamp
     Time.now.strftime("%H:%M:%S")
+  end
+  
+  def mark_old_houses_for_delete()
+    #hrefs are still active in cl searches
+    @houses = House.all(:conditions=>["href not in (?) and geocoded = 'old'",@hrefs_in_search])
+    ids = @houses.map(&:id)
+    puts "found #{ids.length} houses to delete"
+    update_statement = []
+    ids.length.times{|d| update_statement << {:geocoded=>'delete'}}
+    House.update(ids, update_statement)
   end
 end
