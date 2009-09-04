@@ -278,7 +278,7 @@ class Scraper
         pull_down_page(queue, tmap_area)
         new_house_count = House.count(:conditions=>{:map_area_id=>tmap_area.id}).to_i
         # we only really want to delete houses that aren't coming up in cl search results
-        mark_old_houses_for_delete
+        mark_old_houses_for_delete(tmap_area.id)
         @the_log << "#{timestamp}: Added #{new_house_count - house_count} houses for #{tmap_area.name} took: #{Time.now - house_start}"
       # }
      end
@@ -290,9 +290,9 @@ class Scraper
     Time.now.strftime("%H:%M:%S")
   end
   
-  def mark_old_houses_for_delete()
+  def mark_old_houses_for_delete(map_area_id)
     #hrefs are still active in cl searches
-    @houses = House.all(:conditions=>["href not in (?) and geocoded = 'old'",@hrefs_in_search])
+    @houses = House.all(:conditions=>["href not in (?) and map_area_id = #{map_area_id} and geocoded = 'old'",@hrefs_in_search])
     ids = @houses.map(&:id)
     puts "found #{ids.length} houses to delete"
     update_statement = []
