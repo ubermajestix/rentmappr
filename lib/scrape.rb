@@ -294,7 +294,7 @@ class Scraper
     #hrefs are still active in cl searches
     @houses = House.all(:conditions=>["href not in (?) and map_area_id = #{map_area_id} and geocoded = 'old'",@hrefs_in_search])
     ids = @houses.map(&:id)
-    puts "found #{ids.length} houses to delete"
+    @the_log << "found #{ids.length} houses to delete"
     update_statement = []
     ids.length.times{|d| update_statement << {:geocoded=>'delete'}}
     House.update(ids, update_statement)
