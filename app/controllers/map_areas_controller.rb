@@ -110,15 +110,17 @@ before_filter :admin_only, :except=> [:st, :chart]
     puts params[:city]
     puts "=="*45
     @data = []
-    @data << "{data: #{Stats.week_overall.to_json} , label: 'total count'}"
+   
     geocodes = %w"s f n duplicate delete flagged old"
     if params[:city] != -1 or not params[:city].nil?
+      @data << "{data: #{Stats.week_overall(params[:city]).to_json} , label: 'total count'}"
       @city = params[:city]     
       geocodes.each do |g|
         @data << "{data: #{Stats.week_status(g, params[:city]).to_json} , label: '#{g} count'}"
       end
     else
       @city = -1
+       @data << "{data: #{Stats.week_overall.to_json} , label: 'total count'}"
       geocodes.each do |g|
         @data << "{data: #{Stats.week_status(g).to_json} , label: '#{g} count'}"
       end

@@ -54,8 +54,12 @@ module Stats
     return output
   end
   
-  def self.week_overall
-    houses = House.find_by_sql("select count(*) as count, date_trunc('day', created_at) as day from houses where created_at > now() - interval '1 week' group by day order by day desc")
+  def self.week_overall(map_area_id = nil)
+    if map_area_id
+      houses = House.find_by_sql("select count(*) as count, date_trunc('day', created_at) as day from houses where created_at > now() - interval '1 week' and map_area_id = #{map_area_id} group by day order by day desc")
+    else
+      houses = House.find_by_sql("select count(*) as count, date_trunc('day', created_at) as day from houses where created_at > now() - interval '1 week' group by day order by day desc")
+    end
     data = []
     houses.each{|h| data << [Time.parse(h.day).to_i*1000, h.count.to_i]}
     return data    
