@@ -53,4 +53,23 @@ module Stats
     houses.each{|set| output << "#{set.time} #{set.geocoded}: #{set.count.rjust(10 - set.geocoded.length)}"}
     return output
   end
+  
+  def self.week_overall
+    houses = House.find_by_sql("select count(*) as count, date_trunc('day', created_at) as day from houses where created_at > now() - interval '1 week' group by day")
+    data = []
+    houses.each{|h| data << [Time.parse(h.day).to_i*1000, h.count.to_i]}
+    return data    
+  end
+    
+  def self.week_status(status, map_area_id =nil)
+    if map_area_id
+      houses = House.find_by_sql("select count(*) as count, date_trunc('day', created_at) as day from houses where created_at > now() - interval '1 week' and geocoded = '#{status}' and map_area_id = #{map_area_id} group by day order by day desc")
+    else  
+      houses = House.find_by_sql("select count(*) as count, date_trunc('day', created_at) as day from houses where created_at > now() - interval '1 week' and geocoded = '#{status}' group by day order by day desc")
+    end
+    data = []
+    houses.each{|h| data << [Time.parse(h.day).to_i*1000, h.count.to_i]}
+    return data
+  end
+  
 end
