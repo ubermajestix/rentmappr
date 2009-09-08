@@ -55,7 +55,7 @@ module Stats
   end
   
   def self.week_overall
-    houses = House.find_by_sql("select count(*) as count, date_trunc('day', created_at) as day from houses where created_at > now() - interval '1 week' group by day")
+    houses = House.find_by_sql("select count(*) as count, date_trunc('day', created_at) as day from houses where created_at > now() - interval '1 week' group by day order by day desc")
     data = []
     houses.each{|h| data << [Time.parse(h.day).to_i*1000, h.count.to_i]}
     return data    
